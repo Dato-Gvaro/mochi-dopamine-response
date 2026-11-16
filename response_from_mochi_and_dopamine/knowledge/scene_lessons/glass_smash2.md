@@ -1,0 +1,27 @@
+# glass_smash2 — glass_smash with 48 small panes, rapid-fire (batch33, 2026-10-15)
+
+- **Owner review of glass_smash:** "smaller and more glasses — 10-15 visible in one line — smash faster, more satisfying". New file; glass_smash stays bit-reproducible.
+- **Look:**
+  - 48 thin panes per lane at 66 px per 1 m gap, so 12-13 are visible ahead of the ball. The camera point is x 250.
+  - Panes are 250 px tall, oblique depth (44, -26), 2→8 px thick. Numbers show on every 5th pane and the last.
+  - Balls: marble r 17, steel r 38. Shards per break: 7 + k/6, size 6-12 px; 60 shards in the final burst.
+- **Physics:** same model as glass_smash (equal push F, strength curve, momentum shared with the shard plug, cracks weaken a pane by w × the absorbed energy). Retuned for 48 panes (search over random configs):
+  - F 0.1457 N; E 0.0024 → 0.40 J (power 2.62); w 2.50; e 0.738; shard mass 1.9 → 7.4 g.
+  - Marble 20 g at 9.5 m/s. Steel 1 kg at 1.08 m/s.
+- **Race (clip time):**
+  - Marble: a cascade of 34 panes by 5.7 s (6-10 breaks per second), then multi-hits: 2 per pane from 6.9 s, 3 per pane from 16.2 s, 4 hits on pane 45. It is still pinging on pane 46 at the end and breaks it after 8 hits at 23.3 s.
+  - Steel: accelerates from about 1.2 to about 2.5 panes per second, losing 1-17 % of its speed per pane.
+  - NECK AND NECK 20.7 s, LEAD CHANGE 21.25 s, steel finishes pane 48 at 22.47 s.
+  - Length 24.57 s (1474 frames). Pre-roll / dissolve 0.40 s.
+- **Banners** (s): 5.3 SHARDS STEAL ITS SPEED! · 6.1 IT BOUNCED! · 8.4 EVERY PANE NOW TAKES 2 HITS! · 12.1 STEEL: HALFWAY! · 14.0 STEEL CATCHING UP! · 16.2 3 HITS FOR ONE PANE! · 17.6 ONLY 5 PANES AHEAD! · 20.7 NECK AND NECK! · 21.25 LEAD CHANGE! · 22.47 STEEL BALL WINS!
+- **Sound:** same palette as glass_smash.
+  - Pane pitch descends a C-major pentatonic over the 48 panes.
+  - Shatter and tinkle levels are ducked by 1/sqrt(n/1.5) for n shatters within ±0.2 s, so the cascade does not turn harsh.
+  - Tinkles are shorter (0.35 s) and the ting top end is softer.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 60 fps.
+  - Loudness: -14.02 LUFS, peak -6.34 dBFS. The last 0.5 s peaks at -14.0 dBFS: the marble's late hits fade into the dissolve, reaching 0 at the seam.
+  - flash_check: 0 FAIL.
+  - Seam mean delta 6.31. A normal step here is 6.2-7.3 because both cameras scroll.
+  - Frames read at 0, 0.5, 1, 3, 12, 22.6, 23.4 and 24.5 s.
+- **Owner review 2026-10-15:** "smaller glass and much more; the big ball is moving very slow, make both faster" → glass_smash3 (100 panes, ~25 visible, steel 3-9 panes/s, 16.25 s).

@@ -1,0 +1,40 @@
+# territory_hockey
+
+- Based on idea #3 in research/reference_dripandflick.md (DripAndFlick's puck duel). New file with no shared scene code.
+- **Rule:** a vertical air-hockey rink of 18x16 dark-glass jewel tiles. Mochi's ruby half is at the top and Bolt's emerald half is at the bottom, split by a glowing CENTRE BORDER. The characters ARE the strikers: each rides a neon striker ring and must stay in its own half. Each goal moves the border 3 rows (1/3 of a half) toward the LOSER. Those tiles flip colour in a wave (row by row, centre-out, one card flip each), so the loser's half shrinks and its striker gets cramped against the line. First to 4 wins. Caption: `Every goal STEALS territory|~First to 4 goals wins~`.
+- **Physics:**
+  - Puck r 31, strikers r 59. The puck is integrated at 240 Hz. The rink is a rounded rectangle (corner r 84) with elastic walls (e 0.97), 300 px goal mouths with point posts, and drag 0.10/s.
+  - A hit sets the puck's velocity along the contact normal. The striker path is a cubic Hermite through keyframes: windup -> lunge (650 px/s) -> follow-through -> guard.
+  - Each shot is planned by integrating the puck forward to the receiver's strike line, so every contact really happens.
+  - On a goal shot the defender is fooled: it leans the wrong way, then dives late. The plan checks clearance against the puck path (>= RR+10).
+- **Escalation:**
+  - Shot speed rises 1150 -> 2600 px/s over 14 s.
+  - The bank-shot chance rises 0.35 -> 0.9.
+  - Rallies are 2/3/4/3/3/4/7 hits. The serve goes to the last scorer from the border centre.
+  - Hits+walls per third of play (video time): 7 / 13 / 19.
+- **Score:** B B M M M B B. Banners: BOLT SCORES FIRST!, BOLT UP 2-0!, MOCHI HITS BACK!, TIED 2-2!, LEAD CHANGE! + MATCH POINT, TIED 3-3! + NEXT GOAL WINS. The final goal plays in slow-mo (0.35x, "SLOW-MO" tag).
+- **End:**
+  - BOLT WINS 4-3!
+  - Bolt's colour floods the whole rink (a takeover wave).
+  - Bolt cheers, then laughs ("HA"). Mochi gives an annoyed stare.
+  - A silent reset wave restores the 50/50 board and the score returns to 0-0. Both slide home.
+  - The pre-roll serve pops in. Frame 0 is 0.16 s after launch, and the first hit lands at 0.23 s.
+- **Loop:** pre-encode seam 0.807 against a normal step of 0.817, so the loop is exact. The encoded seam of 1.22 against an interior step of 0.80-0.85 is the I-frame step. Sheen, star twinkle and border sparkles all run whole cycles per clip.
+- **Sound** (mixed in the scene, then `audio.master()`):
+  - Marimba: turkish_march (Mozart, PD), one note per striker hit. A goal plays a strummed chord (m-12, m-5, m; the final adds m-24) plus a glassharp m+12. The final adds a rising glass arpeggio and a cheer arpeggio.
+  - Glassharp: one rising tick per flipped tile row.
+  - The numpy CLACK bed (not in `_events.json`): a bright rail clack per wall/post hit and a lower striker tock per hit, both pitched and levelled by speed, plus a pocket thud per goal. tools/regen_audio.py would drop the clacks, so re-render instead.
+  - A post-master fade reaches silence 1.3 s before the seam.
+- **s24 (default):**
+  - 26 hits and 13 banks. Goals at game times 1.61 / 4.58 / 7.77 / 9.77 / 11.95 / 14.17 / 17.30 s.
+  - The final goal is at video 18.06 s. The clip is 21.43 s (1286 frames).
+  - Striker vmax 1224 px/s. Minimum unplanned clearance is +17.5 px.
+- **Checks** (encoded, Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -13.96 LUFS, peak -4.5 dBFS. Last 1.3 s and last 0.5 s at -240 dBFS.
+  - flash_check PASS (0).
+- **Args:** --seed, --label, --cap ('a|~b~'), --melody, --dry, --still --frame, --search N [--from S] (sim only; filter: clearance, vmax < 2600, first hit < 0.5 s).
+- Other good seeds (rising rate): 185, 137, 42, 3.
+- Delivered to <VIDEOS_DIR>\batch16\territory_hockey.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-07: Good, but they score too easily; add challenge, make them sweat -> territory_hockey2.
+- Owner review 2026-10-07: "good, but they score too easily, make some challenge, make them sweat." Follow-up: territory_hockey2 (earned goals).

@@ -1,0 +1,48 @@
+# grand_prix2 — MARBLE GRAND PRIX 2: GAP JUMPS (Team Mochi vs Team Bolt)
+
+- Sequel to grand_prix (#2 Short, 2,166 views, pushed past the seed test). ONE nameable change: **"this time the track has GAP JUMPS — miss one and you're OUT."** Slow or knocked marbles drop through a gap, shrink into the void and are out. Team pips shrink. The rule: **first team with 3 marbles HOME wins**. Kept from v1: Team Mochi vs Team Bolt (5 coral, 5 mint), neon jewel-tone course on a dark navy-plum stage, camera following the pack, gold leader ring, LEAD CHANGE! banners, the HUD with faces, and a close finish.
+- Course (world 1080 x 3760, rails x 84/996), a new mechanism every ~2-3 s:
+  - A GAP 1: a plain jump off the 10-degree entry ramp;
+  - B SPINNER: a 4-arm cross, r 130, +2.6 rad/s, top moving right;
+  - C BIG JUMP: a 14-degree kicker over a 170 px gap;
+  - D PEGS: 6 rows, flashing;
+  - collector to E DOUBLE GAP: two 72 px holes on the ramp line, the second landing stepped 26 px down;
+  - F TRAPDOOR: a hinged plank, period 1.5 s, open 0.30 s, with a green/red lamp;
+  - G FINAL JUMP: kicker over 200 px onto the gold FINISH platform, then a single-file HOME tube. The stack shows the arrival order.
+- Out = the marble centre enters a void box under a gap (VOIDS, with y-bounds so the lower ramps never count). Elimination is physics only: no scripted outs.
+- Tuning notes:
+  - Theory under-estimates clearance by about one radius (the edge cap catches).
+  - Tune from measured lip speeds. Measure E-ramp speeds on E, not on the collector: about 400-460 px/s.
+  - A ramp end needs at least 66 px to the rail, or marbles jam at the end cap.
+- Per-gap outs per seed (60-seed stats): 0.6 / 0.3 / 0.6 / 1.0 / 0.1 / 0.35.
+- Frame 0 is MID-ACTION. The sim starts 0.6 s earlier with the pack placed on the entry ramp (seeded speeds 330-820, leader 760-860). The leader is 130 px from the lip at t=0, flies the gap at ~0.2 s and lands by 0.5 s. The first OUT is at 1.25 s.
+- Loop is a seamless 0.5 s DISSOLVE. The tail cross-fades the result frame into the sim pre-roll, so the last frame = sim t=-1/60 and frame 0 = t=0. Audio does the same: post-result events fade out and pre-roll events fade in.
+- Photo finish: the 5th and 6th marbles home are different teams within 0.012-0.12 s. The sim slows to 0.32x for ~0.26 sim-s (about 1 s of video), with PHOTO FINISH!, a gold finish-line glow and gold/grey rings on the two marbles. The HUD freezes at the decider: "BOLT WINS! by 0.08 s".
+- Teams are assigned after the sim over all 252 5/5 splits. The story needs:
+  - 2-2 after 4 home, and 3+ outs with each team losing at least one;
+  - t5 in 14-22.5 s.
+  - Score: mid-race lead swaps, home-count lead swaps, an underdog winner (lost the first marble), an early first out, and how many distinct gaps eliminate.
+  - Search 6000 seeds: 80 pass.
+- s4743 (default):
+  - outs 1.25 s B (gap 1), 9.61 B (double gap), 11.73 M (double gap), 11.92 M (double gap b);
+  - mid-race lead swaps at 6.32/7.52/8.42 s;
+  - home order M B B M | B M at 13.70/14.04/14.68/17.46/19.11/19.19, so Bolt wins by 0.081 s.
+  - Clip 21.87 s (1312 f).
+  - Other good seeds: 4256 (gaps 0/2/4, 16.3 s), 5791 (4 different gaps, short), 2489, 1601.
+- Sound: an own-synth bed (no v1 metal ticks).
+  - Glass clicks: pegs bright, ball-ball, rails dull.
+  - Acrylic track CLACK on landings.
+  - metal_roll_bed rolling per marble (roll_gain 0.085).
+  - Fall = down-sweeping whoosh (0.48) + a distant dull clink with 2 echoes at +0.86 s (0.30).
+  - Trapdoor latch clacks when on screen; a glass ting per marble home.
+  - A riser over the last 1.6 s into a camera-shutter click on the photo finish.
+  - Marimba notes = Turkish March (Mozart, PD): one per cleared jump (capped at 0.16 s) and per home; a chord on the decider, then the 72-76-79-84 win arpeggio. Eine kleine is banned now, hence the change from v1.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 60 fps, 1312 frames.
+  - -13.97 LUFS, peak -7.65 dBFS.
+  - flash_check 0 = PASS (mean lum 0.022).
+  - Seam: pre-encode 0.546 against neighbours 0.54/0.56 (perfect). Encoded seam 0.87 against a normal 0.58: the I-frame step, as in v1.
+  - Sounded events/5 s: 88/95/67/35. Fewer marbles race at the end, but still more than 7 per second.
+- Args: --seed (4743), --label, --cap ("Miss the jump = OUT|~First team with 3 HOME wins~"), --melody, --voice, --search N [--start], --stats N, --debug, --still --frame.
+- Delivered <VIDEOS_DIR>\batch33\grand_prix2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-15: rejected — "remove that whooshing moving sound, and it must not look like the old one, change obstacles completely, make it more complex maybe". Near-duplicate sequels do not work on YouTube; replaced by the new format grand_prix3 (crusher factory).

@@ -1,0 +1,31 @@
+# golden_spiral — THE GOLDEN ANGLE (Vogel phyllotaxis, live)
+
+- Rule: seed k sits at angle k·θ, radius c·√k (Vogel 1979). The dial sets θ, and the same seeds glide live as θ changes.
+- Story (quarter = 84, bar 2.857 s):
+  - 0-2.0 s: sowing 60 -> 200 at θ = 135° (3/8 turn) gives 8 straight spokes. Moving at frame 0.
+  - 1.45-8.57 s: Mochi turns the knob. 8 spokes curl into arms -> spirals -> 21 straight spokes (~6.3 s, near 8/21 = 137.14°). Overshoot past the gold mark to 137.80° (Mochi and Bolt worried), then back.
+  - 8.57 s (bar 4 downbeat, the G7 -> C cadence): LOCK at 137.508° = 360°/φ². Gold dial, a ripple ring, and the 21 parastichies traced in gold.
+  - 11.43 s (bar 5): the 34 counter-spirals traced in cyan. "21 / 34 spirals" labels sit in the top corners.
+  - 14.29 -> 17.14 -> 20.42 s: seeds grow continuously 200 -> 1,000 -> 3,000. New seeds appear at the rim while the head zooms out. Arms fade. A slow 4°/s head spin starts from the lock.
+  - 20.42 s: the final C chord. The 3,000-seed head rests 1.45 s.
+  - 21.87-24.07 s: the head de-grows to nothing. 24.19-24.61 s: Mochi spins the dial back to 135°. 24.66 s: sowing restarts and continues seamlessly into frame 0.
+- Look: dark violet stage with a starfield. Cairo ADD splat -> float trails (decay 0.90, weight 0.085) -> 2-radius glow -> hue-preserving tone-map (butterfly_effect look). Colour is a jewel rainbow by √(k/N): gold centre to mint rim. Head R 452 at (540, 768). Seed disc 0.56·c.
+- HUD:
+  - Arc dial (1° = 8.5° of arc, ticks every 0.1°, gold mark at 137.508°) with a fixed needle.
+  - Reading "θ = 137.508°" at 0.735h, plus "the GOLDEN ANGLE = 360° / φ²" after the lock.
+  - Counter "SEEDS: N" at 0.796h.
+- Characters (r 30) sit at y 1288: Mochi at the knob (left; leans into the turn, determined -> worried -> happy) and Bolt at the right end of the dial (wow at the lock, the 34 arms and the growth).
+- Music: J. S. Bach, Prelude in C major BWV 846 (Well-Tempered Clavier I, 1722; Bach d. 1750), a public-domain composition on our own `audio.synth_piano`. No recording.
+  - Bars 1-7, each half bar n1 n2 n3 n4 n5 n3 n4 n5 in continuous 16ths. Bars: C | Dm7/C | G7/B | C | Am/C | D7/C | G/B.
+  - Then a rolled, held C chord (C3 C4 E4 G4 C5 E5) as the cadence. The bar 7 -> C close is the only arrangement step; every note before it is Bach's text.
+  - Ritardando on the last 7 16ths of bar 7 (+0.42 s total). Notes ring to the half-bar change (pedal). All audio is faded 1.35 s before the end.
+  - Owner 2026-10-10 asked for energy: brisk quarter = 84, no slow sections. K.545 was preferred (to avoid sharing Bach with chladni_plate), but only its bars 1-3 are certain note-for-note, so Bach was used.
+- Args: --cap, --label, --still --frame, --report.
+- Checks (encoded Full HD, v1):
+  - h264 yuv420p 1080x1920 at 60 fps, 25.08 s (1505 frames). Render ~25 min.
+  - Audio: -14.00 LUFS, peak -5.25 dBFS, last 0.5 s -240 dBFS. 118 notes, events per 5 s: 29, 28, 28, 26, 7 (a steady 16th pulse).
+  - flash_check: 1 (the head shrinking to nothing at 23.8 s) = PASS.
+  - Seam: pre-encode 0.41 against a normal step of 0.36; encoded 0.63.
+- Delivered <VIDEOS_DIR>\batch22\golden_spiral.mp4 (Full HD). Owner review: pending.
+
+- Owner review (2026-10-09): no hook for viewers, no engagement; music bad. Dropped.

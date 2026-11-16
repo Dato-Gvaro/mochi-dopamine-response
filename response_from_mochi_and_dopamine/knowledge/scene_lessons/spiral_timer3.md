@@ -1,0 +1,26 @@
+# spiral_timer3 — spiral_timer2 with PHYSICAL traps
+
+- Source: owner review of spiral_timer2 (2026-10-06): "that claw or something is not moving naturally but overall OK". spiral_timer2.py is untouched.
+- Everything is as v2 (crystal mine, 1.75-turn amethyst spiral, gold hopper, cart vs barrel, 15 s timer, two counters, core-screw loop, mountain_king chimes) EXCEPT the two traps, which are now physics:
+- PICKAXE = a real damped gravity pendulum, integrated in the SIM (not painted on).
+  - ODE: theta'' = -(G_P/L_P) sin theta - C_P theta', with L_P 256, G_P 5200 px/s^2, C_P 1.4 (damping ratio ~0.15; 4 substeps/frame).
+  - A cable WINCH on the core holds it latched at +0.95 rad: a spool plus a taut cable.
+  - Bolt's stomp releases it. Gravity accelerates it to the bottom in ~0.32 s, it overshoots (~-0.55), swings back and rings down. The cable hangs slack (CABLE 600).
+  - Any ball crossing the station while |theta| < 0.25 (the head in the track) is knocked off. There is no charge any more: the pick takes whatever it meets. Each impact keeps 55% of the angular speed (recoil).
+  - After ARM_PK 1.6 s the winch reels it in: a cubic Hermite from its current angle AND velocity to rest on the latch over 0.65 s, with the spool turning with the cable.
+  - Why the sim changed: a real swing needs ~0.3-0.5 s to reach the track, but v2 had first hits 0.003-0.17 s after the stomp. Hits that come from the pendulum make every knock visually true (0 clashes by construction).
+- TRAPDOOR: charge 1-3 kept.
+  - The flap falls open under gravity: phi = alpha t^2 / 2, reaching its 1.25 rad stop in TD_OPEN 0.14 s, then bounces (0.24 exp(-13 e) |sin 24 e|).
+  - Balls fall through only once it is half open (TD_LIVE 0.10 s after the stomp).
+  - It closes in 3 ratchet clicks, 0.1 s apart, each with a small overshoot.
+- Sound (new): latch click on release; CLANK per pickaxe hit; 7 pawl ticks while the winch reels in; latch when it locks. Trapdoor: a thud on its stop and 3 ratchet ticks closing. The rest is as v2.
+- Balance re-tuned: TH_HIT 0.25, trapdoor charge 1+t/6 .. min(3, 2+t/5). 80 seeds give a mean margin of -0.2, with 39/80 within 2.
+- s61 (Mochi win): Mochi 19, Bolt 17. 2 lead changes, the last at 14.3 s. Pickaxe hits 3.33, 3.43, 6.84, 6.93, 10.11, 12.33-12.73 (4). Events per 3 s: 5, 5, 6, 7, 13. Clip 25.03 s (1502 f).
+- Verified at 1:1 on consecutive frames (every 2-4 frames):
+  - The 11.34 s swing: release, accelerating fall, overshoot, return, balls knocked at the head, winch.
+  - The 10.09 s trapdoor: gravity fall, bounce, balls through, ratchet close.
+- Checks, Full HD: h264 yuv420p 1080x1920 60 fps; -14.00 LUFS, peak -6.50 dBFS; last 1.3 s -92 dBFS, last 0.5 s silent; flash_check PASS. Pre-encode seam 1501 -> 0 = 0.329 against a normal step of 0.330 (perfect loop); encoded 0.86 (I-frame step).
+- Checks, 4K ship (`NF_SCALE=2.0 --label ship`): h264 yuv420p 2160x3840 60 fps, 1502 f; -14.00 LUFS, peak -6.50 dBFS; last 1.3 s -92 dBFS, last 0.5 s silent; flash_check PASS; encoded seam 0.66.
+- Search `--search N [--from S] [--bolt]`: as v2. Mochi alternatives: s68, s231, s195.
+- Args: --seed (61), --label, --cap, --melody, --search [--from] [--bolt], --dry, --still --frame.
+- Delivered: Full HD <VIDEOS_DIR>\batch15\spiral_timer3.mp4. 4K scheduled at <VIDEOS_DIR>\Schedule\2026-10-10\3_spiral_timer.mp4. Owner: v2 approved overall; v3 = the physics fix.

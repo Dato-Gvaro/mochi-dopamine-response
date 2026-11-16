@@ -1,0 +1,38 @@
+# door_dash2: door_dash with 5 mechanism types, depth colours and livelier characters
+
+- Built from the owner's review of door_dash (2026-10-05): "good but kinda dry and repetitive, let's add something more". door_dash.py is untouched (s568 reproducible).
+- Same race: two shafts (centres x 290/790, inner half-width 146), one steel ball each (r 44), 36 levels 260 px apart. The first ball to land on the checkered gate wins. The shaft is a vertical ring (the finish gate is the start gate), so the clip loops. The camera is a centred gaussian over the periodic timeline (sigma 0.45 s). Caption "Every part has its own TIMING|~First to the bottom WINS~".
+- FIVE mechanisms (LAYOUT, the same in both shafts):
+  - DOOR: wooden sliding doors. Sound: steel latch click.
+  - TRAP: riveted steel flaps hinged at the walls, with hazard stripes. They drop open in 0.15 s (gravity), bounce at the bottom, and a motor swings them back up in 0.28 s. Sound: latch CLUNK.
+  - WHEEL: 4-vane rotary wheel. It locks onto the pocket nearest the ball. Sound: vane ticks.
+  - BELT: conveyor ledge in zig-zag pairs, chevrons moving. The ball rides to the 100 px hole at the wall and drops. Speed 360 -> 700 px/s. Sound: woody slat ticks every 34 px.
+  - BUMP: pinball bumpers. A top bumper (r 32, x +-16, alternating side) plus two half-bumpers set into the walls (r 44 at x +-150). Restitution 0.6, kick 140, upward speed capped at 620. Each hit flashes and plays a glass-bell DING (84/88/91/88).
+  - Count: 8 doors, 8 traps, 5 wheels, 8 belts, 7 bumpers. Levels 1, 2, 35, 36 are doors or traps (they are visible at the seam).
+- Bumper geometry lesson: every gap must be >= ~96 px (ball 88). A top bumper at x 30 / r 30 left an 86 px gap to the wall and wedged the ball forever. Side bumpers must sit INSIDE the wall line, or the ball juggles on top of them.
+- Physics: the ball collides with capsules (planks, flaps, belt) and circles (bumpers), 4 substeps per frame. Flaps carry surface velocity (the ball follows them down; a closing flap pushes). The belt couples the tangential velocity (0.25 per substep). Doors stop against, and flaps stall on, a ball that is half through (per-frame override, recorded for the render).
+- Rhythm: TENSE doors 13 and 25 (period x1.7, wait >= 75 % of the maximum) give long waits. Belt and bumper stretches are fast flow.
+- DIRECTOR and SYNC as in v1, now on doors and traps only. The lead script is flipped (Bolt leads late, Mochi comes back). Sync snap = exact rest state (x, y, v) at the release frame. Syncs s315: 10.72 s (level 13) and 15.22 s (level 20). Synced passes at 10.88, 11.65, 12.43, 12.67, 15.38, 15.98, 16.38, 17.10 s.
+- Depth colour: the shaft panel goes cream -> amber -> orange -> brick with depth. The jump back to cream is hidden under the gate (brick above it, cream below, identical at both ends). Walls are tinted coral (Mochi) and mint (Bolt).
+- Characters, chosen by priority without overlaps:
+  - sync -> both "wow"
+  - wait >= 0.95 s -> worried
+  - the leader laughs at a rival stuck >= 1.2 s
+  - 3 passes within 1 s -> a cheer hop
+  - first bumper hit -> wow
+  - finish: winner cheer + laugh; loser wince + annoyed stare
+- Banner: "MOCHI" (150) over "WINS!" (170, yellow), y 660.
+- s315: Mochi wins at 24.53 s, Bolt lands 0.28 s later.
+  - Story: Bolt led ~17.5-20.5 s, then neck and neck. Bolt passes doors 33-34 first, then sits on trap 35 while Mochi flies through 35 and 36.
+  - Lead changes 6, max spread 2 levels. Clip 27.37 s (1642 frames).
+  - Passes/5 s: 12, 16, 21, 22. Sounded/5 s: 47, 74, 71, 80.
+- Sound: Fur Elise (PD Beethoven) marimba note per level passed (synced = centred chord), woody TOK on wood and belt landings (ratchet). Everything else is a scene-side BED: metal ticks, synth_latch, synth_ratchet, synth_glassharp bells. Stem RMS: notes -22, toks -33, bed -25 dB (bells -28, ticks -30, latch -34, belt -36). regen_audio cannot rebuild the bed.
+- Checks (Full HD encode): h264 yuv420p 1080x1920 60 fps.
+  - Loudness: -14.01 LUFS, peak -6.8 dBFS. Last 1.3 s -53 dBFS, last 0.5 s -94 dBFS.
+  - flash_check 0 = PASS.
+  - Seam 2.61 vs neighbours 2.29 / 2.70 (scrolling camera; continuous).
+  - Onsets 132/143 events within 30 ms.
+- Search `--search N`: Mochi wins, t_w 23-27 s, gap 0.12-0.9 s, both syncs, spread <= 3, >= 3 lead changes. Bumpers are chaotic: any geometry or physics change reshuffles every seed.
+- Args: --seed (315), --label, --cap, --melody, --voice, --search, --still --frame.
+- Delivered <VIDEOS_DIR>\batch13\door_dash2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05 night: Good but repetitive: make the fall much shorter, or change things along the way.

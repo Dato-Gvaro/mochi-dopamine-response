@@ -1,0 +1,51 @@
+# boss_fight2 — boss_fight rework: STRAIGHT bullets + two different WEAPONS (spread vs railgun), Holst "Mars"
+
+- Brief: owner review of boss_fight (2026-10-11): "bullets making curves does not look good, they must shoot STRAIGHT; also give them different weapons." New file. boss_fight.py is untouched; its music, score data, boss, dodge planner and rewind loop are reused by copy.
+- Straight only:
+  - Every boss bullet: pos = origin + (R_SPAWN + v·age)·(cos θ, sin θ), constant v, no curvature.
+  - Every ship shot: straight pellets at 1500 px/s; the railgun is a straight beam.
+  - v2 (coordinator review 2026-10-11): rotating-emitter spirals still READ as curved arms, so nothing rotates any more and every pattern reads as straight lines:
+    - P1 (0 s): a 12-bullet ring on every ostinato stroke, alternating a half-step offset, so the strokes line up on 24 fixed straight spokes. A 12-spoke star burst (6 bullets per spoke, 140-360 px/s = straight segments) on each downbeat. From bar 3, an X + plus cross (8 spokes x 9) on beat 3.
+    - P2 (7.14 s): rose STARS: 20 straight spokes whose length (2-8 bullets, top speed) follows |cos(k/2·θ)|, k = 4/5/6, with an alternating offset. The petals are implied by the spoke tips; there are no curved outlines.
+    - P3 (10.71 s): 16-spoke star bursts (9 bullets per spoke) on the downbeats, 7-bullet straight fans aimed at each ship, and rings with gaps on fixed angles (only the gap moves).
+    - RAGE (14.29 s): a 24-spoke rose star on every hammer chord (alternating offset), plus an X + plus star (8 x 12) on the strong hits. Horizontal bullet WALLS sweep down from y 880 every 0.55 s, with one gap per ship. The gap random walk uses WALL_SEED 18, searched for 0 hits.
+    - Ships' lanes are disjoint (Mochi x 110-520, Bolt 560-970) so they never stack.
+- Weapons (the choice duel):
+  - MOCHI = RAPID SPREAD: a 5-pellet fan (±0.2 rad) every 0.1 s, aimed at the boss. Intact plates BLOCK it: the pellets chip them (amber sparks, plate rim glow, cracks grow every 6 chips). 1,015 pellets: 361 on plates, 391 on the core, 263 miss.
+  - BOLT = RAILGUN: a 0.8 s charge orb, then a thick straight beam on a bar downbeat that PIERCES the plates and core and runs to the screen edge, with a local flare (r <= 150 px).
+    - Beams fire at bars 2-8 (1.79 ... 12.50 s), coda bar 1 (14.29 s), coda bar 4 (17.67 s, -140,000) and the final hit (21.98 s).
+    - The beams on the phase downbeats cross 75/50/25 % and break the plates.
+  - Damage budget per phase (spread / rail): 150k/100k, 140k/110k, 130k/120k, rage 75k/175k. Spread pellet damage = the phase budget / its hits.
+  - Totals: SPREAD 495,000, RAILGUN 505,000.
+  - Lead changes:
+    - Spread leads from 1 s.
+    - The railgun overtakes on the 140k rage beam at 17.67 s.
+    - The spread retakes at 18.72 s.
+    - Mochi is clipped at 19.32 s (shield pops, "SHIELD DOWN!", her spread stops for 1.1 s).
+    - The railgun's FINAL HIT at 21.98 s takes the lead and the boss.
+  - The leading counter is gold and pops on each lead change.
+- HUD:
+  - Caption.
+  - "FINAL BOSS" HP bar with the GRAZE count at its top-left.
+  - Weapon names under each ship (24 px).
+  - "RAPID SPREAD" and "RAILGUN" damage counters at 0.775 h, with "DAMAGE" between them.
+  - Pop banners start at 0.85x (readable from their first frame), 76-86 px.
+- Dodging: the DP path search through the straight field. Min distance Mochi 23.3 px, Bolt 24.8 px (hit = 13 px), 0 hits. Grazes 129 (Mochi 52, Bolt 77), climbing into the rage (0-4 per 2 s early, 22-37 per 2 s in the rage).
+- Bullets: 7,412 total, up to 1,891 on screen at once (18.08 s = frame 0).
+- Hook: frame 0 = the rage storm at 18.08 s (HP ~7 %, both damage counters near 470k, rewind icon). It rewinds in 0.5 s to phase 1 at full HP, with the spiral arms already out at 0.5 s.
+- Loop: the silent last 1.3 s rewinds the wreck back to frame 0. Hermite curves give -1x velocity at the seam, so frame N = frame 0.
+- Music: identical to boss_fight (see docs/scenes/boss_fight.md): Holst, "Mars, the Bringer of War", notes from the 1921 Goodwin & Tabb full score (archive.org planets00hols = IMSLP #1014402), our lib/orchestra.py arrangement. PD: published 1921, Holst d. 1934.
+  - Sync: boss volleys on every ostinato stroke and coda hammer chord.
+  - Railgun beams on bar downbeats (the taiko hits).
+  - Phase beams on the booms (bar 5 Db entry, bar 8 restatement, coda fff downbeat).
+  - Final hit on coda bar 7 beat 2 (boom); shatter on the final chord.
+- IP: generic bullet-hell / boss-fight tropes only (HP bar, phases, rage, graze, spread shot, railgun). No game names, characters or signature designs.
+- Args: --cap, --label (v1), --snap (18.08), --still --frame a,b, --report, --bed, --silent, --audio-only.
+- Checks (encoded Full HD, v2 straight patterns, <VIDEOS_DIR>/batch27/boss_fight2.mp4):
+  - Format: h264 yuv420p 1080x1920 60 fps, 1597 frames = 26.62 s.
+  - Audio: -14.01 LUFS, peak -4.57 dBFS; last 0.5 s -80.8 dBFS (the bed is unchanged).
+  - flash_check: 0 flashes = PASS (mean lum 0.037).
+  - Seam (encoded mean |d|): last->0 = 9.5 vs 6.3 for an ordinary frame pair; the state is exact by construction.
+  - Encoded frames read at 0 / 1 / 3 / 7.2 / 11 / 15 / 18 / 19.35 / 22.0 / 23.0 s: only straight spokes, rings, crosses, walls and fans; no curved arms anywhere.
+- Owner review: pending.
+- Owner review (2026-10-11): good -> APPROVED, 4K.

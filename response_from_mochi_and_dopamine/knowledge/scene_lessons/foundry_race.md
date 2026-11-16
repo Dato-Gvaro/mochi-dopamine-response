@@ -1,0 +1,27 @@
+# foundry_race — FOUNDRY RACE (cast the parts, first machine to run)
+
+- New scene (no dependency on other scenes). Mood/look taken from forge_thread (copied, not imported): dark brick foundry, vignette, the same heat ramp (white→yellow→orange→red→dark steel), glow that hugs the geometry.
+- Rule: mirrored halves (Mochi left, Bolt right) around a central furnace pillar with the melting pot in its arched mouth. Each character stands on a PEDAL whose chain runs over a rail pulley and tips a crucible hanging from a chain hoist. Molten metal pours in 3 glugs (the stream is built from parcels: continuity width, dark crust edge, bright core, crust flecks riding down) into a mould on a stepping conveyor. The part-shaped cavity fills from the bottom up, with a bright molten line at the surface, then the sprue, then the funnel. The belt steps the mould to the spray station (water hiss + steam, cools orange→red→steel). A ram pops the part out and it arcs onto that side's machine slot. Parts in order: WHEEL, GEAR, COG, CHAIN LINK, HORSESHOE yoke, BELL. Empty slots show as dashed ghosts.
+- Beat grid: 0.56 → 0.37 s (ramp over 28 beats). Each cycle is step / pour / spray / pop, and the pop lands exactly on the next step. Cycle 0 is 3 beats long, then 4 beats, then 3 beats from beat 16 ("SPEED UP!"). Both sides run in sync for the first two cycles.
+- Unique events:
+  - Bolt overfills his gear (t 3.0 s): SPILL!, metal over the brim and down the face, a puddle that rides the belt, 2 lost beats, scramble hops. Mochi laughs.
+  - Mochi's cog pops while still hot and CRACKS (7.7 s): the halves fall into the furnace and the cog is RE-POURed. Bolt laughs, then "BOLT LEADS!" (8.9 s).
+  - Mochi's horseshoe is CLOSE! at the brim (bulging meniscus, a big leap off the pedal).
+  - Bolt's horseshoe is STUCK! (2 failed ram jolts, 3 lost beats). "MOCHI LEADS!" (12.1 s).
+- Finish 13.22 s: Mochi's bell lands while Bolt's bell is still cooling in its mould (one beat short). Mochi's machine starts: a glow wave, the wheel, gear and cog mesh, the bell swings and rings 4 times, gold sparks, "MOCHI WINS!", two cheers. Bolt's 5/6 machine sputters (jerk, two clunks, smoke) and he gives an annoyed stare at the camera.
+- Loop: 2.05 s after the finish, the belts step (Bolt's bell goes into the furnace). All 11 parts arc into the melting pot (reheating, plop + hiss) and the counters count down. The ghosts return, the gauge settles, and the fresh wheel and gear moulds slide in exactly as at frame 0 (frame 0 is mid-step). Pre-encode seam delta is 0.46, against 0.53 for a normal frame step.
+- Sound: beethoven_5 (PD, from the least-used list) on marimba, one note per conveyor stop (simultaneous stops share a note), plus a G-major start-up arpeggio. The rest is a scene bed:
+  - glug bloops that rise in pitch as the mould fills
+  - latch clunk per step
+  - steam hiss per spray
+  - pok + air on each pop
+  - pitched cast-clank (an octave under the current note) per landing
+  - snap on the crack, dull clanks for the stuck part
+  - bell partials + ratchet ticks at the start-up
+  - plops into the pot on the reset
+  - no noise bed
+- Numbers (s1): clip 18.38 s (1103 f). Lands: Mochi 3.96/6.03/9.71/10.94/12.10/13.22, Bolt 5.01/7.01/8.85/10.13/12.47. Sound onsets per 2 s: 10, 13, 12, 16, 16, 19, then ~10/s in the last 1.2 s (still climbing).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 at 60 fps, 1103 f. -14.01 LUFS, peak -5.95 dBFS, last 0.5 s at -67.4 dB (silent from ~16.9 s). flash_check 0 = PASS (mean lum 0.017). Seam: post-encode 0.815 (frame 0 is mid-step, a real slide); pre-encode 0.46 vs 0.53 for a normal frame step.
+- Args: --seed (1; the plan is scripted, the seed only changes spark/spin details), --label, --cap, --melody, --voice, --still --frame.
+- Delivered <VIDEOS_DIR>\batch17\foundry_race.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-08: Likes the setup and colours, but there's no point; nothing interesting happens. Dropped (keep the look for future ideas).

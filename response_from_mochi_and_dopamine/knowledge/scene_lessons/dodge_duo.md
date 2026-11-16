@@ -1,0 +1,13 @@
+# dodge_duo
+- Episode of mochi_dodge3 (untouched). Nameable change: BOTH dodge, fewest BONKS wins. Same rule: 2 fast balls (300 px/s) at frame 0, every WALL bounce spawns a ball at the bounce point aimed at the centre (+-0.5 rad); ends the instant ball 250 (`--nmax`) spawns.
+- Both CR 74 inside the arena; kept >= one ball apart (hard gap 2CR+2BR+8, soft repulsion). Personality (PERS): Mochi vmax 640, accel 9x, look-ahead 0.9 s, seeded tremble + jitter force; Bolt vmax 470, accel 4x, look-ahead 1.4 s, deadzone 0.22 (ignores weak threats), less lean.
+- Bonk = stars + wince (eyes squeezed, wobbly mouth) + counter pulse; the OTHER laughs (HA) only if >= 3.2 s since the last laugh and it was not bonked in the last 1.2 s -> 3 laughs in the clip.
+- Counters: "BONKS" header 0.735h, "Mochi N" (coral) at 0.27w / "Bolt N" (mint) at 0.67w, 0.787h. Theme sky, blue rim. Melody entertainer.
+- Finish: pop 0.35 s, both scoot to frame-0 spots (0.7 s), "<WINNER> WINS!" in-arena, winner cheers x2 + gold count, loser annoyed stare 2.0 s; glide to frame-0 poses, frame-0 balls grow in, counters tick to 0. END 3.04 s.
+- ANNOY 1.6 -> 2.0: the cheer chime rings ~1.3 s; at 1.6 the last 1.3 s peaked -34 dBFS.
+- Bonks are dominated by the last 4 s flood (characters pinned at the rim); counts end ~30-45 each. Some seeds trap a ball (seed 48: Bolt 126) - search filter catches it.
+- `--search N --from S`: first spawn <= 0.3, second <= 1.8, no bonk before 2 s, final diff 1-2, >= 2 lead changes. Hits (0-260): 9, 16, 18, 22, 25, 29, 33, 40, 68, 70, 79, 82, 99, 119, 158, 160, 172, 204, 212, 246, 259.
+- s70 (default): t_end 18.20, 21.27 s; spawns/5s 10, 39, 199; Mochi 38 vs Bolt 39 -> Mochi wins. Story: Bolt trails 3-15, Mochi collapses to 16-15 (14.7 s), lead swaps to 24-25 (16.8 s), Mochi leads 27-35 at 17.5 s then takes 11 bonks in the last 0.7 s and survives by one. Laughs: Mochi 4.8, Bolt 9.15, Mochi 12.6.
+- Sample (batch7): h264 yuv420p 1080x1920 60 fps, -14.0 LUFS, peak -7.2 dBFS, last 1.3 s -62.6 dBFS, last 0.5 s silent, flash_check PASS (2 in worst 1 s @17.6 s), seam pre-encode mean 0.001, post-encode 0.29.
+- Args: --seed, --speed, --nmax, --label, --cap, --melody, --search, --from, --dry, --still/--frame.
+- Owner review 2026-10-04 (batch 7): Too many hits and too little dodging; not satisfying -> dodge_duo2 (rare bonks, satisfying near-misses).

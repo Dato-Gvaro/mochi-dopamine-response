@@ -1,0 +1,33 @@
+# domino_path
+- New scene (2026-10-14, YouTube Studio suggestion: "falling dominoes open the safe path"). The owner rated the plain domino_spiral "least favourite", so this one is a PERIL race, not pretty dominoes.
+- Rule: two lanes of dominoes stand on stone posts over a gorge with water far below. A falling domino lands (shingled, almost flat) across to the next post and becomes walkway. Mochi and Bolt run right behind their own wave and step only on dominoes that are down.
+- Choice (HUD labels and mini icons): Mochi = TALL & FAR (h 135->202, spacing 0.67 h); Bolt = SHORT & CLOSE (h 86->129, the same 0.67 h). Both lanes have the same shape, and Mochi's is ~1.57x the size. Both grow 50% along the gorge (with their spacing), so both waves ACCELERATE (v ~ sqrt(g h)).
+- Physics (the same for both):
+  - Rigid slab on its front foot: `th'' = g (h/2 sin th - T/2 cos th) / ((h^2+T^2)/3)`, g = 560 (a slowed cartoon gravity; 1 m = 100 px on the counter).
+  - Rectangle-corner contact. The struck domino gets E_PUSH 0.95 of the spin, and the striker keeps 0.45. A leaning domino passes C_LEAN 0.3 of its blocked spin forward (that is what sustains the wave). This gives v ≈ 1.5 sqrt(g h), which matches real chains.
+  - Measured: Bolt's wave 396 -> 445 px/s, Mochi's ~1.25x faster.
+  - Skid: struck by a tip faster than V_SK0 400 px/s, a domino skids off its post with p = (v - 400)/700. Bolt's tips peak at 384 px/s, so he never skids. Mochi's run 304-596 px/s, so she skids more as the dominoes grow.
+  - The skidded domino tumbles into the water (plink), the wave stalls, and "GAP!" appears.
+  - Gap: Mochi jumps to the next post. Landing error σ = 0.38 × jump length (in r). The gaps widen with the dominoes, so the risk rises honestly. Landing offset from the post edge in r: < -0.60 she slips off (SPLASH); < -0.25 she teeters (CLOSE!, 0.6 s); otherwise a safe landing. Then she bumps the standing domino to restart her wave.
+- Camera: split-screen racing. Each lane scrolls with its own runner (it reads as depth parallax). A shared lead camera was impossible because lead swings are 600-2500 px. Who leads is shown by the HUD race track (both faces on one bar), the DISTANCE counters and the LEAD banners.
+- Look: dark navy/violet stage, stars, ridges, dark teal water with mist. Coral->gold dominoes (Mochi, front lane, deck 1060) vs teal->mint (Bolt, back lane, deck 700), with pips. Clack sparks and settle dust. Caption is baked at y 198/278: `Every falling domino becomes their ^BRIDGE^ | ~Tall & fast or short & safe?~`. Banners pop from 0.85x.
+- s6 (default; search filter: Bolt wins, Mochi falls at 10.5-14.6 s, lead changes >= 2, first gap >= 2 s, she leads at her fatal landing):
+  - Frame 0 mid-race: both waves toppling, the first clack < 0.1 s.
+  - GAP 3.86 s, safe landing 5.35; gap, safe landing 8.30.
+  - BOLT LEADS 8.68, LEAD CHANGE (Mochi) 9.77.
+  - The last gap: she lands short at 12.37 while leading by 9 px, slips, falls at 12.80, splashes at ~13.2.
+  - BOLT WINS 15.38. Hold 1.45 s + 0.6 s dissolve into the pre-roll (the sim starts at T0 = -2 s). Clip 17.43 s (1046 frames).
+- Sound (no music, no beds, no whoosh/creak), all synthesized in the scene:
+  - Clack: 4 inharmonic modes + a double click, pitched by lane (Mochi 1650 Hz, Bolt 2350 Hz, +5% along the gorge).
+  - Woody tok when a domino settles (Mochi 520 Hz, Bolt 760 Hz; louder when it lands on a bare post).
+  - Soft steps; a pof on landing; teeter ticks (woodblock 1250/1040 Hz, every 0.125 s); a bonk on the bump; a plink when a skid domino hits the water; splash + blub; a win chime E5-G5-C6-E6.
+  - Onsets kept >= 12 ms apart. `master(peak_db=-6)`: without it the AAC peak hit 0.00 dBFS (impulse clacks). 1.0 s squared tail fade.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -14.01 LUFS, peak -4.87 dBFS, last 0.5 s -46.3 dBFS.
+  - flash_check PASS (0).
+  - Seam mean delta 4.75 vs a normal step of 4.81-4.88 (both lanes scroll every frame), so the loop is seamless.
+  - Sound events 456; per 5 s 172/152/124. The clack rate slips slowly (d grows with h, so rate ∝ 1/sqrt(h)), and Mochi's lane goes quiet after her fall. The wave SPEED climbs throughout.
+- Args: --seed, --label, --cap 'a|~b~', --vote 1 (A/B: "Team Mochi or Team Bolt?" + drawn arrow after the win), --search N, --still --frame, --sound 0, --peakdb, tuning (--vsk0 --vsk1 --sigk --e --clean --len --hold).
+- Other seeds: 95 (gap 2.2 s, early lead swap, fall 12.75, but a dead 5-12 s middle); 276 found at V_SK0 380, not re-checked.
+- Delivered <VIDEOS_DIR>/schedule/2026-10-19/<n>_domino_path.mp4. 2160x3840 h264 yuv420p 60 fps, 1046 frames = 17.433 s, -14.01 LUFS, peak -4.87 dBFS, flash PASS. Vote banner at y ~0.25-0.28h, arrow ends at 0.84w, clear of the faces.

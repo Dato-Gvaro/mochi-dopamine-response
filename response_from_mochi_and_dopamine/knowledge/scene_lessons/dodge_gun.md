@@ -1,0 +1,15 @@
+# dodge_gun
+- Built from mochi_dodge3 (owner 2026-10-05: "give the second character a BALL GUN and he shoots them at the start"). mochi_dodge3.py untouched.
+- Bolt's steel pneumatic launcher is mounted just outside the rim at 135 deg (pivot at R+50, bottom-left): a pivot plate with 4 bolts, a barrel 297 px long and 80 px wide (G = 1.6 drawing scale), bands, a muzzle ring and a pressure gauge. Bolt (r 70) stands below it at (80, 1418), clear of the bottom 20% and the right strip. Shots leave at 950 px/s and ease to the 280 px/s cruise speed (tau 0.28 s). Each shot: recoil 28 px; two expanding warm-grey smoke puffs with ink outlines, drawn at the fired angle (not the swivelling barrel); Bolt presses down and grins; sound = small cannon (size 0) + latch thunk.
+- Shots: frame 0 (steep, along the rim, so the first wall spawn comes at 0.30 s), 0.30 s aimed at Mochi, then 3.2 / 6.0 / 8.6 s (+-0.15) aimed at Mochi. The barrel swivels for 0.22 s before each shot.
+- Rule unchanged: every wall bounce spawns a ball aimed at the centre (+-0.5 rad), cap 300. Mochi AI as before (vmax 600). Startled (wow) 0.02-0.45 s after the opening shot.
+- Bolt laughs when one of HIS shots bonks Mochi (>= 3 s apart). Worried for the last 3.2 s. Payoff: ball #300 arcs back out onto his head, wince, annoyed stare 1.45 s; Mochi laughs mid-arena (scoots to P0 = centre within 0.7 s, clear of the right-edge strip).
+- Loop: balls pop, the gun swivels back to the frame-0 aim (te 0.70-1.05) and reload-clacks at 1.08 (the last sound), counter ticks 300 -> 0. The last frame = the frame-0 state just before the shot (Mochi identical, counter 0 vs 1). Seam: everything outside the gun, Bolt and the counter has mean 0.24; the rest (mean 2.2 overall) is the shot itself (puff, ball, grin).
+- s18: 20.37 s, t_end 17.47; spawns/5s 15, 59, 221; first spawn 0.23 s, counter 1 / 3 / 4 at 0 / 0.5 / 1.5 s; 44 close calls, 54 bonks; Bolt laughs at 6.66 s (shot bonk).
+- Checks: h264 yuv420p 60 fps 1080x1920; -14.0 LUFS, peak -7.0 dBFS, last 0.5 s -78 dBFS; flash_check PASS (2 at 16.9 s).
+- Bigger gun moved the muzzle, so the sim changed: seed 27 -> 18. Shot-0 angles that put the spawn point outside R-BR cascade (t_end ~12 s); the search does NOT reject them (e.g. seeds 6, 23, 24, 33), so skip any seed with t_end < 15 s.
+- Polish 2026-10-05 (coordinator): gun 1.6x, darker outlined puffs, reload clack moved earlier for a quiet tail.
+- Sound: turkish_march note per spawn (0.06 s thinning) + pok; bonk = bounce + squash; onsets kept 12 ms apart (mixer).
+- Search: first spawn <= 0.7 s, second <= 1.8 s, close call <= 1.3 s, no bonk before 1.5 s.
+- Args: --seed, --speed, --nmax, --vmax, --label, --cap, --melody, --search, --dry.
+- Owner review 2026-10-05 night: Make the gun MUCH smaller and next to Bolt; give Mochi an HP bar showing how long he can last, and let him win on very low HP.

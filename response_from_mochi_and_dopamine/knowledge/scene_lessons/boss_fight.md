@@ -1,0 +1,49 @@
+# boss_fight — Mochi & Bolt vs a FINAL BOSS in a bullet-hell storm, Holst "Mars" arranged epic
+
+- Brief: coordinator task 2026-10-10 (batch25 pop-culture: GAMING), BRIEF_batch25.md + BRIEF_brain.md + research/hooks.md.
+- IP safety: a generic trope only (boss HP bar, bullet-hell patterns, "graze", phases, rage mode, bullet cancel). No game names, characters, logos or signature designs. The boss is our own crystal mandala (star polygons + hex gem + six armour plates). The ships are Mochi and Bolt in shield bubbles.
+- Rule: the boss fires bullet-hell MATHS on the Mars ostinato. HP is 1,000,000. Thresholds 75/50/25 % land exactly on the score's phrase starts, and two plates break off at each one.
+  - P1 (0.5 s): rotating curved spirals (20-bullet rings advancing 0.165 rad per note), then counter-rotating double spirals (2 x 16).
+  - P2 (7.14 s, the Db entry): rose-curve bursts, 80 bullets, speed 165 + 235·|cos(k/2·(θ-ψ))|, k = 4/5/6 petals.
+  - P3 (10.71 s, the restatement): Fibonacci sunflower bursts (144 bullets on the golden angle, speed ~ sqrt(i)) on each bar's triplet, plus 40-bullet rings with two gaps.
+  - RAGE (14.29 s, the coda): every hammer hit fires a 72-bullet rose, the integer-beat hits add a 144-bullet sunflower, and a 6-arm curved whirl runs throughout. Firing stops at the final hit.
+- Dodging (real): each ship's path is a DP search over a grid (8 px cells, 60 Hz) through the precomputed analytic bullet field. Cost terms: hard if within 26 px, a soft Gaussian, a wandering home, a movement cost, and Bolt-separation for Mochi. The path is Gaussian-smoothed (σ 2 frames) and re-verified. Hitbox: 6 px ship + 7 px bullet core = 13 px.
+  - Min distance Mochi 19.6 px, Bolt 19.4 px; 0 hits (besides the scripted clip).
+  - GRAZE = a bullet passing within 40 px: 154 total (Mochi 72, Bolt 82). The rate climbs into the rage (~0-2 per 2 s in P1, 18-37 per 2 s in RAGE).
+- Bullets: ~6,100 total, up to 1,224 on screen at once (t = 18.08 s). Volleys start on bar 1 beat 1 (t = 0), so the 0.5 s landing frame already shows the first spiral rings.
+- Story beats:
+  - Mochi is CLIPPED at 19.32 s (coda bar 5 beat 2): a scripted bullet is retimed to meet her path. Her shield pops into fragments, "SHIELD DOWN!", dizzy, then an annoyed stare at the camera. She stops firing for 1.1 s.
+  - Bolt charges (21.0 s), fires a charged shot at coda bar 7 beat 1 (21.52 s), and lands the FINAL HIT on beat 2 (21.98 s): HP 0, the core cracks and trembles.
+  - On the final chord (22.92 s) the boss SHATTERS: 190 tumbling shards, embers, thin shock rings and a local core glow (r <= 330 px, no full-frame flash). Every bullet on screen cancels into rising gold sparkles. "BOSS DEFEATED!" appears, Bolt hops and Mochi says "wow".
+- Hook: frame 0 = the RAGE storm at 18.08 s (the densest frame, 1,224 bullets, rose + sunflower, HP 87,857, "FINAL BOSS · RAGE", rewind ◀◀ icon). In 0.5 s it REWINDS to phase 1 at full HP with spiral rings already flying; the ostinato + boom plays from 0.0 s.
+- Loop: the last 1.3 s (silent) REWINDS the wreck back to the 18.08 s rage frame. Shards re-assemble, sparkles turn back into bullets and HP climbs back to 87,857.
+  - Both rewinds are cubic Hermite curves with velocity exactly -1x at the seam. So frame N = frame 0 (same τ), and the last -> first step is one ordinary backwards step (Δτ 0.020 s).
+- Layout (logical 1080x1920):
+  - Caption y 0.092 h (64 px), "FINAL BOSS" label + HP bar at y 338-390.
+  - Boss centre (540, 640): core R 108, plates R 150-214.
+  - Ships' band y 1120-1320 (bottom of content 0.69 h). Bullets fade out by 1500.
+  - GRAZE counter at 0.775 h. Banners at y 960.
+- Music: Gustav Holst, The Planets Op. 32, I. "Mars, the Bringer of War" (composed 1914-16, published 1921 by Goodwin & Tabb; Holst d. 1934 -> public domain in the US (pre-1929 publication) and in life+70 countries since 2005).
+  - Notes read from the 1921 Goodwin & Tabb full score: archive.org/details/planets00hols = IMSLP #1014402, pages 1-2 and 31.
+  - The ostinato: col legno strings, timpani "wooden sticks", harps; 8 strokes per 5/4 bar = triplet 8ths, q, q, 8 8, q, on G.
+  - The theme (bassoons + horns 5/6 + double bassoon): bar 3 G2 (5 beats tied) | bar 4 G2 (3) D3 (2) | bar 5 Db3 (5 tied) | bar 6 Db3 (3). Bars 8-9 restate bars 3-4. Pitches were measured against the staff lines.
+  - The coda after rehearsal XII ("Rall. al Fine", 3/4): the hammer rhythm triplet+q | . 8 8 q | . 8 8 q | triplet+q | . q q | . . q | q q . | final fermata. The hammer chord's pitch classes are C-Db-G-Ab; the final chord is an open C-G.
+  - The clip plays bars 1-6, 8-9 (bar 7 is a rest bar, cut), then the coda bars 1-8. Quarter = 168, the coda rall. 168 -> 126.
+- Arrangement (ours) via lib/orchestra.py (MuseScore_General, MIT):
+  - Ostinato: timpani G2 + pizz G2/G3 + harp G1/G2 + cello, with trombone stabs added in bars 8-9.
+  - Theme: horns an octave up (G3-D4-Db4) + trombones at pitch + contrabass/sub octave, with CC11 hairpins. Choir "aah" joins on the restatement.
+  - Hits: booms on 0.0 s / P2 / P3, taiko on each bar downbeat, a cymbal swell INTO the coda.
+  - Coda: fff brass hammer chords (trombones G2 C3 G3, horns Ab3 C4 Db4, trumpets Db4 Ab4, tuba C2 + sub), timpani, taiko on every hit, booms on coda bars 1/4/7 and the final hit, and a held choir cluster with a swell.
+  - Final chord: open C-G (brass, tremolo strings, choir C3-G4, sub octave), timpani roll, boom, cymbal swell peaking on it, plus a soft glass accent for the shatter. Top note anywhere: Ab4.
+  - Silent from T-1.5 s.
+- Sync: volleys on every ostinato stroke (bars 1-9) and every coda hammer hit; phase changes + plate breaks on bar 5 (Db entry, boom), bar 8 (restatement, boom, choir), the coda downbeat (fff, cymbal swell); final hit on coda bar 7 beat 2 (boom); shatter on the final chord.
+- Args: --cap, --label (v1), --snap (frame-0 τ, default 18.08), --still --frame a,b,c, --report, --bed (audio preview), --silent, --audio-only (re-mux onto the kept silent render).
+- Checks (encoded Full HD v1, <VIDEOS_DIR>/batch25/boss_fight.mp4):
+  - Format: h264 yuv420p 1080x1920 60 fps, 1597 frames = 26.62 s.
+  - Audio: -14.01 LUFS, peak -4.57 dBFS (no peak_db, per docs/orchestra.md); last 0.5 s -80.8 dBFS, bed silent from T-1.5 s. RMS per 5 s: -15.3 / -16.0 / -15.5 / -18.6 / -18.0 / -48.5 (the coda has rests between hammer hits).
+  - flash_check: 0 flashes = PASS (mean lum 0.029).
+  - Seam (encoded mean |Δ|): last->0 = 12.9. Ordinary consecutive frames in this dense-dot scene measure 7-11 and rewind steps 18-27. The 0.12-0.72 band is for sparse scenes and does not apply; the seam is state-exact by construction.
+  - Strong audio onsets match the coda hits within ~20 ms (14.27/15.75/16.12/16.89/17.66/19.32/21.06/22.00/22.94 s vs 14.29/15.74/16.12/16.89/17.67/19.32/21.06/21.98/22.92 s).
+  - Encoded frames read at 0 / 0.25 / 0.5 / 1 / 2 / 3 / 7.2 / 11 / 13.3 / 19.35 / 22.0 / 22.95 / 23.3 / 25.9 s, plus 1:1 crops of the shatter and the clip region. Every one is a full frame (0.5 s = boss + first rings, the least busy).
+- Owner review: pending.
+- Owner review (2026-10-11): curving bullets look bad, they must shoot STRAIGHT; give them different weapons -> boss_fight2.

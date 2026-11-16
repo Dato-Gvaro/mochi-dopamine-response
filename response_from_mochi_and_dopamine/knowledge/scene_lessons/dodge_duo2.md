@@ -1,0 +1,16 @@
+# dodge_duo2
+- Remake of dodge_duo (owner 2026-10-04: "they get hit too much and avoid not so much - not satisfying"). dodge_duo.py untouched. Same episode + rule: 2 fast balls (300 px/s), every wall bounce spawns a ball aimed at the centre (+-0.5 rad), both dodge, fewest bonks wins.
+- Satisfaction = DODGES. Predictive planner per dodger, every frame: forecast all balls over the horizon (1 wall reflection + the child each bounce will spawn), score 42 candidate velocities (20 dirs x full/half speed, stop, keep) on clearance risk (margin, exp(-tau/0.3) weight), hits, the other dodger, rim (pinned = trapped), effort, change; take the cheapest.
+- Personality: Mochi vmax 760, accel 14x, horizon 0.6 s, effort 0.10, per-candidate noise, tremble, big lean. Bolt vmax 600, accel 9x, horizon 0.75 s, effort 0.35 (prefers standing still), small lean. Margin 30 both (Mochi at 46 = paralysed in crowds, 71 bonks).
+- Arena kept dodgeable: BR 14, CR 68, cap 160 (N_MAX). Balls cover ~15% of the arena at the end.
+- Bonk counting: one per ball contact (re-armed when clearance > 12 px) + BONK_GRACE 0.4 s daze (a pile-up counts once). Without it a ball riding along a dodger counted 8-20 bonks in 0.3 s.
+- Near miss (clearance < 30 px, untouched) = swish (3 blue speed lines trailing the ball, 0.32 s) + flinch-lean away (tilt 0.3, 14 px duck) + wow face + one soft melody note. Spawns = quiet pok; bonk = bounce + squash + stars + wince; the other laughs (gap >= 1.6 s, not if it was bonked < 0.6 s ago; a laugh is cut when the laugher gets bonked).
+- Melody spring_vivaldi (classical; minuet_in_g is only in MELODIES_BENCH). Theme sky.
+- Finish as dodge_duo; stars of a last-moment bonk persist into the finish. END 3.06 s.
+- `--search N --from S`: first spawn <= 0.3, second <= 1.8, first bonk < 11 s, final diff 1, >= 1 lead change, both >= 3. Hits 0-203: 56, 80, 100, 117, 135, 161, 164. (117 = 8-7 with 8 swaps but decided on the final frame.)
+- s164 (default): t_end 17.00, 20.07 s; spawns/5s 8, 30, 120; near misses 92 (Mochi 36, Bolt 56), per ~2 s 3, 2, 6, 7, 17, 24, 11, 22. Bonks Mochi 6 vs Bolt 5 -> Bolt wins; 1-0, 1-1, 1-2, 2-2, 2-3, 3-3, 3-4, 3-5, 5-5 (15.9 s), Mochi's 6th at 16.92. Laughs: Bolt 8.38, Mochi 11.47, Bolt 13.38.
+- Sample (batch8): h264 yuv420p 1080x1920 60 fps, -14.0 LUFS, peak -7.4 dBFS, last 1.3 s -60.5 dBFS, last 0.5 s silent, flash_check PASS (0), seam pre-encode 0.004, post-encode 0.30.
+- Sim is ~8 s per seed (numpy planner); search in parallel.
+- Args: --seed, --speed, --nmax, --label, --cap, --melody, --search, --from, --dry, --still/--frame.
+- Owner review 2026-10-04 (batch 8): GOOD - approved.
+- Owner review 2026-10-04: Reads as lazy writing, a duplicate of mochi_dodge. Pulled.

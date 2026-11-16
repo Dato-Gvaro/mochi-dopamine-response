@@ -1,0 +1,46 @@
+# tesla_duel2 — TESLA DUEL 2: big blasts vs rapid sparks
+
+- Built from the owner's review of tesla_duel (2026-10-08): "good idea, but they must each try a DIFFERENT approach, a different way of generating the bolt; challenge each other in different ways."
+- v1 (`tesla_duel.py`) is untouched. This is a new standalone file. It keeps the dark lab, the bulb board, the treadles and the sphere decider.
+- Mochi uses a spark-gap Tesla coil:
+  - Slow, heavy stomps (about one per 0.5 s) charge the capacitor bar and the coil glow. The spark-gap electrodes in the cabinet window warm up as the charge builds.
+  - At full charge the gap cracks over and the coil throws ONE huge branching arc: a trunk to a hub, then a branch to each bulb. It lights 3 to 5 bulbs at once and a "+N!" banner pops.
+  - Blast period goes from 2.7 to 1.75 s, and the blast size from 3 to 5 bulbs.
+- Bolt uses a Van de Graaff generator:
+  - Fast, light pedalling (2 stomps per spark) drives a rubber belt. Stripes and "+" charges ride up the glass column into a chrome dome, which takes on mint colour as it fills.
+  - The dome spits a short thin spark that lights 1 bulb. Spark period goes from 0.70 to 0.42 s.
+- The lead swings with the two rhythms: Bolt creeps ahead between blasts, and each blast jumps Mochi back toward the lead. The score lines on the HUD pop per side.
+- Unique challenges:
+  - Bolt's BELT SLIP at 6.32 s for 1.35 s. The belt stalls and jitters, the dome drains, he pedals in vain, the roller smokes and a squeal plays. Mochi laughs.
+  - Mochi's 4th blast is DEFLECTED into the sphere at 9.13 s and all of its bulbs are lost. Bolt laughs and Mochi stares at the camera.
+- Finish:
+  - Mochi's +5 blast ties the board 20-20 at 13.07 s, then "SPHERE DECIDES".
+  - In the clash (14.32 to 16.92 s), Mochi pours one continuous thick arc at the meeting point. Bolt holds a thin streamer and fires a volley of 15 sparks; the gaps shrink from 0.42 to 0.06 s and each kick grows.
+  - The clash point drifts toward Bolt (+0.5, Bolt sweats), holds, then the volley overwhelms it (-1.3). BOLT WINS 21-20.
+  - Mochi's coil overloads: smoke from the toroid and the spark gap, sparks, soot, and frizzy static hair on Mochi. She gets a dizzy beat, then an annoyed stare at the camera. Bolt cheers twice.
+- Loop:
+  - Same scheme as v1: the bulbs dim from the centre out, the score counts down, soot and hair clear, and the pre-roll is copied to t+T.
+  - The belt offset is scaled so its stripes land on the stripe period, and the roller is a cross that turns a quarter per stripe.
+  - Pre-encode seam 0.003 against a frame step of 0.68.
+- Sound:
+  - greensleeves (PD, A minor) on marimba. Bolt's sparks carry the tune, one note each, and the clash volley continues it faster and faster.
+  - Mochi's blast is in the bed: a big crackle, a low thump and a low A chord (45/52/57/64). One accent per blast.
+  - Mochi's stomps: a soft rising hum pulse. Bolt's pedals: a light metal tick.
+  - Slip: a falling squeal. Deflect: two metal clanks on the sphere.
+  - Win: a big crackle, Mochi's poof and an A-major arpeggio.
+  - There is no constant bed.
+  - william_tell was tried first and rejected: 72% of its notes are the same G at this rate, and the audio bank notes timing failures with it.
+- s811 (default):
+  - Blasts at 1.47 (+3), 4.25 (+3), 6.82 (+4, "MOCHI LEADS" 10-9), 9.13 (deflect), 11.18 (+5) and 13.07 (+5, tie).
+  - Bolt has 20 sparks. 4 lead changes.
+  - Clip 20.42 s (1225 frames). Arcs per 5 s: 10, 11, 20, then the clash volley.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 at 60 fps.
+  - -14.01 LUFS, peak -5.32 dBFS.
+  - Last 1.3 s below -86 dBFS; last 0.5 s at -240 dBFS.
+  - flash_check 0 = PASS (mean lum 0.017).
+  - Note events per 5 s: 7, 7, 9, 17. 11 distinct notes.
+  - Encoded seam 1.00-1.07 against a median step of 0.76 (p90 1.33). This is the I-frame step; the pre-encode seam is exact.
+- Args: --seed (811), --label, --cap, --melody (greensleeves), --voice, --search N, --still --frame.
+- Other seeds (20-20 tie made by Mochi's last blast, 4 lead changes): 1435, 3, 1092, 1497, 478.
+- Delivered <VIDEOS_DIR>\batch18\tesla_duel2.mp4 (Full HD). Owner review: pending.

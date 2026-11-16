@@ -1,0 +1,23 @@
+# snake_duel4: snake_duel3 with NO music and an ASMR soundscape (2026-10-12, batch29)
+
+- Why: owner review of snake_duel3: "remove the music entirely and replace that eating sound with a more ASMR sound."
+- Same visuals, games (seed 447), story, hook, loop and game clock as snake_duel3.
+  - The Csárdás tempo map `tb()` is kept only as the pacing curve: GO 0.88 s, TRAPPED 12.49 s, BOLT PASSES 16.51 s, PERFECT GAME 21.57 s; clip 25.07 s.
+  - No notes are played.
+- Sound: all our own numpy synthesis, deterministic and seeded (`soundscape()`), mixed through `orc.render` wave parts and mastered by `kit.deliver` to -14 LUFS.
+  - Gem eaten: a close-mic click-pop. There are 8 seeded variants per snake, with jitter of ±8 % pitch and -1.7 dB gain.
+    - Mochi: a juicy soft pop (520 -> 210 Hz body, soft 1.5-4.2 kHz click), panned left.
+    - Bolt: a crisp glass bead (900 -> 420 Hz body, 2.5-7 kHz click, a tiny 2.35/3.42 kHz bead ring), panned right.
+    - Everything is low-passed at 6.5 kHz.
+  - Thinning: at most 1 per 55 ms per snake, and >= 12 ms between any two sounds (the mixer's 10 ms rule). 54 of Mochi's 65 gems and 95 of Bolt's 125 are sounded. Events after the trap +4 s are 15 % softer.
+  - Slither: 180-900 Hz band-passed noise per snake, level = sqrt(move rate / 260), with a slow 7.3 Hz grain. Gain 0.10, whisper-quiet. Mochi's stops at the trap.
+  - TRAPPED: a soft 90 -> 45 Hz thud plus 26 crumble grains (250-2600 Hz).
+  - Shimmer: soft sines rising D5 -> A5 from the trap to the win, level ~ fill², with a gentle tremolo.
+  - PERFECT GAME: a two-stage click-lock (latch click + 140 Hz body), then a chime cascade (D major pentatonic D5-D6, the last note an octave down, 75 ms apart).
+  - Cold-open rewind: a soft tape whoosh (noise band sweeping up) over 0-0.82 s.
+- Audio test (bed only): peak -3.1 dBFS. Level per 2 s rises from -18 to -15 dB, dips to about -21 dB after the trap (Mochi falls silent), then climbs to -15 dB at the finish. The last 1.2 s is under -60 dBFS.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920, 60 fps, 1504 frames = 25.07 s. -14.01 LUFS, peak -6.61 dBFS, last 0.5 s at -84 dBFS. flash_check PASS (0 flashes). Encoded seam mean 0.765.
+- `peak_db=-4`: the impulse clicks overshot to -1.71 dBFS after AAC without it. The audio was re-mastered onto the same video.
+- Delivered <VIDEOS_DIR>\batch29\snake_duel4.mp4 (Full HD).
+- 4K ship render (label ship): h264 yuv420p 2160x3840, 60 fps, 1504 frames = 25.07 s. -14.01 LUFS, peak -6.61 dBFS, last 0.5 s at -84 dBFS. flash_check PASS (0 flashes). Encoded seam mean 0.438. Staged as <VIDEOS_DIR>\Schedule6-10-15\?_snake_duel4.mp4.
+- Owner review (2026-10-12): ok (the opening rewind is the intended hook) -> APPROVED, 4K (Oct 15 slot 2).

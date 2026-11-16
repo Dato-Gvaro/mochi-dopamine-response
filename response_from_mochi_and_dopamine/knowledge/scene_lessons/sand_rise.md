@@ -1,0 +1,34 @@
+# sand_rise
+- Rule: "Every second the room fills with MORE sand | ~First one OUT wins~" (caption baked, y_f 0.088, size 72). Two mirror-image tall glass rooms (Mochi left/coral, Bolt right/teal). A ceiling spout pours golden sand, and every whole second the valve opens one notch: the pour goes x1.09, so x1.0 at 0 s and x2.8 at 12.6 s. The POUR badge pops and a glass tick sounds on each notch. The first head through the ceiling hatch escapes.
+- Choice duel:
+  - MOCHI out-jumps the sand. She hops non-stop under the hatch: big jumps (H 165), but each landing digs a crater. The crater depth grows with the pour, because fresh sand is looser. The slope then pours back in over her. Sink = the neighbouring sand above her base. Her jump shrinks with sink, and when sink > 0.66 R she gets SINKING!, a 0.42-0.54 s struggle, then POP! (a 185 px adrenaline jump).
+  - BOLT rides the heap. He takes small patient steps (H 34, every 0.34-0.44 s) and re-seats on the highest point of the shoulder next to the stream, using the pile as a staircase. A flank avalanche carries him downhill (55 px/s x pour^0.3), with an AVALANCHE! banner.
+- Granular model: 105 columns of 4 px. A bond topples above its stop slope (8 checkerboard passes per frame). The flanks stand at TAN_MAX 0.76 (37 deg), and a scheduled stick-slip avalanche drops one flank's stop slope to 0.62 (32 deg) for 0.5 s. The interval is U(0.7, 1.6)/sqrt(pour), so avalanches get more frequent as the pour grows. Both rooms get the same pour jitter and avalanche schedule (a fair test); they differ only by what the characters do. Strata = a profile snapshot every 0.5 s (sand-art chevrons). There are grain specks, a lit crest, streaming grains where flux > 0.06, a stream with falling grains and a splash.
+- Race HUD: "EXIT n m" = 4 m room minus the best head height over the last 1 s. The leader's line is gold. A LEADS! banner needs 8 px for 0.25 s. The centre shows "SAND n%".
+- End:
+  - The winner bonks the hatch open (clunk + whoosh) and sits half out on the roof, bouncing.
+  - The other hatch jams (LOCKED, red lamp, slam) and the loser's spout gushes x2.8 until the sand reaches base + 0.80 R, just under the eyes. A sand collar (radial mask) keeps the face readable.
+  - A trickle from the jammed hatch builds a sand hat, and grains slide off it. Then the annoyed stare at camera and "pfff" with a grain puff.
+  - The loop is a 36-frame dissolve into the sim's own pre-roll (t = -0.6 .. -1/60 s).
+- Frame 0 is mid-action: sand already pouring at 45% fill, Mochi half-sunk ("SINKING!" already up), Bolt mid-step. The hiss and the first valve tick land at 0.0 s, Bolt's step crunch at 0.22 s, and Mochi's POP at 0.33 s.
+- Sound (no music, all synthesized in the scene; then `audio.master`):
+  - A continuous pour hiss per room (2.6-9.5 kHz + mid + sparse grain crackle, amplitude ~ sqrt(pour), panned L/R), rising about 4.5 dB over the race.
+  - Crunchy sand landings (Mochi) and lighter steps (Bolt).
+  - Slide hiss for each avalanche, louder for Bolt's.
+  - A muffled fwump on SINKING!/BURIED, a pitched pop on POP!, and a pentatonic glass tick per notch.
+  - Clank + latch for the hatch and valves, a whoosh for the escape, a 3-note glassharp ding, and the pfff.
+  - The 10 ms onset rule is applied (nudged +12 ms).
+- Seed search: `--search N`. The filter: win at 12-14.6 s, 2 or more lead changes, the last one after 8.5 s, loser within 0.5 m, at least one SINKING. Bolt wins most seeds (about 4:1).
+- s183 (default label):
+  - Lead changes: M 2.98, B 4.33, M 7.05, B 10.58, M 12.12. Bolt escapes at 12.63 with Mochi 3 cm short. She takes the lead 0.5 s earlier, then SINKS at 12.40.
+  - SINKING at 6.05, 7.42, 8.68, 9.93, 11.13, 12.40. Six AVALANCHE slides.
+  - Clip 15.68 s (941 frames).
+- Other seeds: 165 (Mochi wins 12.12 after 6 lead changes), 160, 145 (Bolt 13.22, 6 lead changes), 96, 112.
+- Args: --seed, --label, --cap 'a|~b~', --still --frame N, --search N, --sound 0.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps, 941 frames.
+  - -14.09 LUFS, peak -6.8 dBFS. Last 0.5 s peak -57 dBFS.
+  - flash_check PASS (0).
+  - The pre-encode seam is 0.38 against a normal step of 0.27. What is left is the x0.9 -> x1.0 notch, which honestly lands on frame 0. The encoded seam is 0.85.
+- Delivered <VIDEOS_DIR>\batch34\sand_rise.mp4. Owner review: pending.
+- Owner review 2026-10-15: the sand hiss was unpleasant ("make it lower or get a better one"). The new ending: the winner goes to the other hatch, lowers a rope, and the loser climbs out with a bored face. Both are built as sand_rise2 (new file); this scene stays as shipped.

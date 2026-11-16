@@ -1,0 +1,33 @@
+# laser_mirrors — Mochi vs Bolt lasers bouncing through a crystal chamber
+
+- NEW format (2026-10-07). A dark crystal chamber (inner walls x 46-1034, y 420-1330) holds a 4x4 grid of two-sided mirrors (half-length 58). Each mirror spins at its own seeded speed (0.32-0.62 rad/s, alternating direction). Mochi's turret is in the top-left corner (coral beam) and Bolt's in the top-right (mint). The characters sit on the rim above their turrets.
+- True ray tracing every frame: reflections off the mirrors and the mirrored walls (angle in = angle out), 7 % power lost per reflection. A beam stops when its length budget runs out (the tip fades over 160 px), or when it hits a turret, a crystal or the core.
+- Rule: a crystal held in a beam charges in that beam's colour. Charge rate = (0.55 + 0.45 x power) / tau. The meter is a ring: Mochi's arc runs anticlockwise from the top, Bolt's clockwise. Charge decays at 0.45/s outside a beam. A full crystal shatters: +1 to the owner of that beam. Six jewel colours: amber, citrine, sapphire, amethyst, orchid, aquamarine.
+- Escalation, all to T_F = 15.6 s:
+  - mirror spin 1x -> 2x;
+  - beam budget 1500 -> 4200 px;
+  - crystals standing 6 -> 12;
+  - tau 0.22 -> 0.11 s.
+  - Every other spawn lands ON a beam (the beams take turns), so there are no lulls.
+- Finale:
+  - At T_F the leftover crystals fly into a big central crystal (+3). Over 1.0 s the route mirrors and the turrets ease to their LOCK angles. The routes are computed from the geometry: Mochi turret -> mirror 8 -> mirror 5 -> core, and Bolt turret -> mirror 11 -> core. Every leg clears every other mirror's spin disc, so the others keep spinning.
+  - Both beams then charge the core. Bolt reflects once (power 0.93) and Mochi twice (0.865), so Bolt fills first; Mochi is at 0.93 when it breaks.
+  - The beams power down 0.03-0.27 s after the shatter and power back up for the loop.
+- Loop: the mirrors and turrets blend onto their frame-0 phase (the target moves at the frame-0 rate, so position and speed match). The beam budget eases back to L0, and the frame-0 crystals regrow (they also block the beams in the sim). Pre-encode seam 0.159 against a normal frame step of 0.134. Encoded seam 0.46.
+- Frame 0: a crystal sits on each beam's first leg, so both shatter at 0.22 s (a sync opener). There are 4 more seeded crystals.
+- s1561 (default):
+  - Both players score at 0.22 s. 4 lead changes; the last at 14.33 s puts Mochi ahead, 23-21 before the core.
+  - The core breaks at 18.15 s: Bolt wins 24-23.
+  - 44 shatters; per 1.95 s: 3, 4, 5, 5, 7, 6, 5, 9 (per 5.2 s: 11, 16, 17). Longest gap 0.93 s. 160 sounded ticks (per 5.2 s: 41, 53, 66).
+  - Clip 20.95 s (1257 frames).
+- Sound (a BED built in the scene; the sidecar events carry only the glass-crunch layer, note_gain 0, so check_clip shows "distinct 1"):
+  - A glass tick when a beam catches a NEW mirror. Rate-capped at 0.07 s, pitched by mirror row, gain 0.15.
+  - Each shatter is a crystal chime (bell partials, 1.35 s with a faded tail) walking spring_vivaldi +12, with an octave-under and a soft glass crunch. Simultaneous shatters add a fifth.
+  - Crystals absorbed by the core play a rising pentatonic arpeggio. The lock is a double steel click.
+  - The core charge is an accelerating chime ladder (0.215 -> 0.045 s). The core shatter is a 6-note chord.
+  - regen_audio cannot rebuild the bed; re-render instead.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS; peak -7.07 dBFS; last 0.5 s -84 dBFS. RMS per second is flat to rising (-18.9 -> -17.2). flash_check: 0 flashes = PASS (mean luminance 0.016).
+- Args: --seed (1561), --label, --cap ("a|~b~"), --melody, --search N (sim only: Mochi +1/+2 before the core, >= 3 lead changes, both first shatters <= 0.6 s, no 8-bin dip > 1, last bin highest), --still --frame.
+- Other seeds: 391 (6 lead changes, last at 14.82, but a 2.15 s lull) and 858 (25-23, flat late rate).
+- Delivered <VIDEOS_DIR>\batch16\laser_mirrors.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-07: Good, but too fast with too many objects moving together; keep lasers + mirrors, make the execution more satisfying -> laser_mirrors2.

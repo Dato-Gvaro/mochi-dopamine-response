@@ -1,0 +1,24 @@
+# tesla_duel4 — TESLA DUEL 4: tesla_duel3 with a calm, musical ending
+
+- Built from the owner's review of tesla_duel3 (2026-10-09): "good, but at the finish it's too fast and not satisfying to listen to. Don't change the music; change the ending, don't go too fast."
+- v3 is untouched. Everything else is identical to v3 (see tesla_duel3.md): 112-dot board, both machines, the same score story, the slip, the deflect, the 56-56 tie on the last dot, the sphere clash, Bolt winning 57-56, Mochi's overload and the loop.
+- Music: Beethoven, "Für Elise" (1810), a public-domain composition played by our own piano synth. No recording is used, so it is copyright-safe.
+- Changes:
+  - Tempo: 0.192 s per 16th easing to 0.150 by about unit 64 (bar 10), then STEADY. That is the natural Für Elise speed, and it never accelerates past it. v3 sped up to 0.132.
+  - Clash: the melody plays at that steady 0.15 s. The final phrase (E B D C -> A, units 99-103) has a RITARDANDO, with gaps of 0.167, 0.183, 0.217, 0.233, 0.25 s.
+  - Win: lands on the tonic A of the phrase cadence (unit 104), followed by a soft, gently rolled held A-minor chord (A3 C4 E4 A4). The fast A-major arpeggio is removed, and the win crackle and poof are softer.
+  - Clash length: 3.45 s (v3: 2.8 s). Reset 2.2 s after the win, so the held chord rings out before the loop.
+  - Escalation is now visual: Bolt's spark width grows from 1.8 to 3.6 px with more branches and a bigger, brighter bloom. Mochi's arc width grows from 5 to 9 px, and her cluster blooms grow too.
+- s3 (default):
+  - Tie at 13.62 s, clash 14.07 to 17.52 s, win at 17.52 s.
+  - Clip 21.57 s (1294 frames). 9 lead changes. Note events per 5 s: 22, 25, 25.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 at 60 fps.
+  - -14.01 LUFS, peak -7.04 dBFS.
+  - The held chord fades to -72 dB by T-1.3 s; last 0.5 s at -240 dBFS.
+  - flash_check 0 = PASS.
+  - 79 notes.
+  - Pre-encode seam 0.0 (exact). Encoded seam 1.21 against a median step of 0.80 (p90 1.56): the I-frame step.
+- Args: --seed (3), --label, --cap, --voice (piano), --still --frame.
+- Delivered <VIDEOS_DIR>\batch20\tesla_duel4.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-09: GOOD - 'nailed it with the music' (Für Elise on piano, real rhythm, calm ending). Approved -> Oct 12 slot 3.

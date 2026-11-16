@@ -1,0 +1,21 @@
+# soda_pour: STRAIGHT DOWN or down the SIDE? whose glass is FULL of soda first? (batch74b, NEW; replaces pascal_barrel)
+
+- Why: owner rejected pascal_barrel ("we need a more popular topic") and loved pizza_deal. IDEAS.md part 2 (5 candidates) picked this everyday fight with soda foam.
+- Model (simple, no CFD; the parameters are a modelling choice, stated here):
+  - Same soda, same tapered 16 oz glass (rim 16 oz). FULL = 14.5 oz of LIQUID (the foam does not count).
+  - Mochi pours straight down from high up at 2.0 oz/s, making 0.60 oz of foam per oz poured. Bolt pours down the side at 1.25 oz/s, making 0.08 oz.
+  - The foam collapses exponentially, time constant 8 s (cola's head settles in ~10-20 s).
+  - A pourer stops when soda + foam reaches 15.8 oz and starts again at 15.0 oz.
+- Result (sim time; the pour starts at -1 s, frame 0 = 0.25 s):
+  - Mochi first hits the rim at 4.51 s with 11.0 oz, then has 3 stop/top-up cycles.
+  - LEAD CHANGE at 8.76 s (clip 8.51).
+  - Bolt is FULL at 10.60 s (clip 10.35); Mochi has 12.8 oz. Without the finale dump she would need 28.3 s.
+  - Bolt's soda + foam peaks at 15.1 oz, so he never has to stop.
+- Finale: 0.45 s after Bolt's FULL, an impatient Mochi dumps for 0.6 s. Her foam overflows the rim (0.43 oz spills) and she ends at 14.0 oz, still below FULL. The bottom line reads "foam needs WAITING: the slow pour wins". Clip 13.85 s (dissolve the last 0.6 s).
+- Drawn: tapered pint glasses (inner radius 104 → 140 px, 472 px tall), cola with rising fizz, a cream head with bubbles, a dome over the rim and foam running down the outside. The bottles are generic (no brand): Mochi's is held high and upside down over the centre; Bolt's mouth rests on the left rim with the stream sliding down the inner wall.
+- Music: Joplin, "Maple Leaf Rag" (1899, PD; Mutopia #23, top line), one piano note per 0.25 oz poured by either side (>= 80 ms apart). Fizz noise follows pouring + foam, plus a crackle; bottle glugs while pouring; timpani + A-flat brass/strings at FULL; a splash on the overflow.
+- FAST stills (b74s): output/soda_pour_b74s_f0 / f330 / f511 / f621 / f760.png.
+- Doubts: the foam numbers are a model; the clip is 13.85 s (under the 15-17 s band); Mochi's waiting phase (4.5-8.5 s) is quieter (fewer notes).
+- Coordinator OK (2026-11-07) + tweaks: POST 2.9 -> 4.4 s (clip 15.35 s) with foam drops falling off the overflowing glass (every 0.67 s per run, 3 runs); Mochi's waiting stretch gets one soft celesta+pizz fizz-pop note per 0.2 oz of foam that settles (note rate 8 8 8 8 6 6 6 6 5 5 4 3 3 3 per s).
+- Checks (encoded Full HD b74s): 921 f = 15.35 s; -14.11 LUFS, true peak -4.7 dBTP; flash PASS; seam 0.36; 80 notes / 15 distinct / top 18.8 %; last 0.5 s peak -31.5 dBFS. Delivered <VIDEOS_DIR>/MochiAndBolt/review/batch74/soda_pour.mp4.
+- Owner review (2026-11-07): "ok". 4K (b74sk) verified: 2160x3840, -14.11 LUFS, TP -4.7, flash PASS, seam 0.22. Scheduled at videos/MochiAndBolt/schedule/2026-11-15/2_soda_pour.mp4 (slot 2, 16:00 local Nov 16); FHD archived as archive/batch74/soda_pour_fhd.mp4.

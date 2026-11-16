@@ -1,0 +1,46 @@
+# loop_ladder2 — charge the slingshot past the line, or fall off the loop
+
+- Built from the owner's review of loop_ladder s506 (2026-10-06). The owner said: "good idea, but the viewer can't tell why sometimes they have enough force to pass. Make them CHARGE... it's also boring — add some more interesting things".
+  - loop_ladder.py is untouched. This file imports only its generic helpers: glow_stroke, light, dark, steel_clack, boost_zip, tonk, _add.
+- Rule: before every loop, a gold SLINGSHOT catches the pod and pulls it back (pull 30 + 110·p px). Meanwhile a HUD POWER METER fills to p.
+  - The white NOTCH is exactly the power this loop needs. The launch speed is v = V_MAX·sqrt(p), the same spec for every loop. The required v comes from a 36-step bisection on the real section physics, so the notch is honest.
+  - At release, the meter shows "TOO WEAK!" (greyed bar) or "ENOUGH!" (gold rim). The pod then falls or clears accordingly.
+  - Notches by loop: 0.21 / 0.41 / 0.48 / 0.46 / 0.59 / 0.80 (V_MAX 2274). The honesty sweep (m 0.78-1.30 on every loop) found 0 mismatches. race_stats counts misses (`bad`) and the search rejects any seed with one.
+  - Power draw per try: P(fail) 0.45 / 0.35 / 0.15 / 0 by try. A fail is 0.80-0.93 × notch, a pass is 1.07-1.30 × notch (capped at 0.985), so the bar never sits ambiguously on the line.
+- The 6 loops each have different physics:
+  - BOOST (r 150): gold arrows on the climb, +4200 px/s² between phi 0.30-1.25. They flash and zip on a pass.
+  - GAP (r 160): no rail at phi 140-220°. The pod flies ballistically and the far end catches it (a catch clack + sparks). If it drops more than 1.2·PR inside the circle, it falls.
+  - ICE (r 165): no friction. The pod slides without rolling, with frost spikes and sparkles and glassier clacks (+12 semitones).
+  - DOUBLE (2× r 150, interlocked at 1.15 r): a pod can fail on either loop.
+  - FIRE (r 180): friction 260 (sticky hot rail) and flickering flame tongues. A fail leaves the rider ANGRY with soot smudges and a smoke puff.
+  - GIANT (r 270): a jewel-gradient rail, and the camera pulls back (z ~0.7).
+- Look: the stage, glow and lanes are as v1. Pods are 2× v1 (PR 66, rider r 40). The camera follows the mean progress +220 px and zooms to fit the loops in view and the riders' spread. Each loop shows a variant sign in its middle. Cleared loops light up in the rider's colour with a ring-wave and 16 sparks per circle.
+- Reactions:
+  - determined face while charging
+  - worried with sweat during a fall
+  - dizzy after landing (angry + smoke on FIRE)
+  - happy on a clear
+  - an annoyed glance when overtaken
+  - the winner laughs (HA) and the loser stares at the camera
+- Sound (bed in the scene + marimba events):
+  - ratchet clicks while charging: round(p·10) of them, climbing a pentatonic, so more power sounds more and higher
+  - spring twang + zip on release
+  - steel clacks every 72 px of loop rail
+  - catch clack after the GAP, zip on the BOOST arrows, tonk on landings
+  - a clear chord climbing an E-major ladder (E F# G# A B E')
+  - spring_vivaldi (PD) walked one note per release
+  - SOUND_CUT 0.35 s: no new sound in the last 0.35 s of the hold, so the tail is silent.
+- s3959 (default):
+  - Mochi releases WEAK at 0.30 and falls off BOOST at 1.14. Bolt clears it at 1.54.
+  - Bolt: ice WEAK (falls 5.45), DOUBLE WEAK (falls 9.97).
+  - Mochi leads from 8.25. Mochi: FIRE WEAK (falls 12.75, angry + smoke).
+  - Bolt overtakes at 15.35 (LEAD CHANGE).
+  - Both are on the GIANT loop: Mochi WEAK falls at 17.20, and Bolt (0.97 vs 0.80) clears at 17.61 = BOLT WINS. Mochi is still on loop 6 when the clip ends.
+  - Fails 3/2 across 5 different variants. Sounds (clacks/clicks/releases/clears) per 5 s: 85, 108, 150. Clip 20.28 s (1217 f).
+- Loop: both pods rewind along the floor into the first slingshot while the camera pans back. Meters refill to frame 0's level, and faces go to the frame-0 'determined'. Pre-encode seam mean 0.0002, max 5/255 (a normal step is 1.9).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS, peak -6.05 dBFS; last 0.5 s -77.3 dBFS, last 1.3 s -39.8; flash_check 0 flashes = PASS; post-encode seam 0.355.
+- Args: --seed (3959), --label, --cap, --melody, --voice, --search N (prefers Bolt), --still --frame.
+- Other Bolt seeds: 911 (3 lead changes, photo finish 0.37 s, fails boost/double vs ice/fire), 2443, 1311.
+- Not built: a corkscrew (it does not read in 2D side view).
+- Delivered <VIDEOS_DIR>\batch15\loop_ladder2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-07: OK - approved.

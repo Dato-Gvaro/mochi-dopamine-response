@@ -1,0 +1,35 @@
+# glass_smash — light & fast vs heavy & slow through 20 glass panes (batch32, 2026-10-14)
+
+- **Duel:** Mochi fires a 20 g MARBLE at 11 m/s; Bolt sends a 1 kg STEEL BALL at 0.9 m/s. Both lanes give the SAME constant push (F = 0.052 N, drawn as violet chevrons on the floor) and hold the same 20 panes, thin to thick. Two stacked lanes, each with its own scrolling camera (180 px per 1 m gap), 3/4 oblique glass.
+- **Physics (scenes/glass_smash.py, all honest sim numbers):**
+  - a = F/m, so the marble accelerates 50x harder than the steel.
+  - Pane k strength E = 0.024 → 0.118 J (power curve 1.55). A break needs ½mv² > S. The ball keeps KE − S, then shares its momentum with the shard plug: v' = v·m/(m + m_shard), m_shard 6.6 → 19 g.
+  - A pane that holds bounces the ball (e = 0.60). The energy lost goes into the crack web and weakens the pane by 2× that amount. The push brings the ball back for the next hit. A bounce slower than 0.037 m/s = STUCK.
+  - Why steel wins: the marble starts with 3x the energy but loses 25-88 % of its speed per pane (shown as "-xx% speed" pops). The steel loses only 3-56 %; its 4x momentum carries it through the shards.
+- **Race (clip time):**
+  - Marble: panes 1-10 by 3.2 s. 2 hits each for panes 11-16, 3 hits for 17, 4 hits for 18. It bounces 9 times on pane 19 and is stuck at 22.5 s.
+  - Steel: about 1 pane per second, steady.
+  - LEAD CHANGE 18.75 s. The steel bursts pane 20 at 22.45 s (56 shards, a local glow, a riser into it).
+  - Length 24.55 s (1473 frames). Pre-roll / loop dissolve 0.40 s.
+- **Hook:** frame 0 is mid-action. The steel is 40 px from pane 1 and the marble is streaking in. The first shatters land at 0.13 s (marble) and 0.30 s (steel). A slight push-in zoom (1.0 → 1.045) runs over the first 1.9 s. Faces are r 50 at the lane starts.
+- **Pattern breaks** (s): 3.9 IT BOUNCED! · 5.6 STEEL CATCHING UP! · 9.4 STEEL: HALFWAY! · 11.5 ONLY 2 PANES AHEAD! · 13.7 SHARDS STEAL ITS SPEED! · 16.2 3 HITS FOR ONE PANE! · 18.75 LEAD CHANGE! · 22.45 STEEL BALL WINS!
+- **Sound** (no music; a bed built in the scene, events are a sidecar only with note_gain 0, so the mixer's 10 ms drop never applies):
+  - Each pane rings at its own pitch. The pitches form a descending C-major pentatonic: thin is high, thick is low.
+  - Marble contacts: a bright glass ping. Steel contacts: a soft low thunk.
+  - Cracks: a crackle of 6-22 glassy ticks.
+  - Breaks: lib synth_glassbreak plus a shard tinkle cascade.
+  - Shards landing on the floor: rate-capped tinks.
+  - Rolling: the steel has a speed-following low rumble; the marble has a faint whirr.
+  - A riser into the final pane. The final shatter is 3 layered breaks, a 1.5 s tinkle and a thunk.
+  - Everything fades over the dissolve.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 60 fps.
+  - Loudness: -14.02 LUFS, peak -6.86 dBFS, last 0.5 s peak -24.5 dBFS.
+  - flash_check: 0 flashes, PASS (mean luminance 0.029).
+  - Seam mean delta 3.54. A normal step is 3.43-3.67, because both cameras scroll, so the seam is invisible.
+  - Frames read at 0, 0.5, 1, 2, 3, 12, 22.6 and 24.5 s.
+- **Doubts:**
+  - The constant push is a stylised "push lane", not a named real device.
+  - The pane-strength curve and weakening factor were tuned for a close race; the doc numbers are the sim's.
+  - Mid-race (5-16 s) the marble lane has a slower rhythm: a 2-hit pane every ~1.7 s.
+- Owner review (2026-10-15): good, but smaller and more panes (10-15 visible in a line instead of 3-4) and faster smashing, to be more satisfying -> glass_smash2.

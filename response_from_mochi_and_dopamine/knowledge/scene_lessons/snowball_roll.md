@@ -1,0 +1,89 @@
+# snowball_roll — "Every roll makes it BIGGER" / "until it flattens the CABIN"
+
+- Formula + early-breakout skeleton (docs/BRIEF_formula.md, research/early_breakouts.md): ×2 growth toward an end state, line 2 = the end state, the first ×2 at 1.11 s. Compound growth beats a head start.
+  - Mochi (coral) has a BIG pre-rolled ball 98 m further down the slope (1.8 m, 1.1 tons at frame 0). A big ball turns over slowly: she rolls on the left-hand downbeats, about once a second.
+  - Bolt (mint) rolls a TINY 10 cm ball from the summit (0.16 m, 0.9 kg at frame 0). A small ball turns over fast: he rolls on every melody onset, ~4 a second.
+  - Same rule for both: every full roll packs on 7.15% (×2 every 10 rolls).
+- **Honest-ish model:**
+  - D after k rolls = D0 × 1.0715^k. The distance per roll is the circumference π·D, so the speed grows with the ball (bigger ball = faster).
+  - Weight = 400 kg/m³ packed snow × πD³/6.
+  - Bolt: 0.10 m at the summit → 12.8 m (×128, 439 tons) on the cadence roll.
+  - Mochi: 1.8 m → 4.3 m (17 tons) by beat 30.
+  - LEAD CHANGE = Bolt's roll on beat 31 passes her size (4.2 vs 4.3 m → 4.5 m).
+  - On beat 32 his ball runs into hers and swallows it: the volumes add, a ×1.169 bump. She ends up stuck in his ball (head out, dizzy, then annoyed).
+  - Only the speed is cartoon: ~146 m/s at the cabin. No speed is shown on screen.
+- **Camera:** one side-view world. A 28° run bends (s_cf − 85 → −25 m) into a flat valley, with the cabin (8 × 6 m) on the flat.
+  - The camera follows Bolt's contact point. The zoom is px/m ∝ D^−0.68, so the ball grows ×3.1 on screen (76 → ~240 px) while the world shrinks ×19. From beat 35 it pulls out another 8%.
+  - From beat 33.5 the anchor slides from (330, 720) to (~456, 985). The camera brakes with the ball over [t_E − 0.10, t_E + 0.22], so the ball comes to rest at x ≈ 560.
+  - Mochi's ball, and later the cabin, are pinned at the downhill edge while they are beyond the view: Mochi at x 760 (radius capped 120 px) with "98 m AHEAD", the cabin at x 790 with "CABIN: 255 m" counting down. Both slide in at true scale once they enter the view (paper_fold's pinned-Moon trick).
+- **Landmarks (true size):**
+  - Each one is placed where Bolt's ball outgrows it; its label turns gold at that moment.
+  - In the lane (picked up and stuck in the ball, then buried by new layers): SKI BOOT 0.3 m (1.40 s), TRAIL SIGN 1.2 m (6.17 s).
+  - Behind the lane: SKIER 1.8 m (9.32 s), SNOWCAT 3.5 m (11.88 s), SKI LIFT 14 m with cable and chairs (15.52 s; stays white because 12.8 < 14).
+  - Scale-free pine bands (0.45–30 m) and world-anchored snow glints keep a few at a readable size at every zoom.
+  - The packed track behind each ball is a band whose thickness ∝ D, a wedge that shows the growth.
+- **Frame 0 / meter:** both balls are already rolling.
+  - The mini slope meter (summit flag → CABIN icon) has dots sized by log D.
+  - Counters at 0.725/0.76/0.79 h: name + strategy, size (gold = bigger), weight. Bolt is on the left (he is uphill), Mochi on the right.
+  - Mochi's counter becomes "SWALLOWED / (inside Bolt's ball)".
+- **Music = the clock:** Grieg, "Wedding Day at Troldhaugen" Op. 65/6, first statement of the march theme, beats 5.3–38.
+  - Source: Mutopia #781 (Mutopia-2006/06/17-781, Schirmer 1903, engraving PD), saved to `<SOUNDFONTS_DIR>\scores\grieg_troldhaugen\troldhaugen.mid` (+ .ly).
+  - PD: composed 1896, Grieg d. 1907. Not on the used/banned lists; Norwegian mountains, adult-coded, not a carol.
+  - 0.50 s/beat, ritardando 0.50 → 0.62 over beats 34–38. Frame 0 = beat 5.3.
+  - Bolt rolls on the intro pulses 5/5.5/6/7 and every melody onset 7.5–38 (61 audible rolls, 6 virtual rolls before frame 0 from the summit).
+  - Mochi rolls on the left-hand downbeats 0, 2 … 30 (13 audible).
+  - LEAD CHANGE = beat 31, swallow = beat 32 (D5), cabin = beat 38 (the D-major cadence chord).
+- **Sound** (bed through `kit.deliver`, `peak_db=None`; the sidecar = Bolt's melody notes, note_gain 0):
+  - Bed: piano plays both staves from frame 0. Pizz from beat 8, contrabass from 16, strings double the tune from 23.5, horns (−12) from 27.5, timpani on the left-hand downbeats from 24, trumpet from 33.5.
+  - LEAD CHANGE: A timpani + "ooh" D chord. Swallow: a soft boom + crash.
+  - A timpani roll 36 → 38 into a D-major tutti on the cabin (piano, brass, trumpet, strings, choir, contrabass, timpani, boom, crash).
+  - SFX (scene synths, no noise):
+    - A snow CRUNCH per roll, built from 7–17 short damped-sine clicks (4.2 → 1.0 kHz band) + a tonal "thup" body (300 → 90 Hz). It gets deeper and longer as the ball grows.
+    - Mochi's crunches are deeper and panned right.
+    - A marimba plink of the melody note per Bolt roll (folded to D4–B5).
+    - A soft pok on each pick-up.
+    - A big crunch on the swallow.
+    - The cabin WHUMP: a sine sub drop 76 → 36 Hz + body + timber modes + a big crunch, then 12 soft D-pentatonic plinks (D5–B5) = the snow tinkle.
+- **Key times** (clip s, seed 4; the race is deterministic and the seed only jitters the decor):
+  - Frame 0 is mid-roll: Bolt 0.16 m vs Mochi 1.8 m, 98 m ahead. The first roll + crunch + note lands at 0.10 s.
+  - Bolt's badges: ×2 at 1.11, ×4 at 3.11, ×8 at 6.11, ×16 at 9.20, ×32 at 11.37, ×64 at 13.66, ×128 at 16.66. Mochi's ×2 at 10.36.
+  - LEAD CHANGE at 12.85 (beat 31). SWALLOWED at 13.35 (beat 32): Mochi is flung into Bolt's ball.
+  - The cabin pin appears at ~13.6 with "CABIN: 255 m" counting down.
+  - CABIN WHUMP + "TINY + LONG RUN WINS!" at 16.59 (beat 38, the cadence). The ball stops at ~16.8. "12.8 m · 439 tons" shows from 17.5.
+  - Dissolve from 19.28 s. The clip is 19.88 s (1193 frames).
+- **Staging:**
+  - Bolt rides on top of his ball: worried early, "wow" at ×8, laughs at ×16, worried before the LEAD CHANGE, then cheers and laughs, smug on the boulder at the end.
+  - Mochi laughs at first and is worried from beat 26. She says "wow" at the LEAD CHANGE, is flung into his ball, spins with it ("dizzy") and ends up stuck at its upper right, annoyed.
+  - At the cabin: it squashes flat (×0.12 height, ×1.55 width) in front of the ball, with logs, shingles and bricks flying, a soft powder puff (alpha ≤ 0.42) and the "NO SNOWBALLS" sign spinning away.
+- **Checks** (encoded Full HD `output/snowball_roll_v3_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1193 frames = 19.88 s.
+  - Loudness: −14.01 LUFS, peak −4.22 dBFS, last 0.5 s at −69.5 dBFS. `peak_db=None`.
+  - RMS: open −18.5, body −17.8, build −15.9, run to the cabin −14.8, cadence second −11.8 (+3 dB lift). Measured on v1, same audio.
+  - flash_check: 0 flashes = PASS (mean luminance 0.14).
+  - Loop seam: mean delta 3.06, against 2.74-2.80 for a normal frame step here. The scrolling glints and trees make every step large, so the seam reads as one ordinary step.
+  - Side safe zone: key content stays inside x 108-907 (Mochi pinned at 640-880, the cabin pin ≤ 895, counters at 300/716).
+  - Frames read from the encoded file at 0, 0.5, 1.0, 1.2, 6.2, 9.3, 12.9, 13.3, 13.4, 13.5, 13.6, 15.2, 16.62, 16.7, 16.9, 17.6, 18.5 and 19.5 s, plus 1:1 crops of the swallow (13.42) and the cabin hit (16.75).
+- **v1 → v3:**
+  - Box glyphs (▶) replaced by plain "98 m AHEAD" / "CABIN: n m".
+  - LEAD CHANGE and SWALLOWED now share y 352 one after the other; the SWALLOWED banner used to cover Bolt.
+  - The size line comes after the ×128 badge (they overlapped).
+  - The pine size cap is 700 px with a 20 px fade and the tallest band is ≤ 24 m (a half-faded "ghost" pine sat in the final framing).
+- **Known nits:**
+  - At ~1 s the ski boot and its label sit partly behind Mochi's pinned ball.
+  - At ~9.3 s the skier is mostly behind Bolt's ball as it passes (the label still turns gold).
+  - The speed is cartoon (~146 m/s at the cabin), which the honest π·D per roll implies at ~4 rolls/s.
+  - The event bins are 26/23/13 per 5 s; the last bin is the cadence + tail.
+- **Laptop:** 1 Python process (BLAS threads 1) + ffmpeg x264 `-threads 2` (`Writer2`). Full HD renders in ~6 min.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/snowball_roll.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/snowball_roll.py --label v3`
+  - `--report`, `--seed N` (default 4; decor only)
+- Delivered `<VIDEOS_DIR>\batch45\snowball_roll.mp4` (Full HD). Owner review: pending.
+- 4K ship render (2026-10-21, coordinator, unchanged v3 code): `output/snowball_roll_ship_9x16.mp4`.
+  - Video: h264 yuv420p 2160x3840 at 60 fps, 1193 frames = 19.88 s.
+  - Loudness: −14.01 LUFS, peak −4.22 dBFS, last 0.5 s at −69.5 dBFS.
+  - Loop seam: mean delta 2.94.
+  - flash_check: 0 flashes = PASS.
+  - The events sidecar is byte-identical to v3.
+
+Owner review (2026-10-21): "i got bored not even on half way" -> dropped (retention risk: the lead change comes at 12.9 s of 19.9, the camera scroll is slow).

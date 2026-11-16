@@ -1,0 +1,24 @@
+# funnel_race4 — funnel_race3 with long wide orbits, a quick plunge and no roll noise
+
+- Built from the owner's review of funnel_race3 (batch 11): (1) keep the clicks but remove the constant shushing; (2) the balls should circle longer at the big radius and spend fewer spins near the centre before they drop. funnel_race3.py is untouched and still reproducible.
+- Unchanged: the two deep 3/4-view funnels, the most-laps rule, the drop into the tube, the pop-back loop, the visual depth profile, the caption.
+- Physics: the viscous drag depends on the radius. `c_drag(r)` = C_OUT 0.008/s out wide (v3 used 0.029 everywhere) and ramps by smoothstep to C_IN 1.10/s between R_IN0 128 and R_IN1 96.
+  - About 85 % of the race is spent at r ~130-210. The lap period there is 1.0-2.2 s.
+  - From r<120 to the drop takes ~1.1 s and 1-2 spins (v3: ~13 s and 25+ laps).
+  - Peak speed is ~780 px/s (v3: ~1150), so the ball speed does not spike.
+  - Each marble finishes on ~14-15 laps (v3: ~30).
+- Sound: metal_bed passes on=0 and roll_gain=0 to `audio.metal_roll_bed`, so there is no roll noise. lib/ is unchanged.
+  - The steel fret tick per quarter lap, the drop clack/tonk/rattle and the quiet mountain_king note per full lap (every quarter in the solo chase) all stay.
+  - Tick size is scaled over V_LO/V_HI 560-800 px/s, the new speed range.
+- "Worried" reaction: starts when r < R_IN0 (capped to drop - 1.1 s), down from r < 100.
+- Seed search (800 seeds): 30 pass. **s739**: Mochi leads most of the race (7-6 at 12 s, 13-12 at 19 s).
+  - Mochi drops at 19.92 s on 14 laps.
+  - Bolt passes on lap 15 at 21.72 s and drops at 21.86 s. **Bolt wins 15-14** with 1 lead change.
+  - Clip 25.40 s (1524 frames).
+  - Alternatives that Bolt also wins: 402 (the same shape), 677 (3 lead changes, 0.9 s chase), 221.
+- Quarter-laps per 5 s: 21, 27, 35, 35. Sounded notes per 5 s: 6, 6, 8, 10, 12.
+- High-frequency onsets per 1 s on the mux: 2-5 early, then 7-8 at 18-19 s. They dip to 3 at 20 s when the first ball drops, because only one ball is left.
+- Encoded Full HD file: h264 yuv420p 1080x1920 at 60 fps, -14.01 LUFS, peak -3.7 dBFS, last 1.3 s at -90 dB, last 0.5 s silent. flash_check PASS (0 flashes). Encoded seam mean 0.375.
+- Args: `--seed 739` (default), `--search N --from K`, `--dry`, `--still --frame N`, `--cap "l1|~l2~"`.
+- Delivered to <VIDEOS_DIR>\batch12\funnel_race4.mp4. Owner review: pending.
+- Owner review 2026-10-05: Abandon the funnel idea.

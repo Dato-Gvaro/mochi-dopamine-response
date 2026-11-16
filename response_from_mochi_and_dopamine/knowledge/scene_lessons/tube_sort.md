@@ -1,0 +1,51 @@
+# tube_sort
+- **Format:** the familiar colour-sort (water-sort) tube puzzle as a duel on two copies of the SAME board.
+  - 10 tubes of 4 units, 8 colours, 2 spare tubes. Standard rules: pour the top colour block onto an empty tube or onto the same colour, as much as fits.
+  - Top row: Mochi = TRIAL & ERROR. Bottom row: Bolt = A* SEARCH.
+- **Mochi:** greedy-random guesses, one pour per beat. On a real NO MOVES (no legal pour left) she UNDOes 3-5 pours and never repeats the exact pour that led into that dead end from that position.
+- **Bolt:** A* with h = colour blocks - 8, which is admissible (a pour merges at most one block). He searches 11,788 positions for ~2.6 s while Mochi already pours, then executes the optimal 26-pour plan.
+  - Pace rises: gaps of 3 beats shrink to 1.
+  - Every tube-completing pour finishes ON a downbeat. The 8 completions fall at 14.64, 16.89, 17.64, 20.64, 21.39, 22.14, 22.89 and 23.64 s (the final chord).
+- **Why the winner wins, shown on screen:**
+  - The MOVES / SORTED counters.
+  - The pill strips: Mochi's is 51 long with 18 red undo pills; Bolt's plan is 26 long, known in advance, with the next pour highlighted.
+  - A dotted arrow for Bolt's next pour.
+- **Result:** Bolt sorts 8/8 in 26 moves. Mochi hits 6 dead ends (3.02, 5.27, 7.52, 10.71, 17.27 and 21.21 s) and is stuck at 1/8 after 51 moves.
+- **Seeds (searched for the story):** `PUZZLE_SEED` 26 (hard for greedy play) and `MOCHI_SEED` 2390. Every pour is legal and every NO MOVES is real.
+- **"6/8 then deadlock" is impossible with 2 spare tubes.**
+  - A true no-moves board can hold at most 4 sorted tubes (with N colours, at most N-4).
+  - In 13k greedy runs, deadlocks came at 0-1 sorted (only 10 at 2).
+  - So the twist is the loop of repeated dead ends plus undos, not a late collapse.
+- **Hook:**
+  - Frame 0 = the payoff: Bolt's 8 corked tubes plus "SORTED IN 26 MOVES!" against Mochi's dead end plus "STUCK AFTER 51 MOVES".
+  - 0.04-0.56 s: every unit flies back to the start state (a rewind icon shows between the rows).
+  - The first pour lands at 0.77 s.
+- **Loop:** the clip ends on the same payoff (static poses). The still diff of frame 0 against frame 1616 is 0. The encoded seam mean delta is 0.47.
+- **Liquid:**
+  - Tube interior = a convex polygon. A tilted tube's levels are solved by area (polygon clip + bisection), so surfaces stay level.
+  - The tilt is set so the remaining liquid just reaches the lip, which means the stream flows exactly when it physically would.
+  - Wobble on the surfaces; a cork drop, glint and sparkles on each completion.
+- **Music:** Offenbach, *Orphée aux enfers* (1858), "Galop infernal" (the Can-can), "Ce bal est original" theme, 16 bars x2 with the 1st/2nd endings, G major, quarter = 160.
+  - Composition: PD (Offenbach d. 1880).
+  - Notes and harmony were transcribed by reading the PD Bote & Bock vocal score scan, IMSLP #26815 (`PMLP24816-Offenbach_Orpheus_in_der_Unterwelt_Galop_infernal_BB_vs.pdf`, page 2). No MIDI exists on Mutopia, IMSLP or Commons.
+  - The arrangement is ours (lib/orchestra):
+    - Melody on strings at written pitch (top G5); horns from bar 9; trumpets and horns 8vb in pass 2.
+    - Oom-pah from pizz + contrabass/tuba, with a strings/trombone "pah" in pass 2.
+    - Snare backbeat that becomes a galop pattern, then a roll into the end.
+    - Timpani on the pass-2 downbeats, louder on Bolt's completions.
+    - Crash on bar 1, swell + boom into bar 17 and into the final G chord.
+- **SFX:** tuned to the bar's chord.
+  - Glass-harp chime per pour: Mochi in the low octave, Bolt an octave up.
+  - Reversed chime per undo.
+  - Pok + celesta on completions.
+  - Soft bassoon fall on NO MOVES.
+  - Reversed shimmer under the rewind.
+- **Shipped v1 (2026-10-11):** 26.95 s, Full HD.
+  - Audio: -14.01 LUFS, peak -5.5 dBFS, last 0.5 s at -90 dBFS.
+  - Picture: flash_check PASS (0 flashes); h264 yuv420p 60 fps.
+  - Onsets peak on the eighth-note grid.
+- **Args:** --cap "line1|~line2~" ('' = caption-less), --label, --still --frame N, --report, --sound 0.
+- **v2 layout (2026-10-11, coordinator review):** tubes scaled up ~1.26x (inner width 60 -> 76 px, unit 46 -> 58 px), filling 0.89 of the width.
+  - Rows now span y 0.15h-0.70h: Bolt's strip ends at 1361 px.
+  - Story, timing and audio are unchanged (bit-identical numbers): -14.01 LUFS, flash PASS, seam 0.53, loop still diff 0.
+- Owner review (2026-10-11): lazy writing but try: ONE sort game instead of two, no music, good ASMR sounds, chemical-like colours (some glowing, some lava-like, etc.) -> tube_sort2.

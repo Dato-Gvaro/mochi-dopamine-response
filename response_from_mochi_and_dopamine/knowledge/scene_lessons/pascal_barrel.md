@@ -1,0 +1,13 @@
+# pascal_barrel: BUCKETS or ONE CUP? which one BURSTS the barrel? (batch74, NEW)
+
+- Brief: docs/BRIEF_batch74.md (IDEAS.md pick 2). New file `scenes/pascal_barrel.py`; no lib changes.
+- Physics (exact hydrostatics): the pressure at the barrel top = 0.4335 psi per foot of water column above it, whatever the volume (the hydrostatic paradox, "Pascal's barrel"). The barrel's burst limit is set at 10 psi = 23.07 ft (a modelled limit, shown as the BURST line from frame 0).
+- Mochi: a 1/4-inch ID tube (0.0491 in²), pours of 1/4, 1/2, 1, 2, 4 fl oz. Bolt: a 12-inch ID pipe (113.1 in²), pours of 2, 4, 8, 16, 32 gal. The pours land on the same beats (2.0, 2.4, 2.8, 3.2, 3.6 s; 0.3 s gap), each with constant flow. Volume per pour: Bolt 1,024x Mochi; area 2,304x, so Bolt's column is always 44 % of Mochi's.
+- Result: BURST at clip 10.92 s (sim 13.52 s, pour 5/5). Mochi has poured 7.53 oz (0.94 cup); Bolt 60.2 gal with a 10.3 ft column = 4.44 psi (44 %). Frame 0 = sim 2.6 s (pour 2 under way): Mochi 1.2 ft, Bolt 0.5 ft. Clip 14.52 s (dissolve the last 0.6 s).
+- Drawn: heights true scale at 31 px/ft (barrels 4 x 3 ft); Bolt's pipe width true scale; Mochi's tube drawn 9 px (true < 1 px). Her barrel bulges and weeps at the seams above 7.5 psi (cosmetic), then bursts: staves, hoops, a spray and a floor flood. Her column drains; Bolt's stays.
+- Music: Handel, Water Music, "Alla Hornpipe" (1717, PD; IMSLP #270469 MIDI, top line, -3 st), one strings+harp note per foot of either column and per new pour (>= 90 ms apart); glugs per pour (Bolt deep, Mochi a trickle); creaks above 6.5 psi; timpani + D-major brass/strings + splash at BURST.
+- FAST stills (b74): output/pascal_barrel_b74_f0 / f600 / f640 / f700 / f760.png.
+- Doubts: no lead change (Mochi leads on pressure from frame 0, Bolt leads on gallons); the 10 psi limit is a model choice, not a measured barrel; the first second shows small columns (exponential pours).
+- Coordinator OK (2026-11-07) + tweaks: "BURST 10 psi (this barrel)"; a dark plank wall behind the rig; a thin highlight edge on Mochi's tube; a note per 0.5 ft (50 notes, 8 distinct).
+- Checks (encoded Full HD b74): 871 f = 14.52 s; -14.01 LUFS, true peak -4.6 dBTP; flash PASS; seam 0.41; events/5 s 24 27. Delivered <VIDEOS_DIR>/MochiAndBolt/review/batch74/pascal_barrel.mp4.
+- Owner review (2026-11-07): REJECTED. "I don't understand it, the audience will be confused, we need a more popular topic." Lesson: textbook physics paradoxes lose to everyday 'which is better' topics (food, money, daily life). Archived at videos/MochiAndBolt/archive/batch74/pascal_barrel.mp4.

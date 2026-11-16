@@ -1,0 +1,43 @@
+# coin_bridge
+- Rule: "Every coin they grab makes the glass CRACK" / "~Greedy or careful?~". Two identical glass lanes over a gorge, the water far below. They have the same panes (same strengths) and the same glowing gold coins. Mochi (front lane, GREED) grabs every coin. Bolt (back lane, CAUTION) takes at most one coin per pane, only while his weight stays under the glass limit and his pane is still sound. The most coins at the far side wins, but only if you make it.
+- Physics (same for both):
+  - W = 1 + 0.11 x coins.
+  - Landing damage = 0.20 x W / S.
+  - Standing damage = 1.4 x sqrt(W - 1.56) / S per second, above the rated load WLIM 1.56 (the HUD's GLASS LIMIT tick). Below the limit, standing does no damage.
+  - The crack web lags the damage (TAU 0.22 s), so a pane can give way just AFTER she hops off. At damage 1 the pane shatters.
+  - Each near-miss makes Mochi grab faster (x0.8, capped at 3), but greed ignores that at the 6-coin jackpot on the last pane.
+- Look: oblique lanes (pane pitch 168, oblique squash 0.42) and a world zoom of 1.15 about y 760 (HUD and caption stay 1:1). Dusk sky with stars and a low sun. Mesas, rock spires at parallax 0.55, a mist band and water with drifting wave dashes.
+  - Steel ladder frame with cyan glass panes. The crack web (9 rays plus ring segments) grows with damage, frosts the pane and shakes it when c > 0.82.
+  - Shards are the web cells clipped to the pane. They tumble, shrink with depth and vanish at the water.
+  - Coins stand on the panes (spinning, glow, sparkles). A grabbed coin flies to a coin TOWER on her head. Bolt's small stack sits beside his sprout.
+  - The far side is a rock ledge with a gold finish strip.
+- Start: the sim begins at -0.95 s on pane 5 (panes 1-4 already crossed and cracked). Frame 0 = both mid-hop, with the pane behind Mochi webbed and still cracking. Bolt's ting lands at 0.17 s and Mochi's thunk + crack line at 0.28 s.
+- End:
+  - Plunge pane breaks: TOO HEAVY!, the coin tower bursts into a coin rain and she falls about 1 s with a whoosh, shrinking to 0.9.
+  - Deep splash with a crown, column and ripples. Each coin plinks into the water and the HUD counts her down to 0 (red), with "-33 COINS".
+  - She resurfaces with an annoyed stare at Bolt. Bolt finishes and BOLT WINS! appears (his panel turns gold).
+  - Hold 1.5 s, then a 0.6 s dissolve into the pre-roll that leads into frame 0, so the loop is seamless and has no rewind.
+- Sound: synthesized in-scene, no music.
+  - Coin pickup: a ka-ching that rises on a pentatonic scale with stack size.
+  - Landings: Bolt gets a soft glass ting, Mochi a low thunk that drops in pitch as she gets heavier. Over the limit, her landing adds a crack-line click train.
+  - Crack growth: crackle ticks. Each pane gets one creak at c > 0.62.
+  - Shatter: crash + body + a falling-glass tinkle rain.
+  - Fall: a 0.9 s whoosh into a deep splash (boom, water and bubble chirps) and a bubble blub on resurfacing.
+  - Coins in the water: 33 plinks.
+  - Win: a ting plus a 4-note ching arpeggio.
+  - A faint wind bed that is gone before the seam. Onsets are kept at least 12 ms apart, then `audio.master()`, then a 0.6 s tail fade.
+- s54 (default):
+  - Mochi 8 coins at frame 0 and 33 at the plunge. Bolt 2 at frame 0 and 5 at the end.
+  - Near-breaks, as (pane, time from hop-off to break, break time): (10, 0.40 s, 4.10 s), (13, 0.38, 6.17), (14, 0.25, 6.73), (15, 0.22, 7.40), (16, 0.17, 8.00), (17, 0.08, 8.62), (18, 0.15, 9.33). The bridge collapses ever closer behind her.
+  - Plunge on the jackpot pane 19 at 9.93 s, splash at 10.84 s, Bolt finishes at 13.0 s. Clip 15.10 s (906 frames).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -14.01 LUFS, peak -5.1 dBFS, last 0.5 s at -74.7 dBFS.
+  - flash_check PASS (0).
+  - Onsets match the events: shatters +4..+19 dB, splash +5 dB.
+  - Pre-encode seam 1.28 against normal steps of 1.24-1.33, so the loop is perfect; the whole frame pans, which is why every step is high. The encoded seam is 1.76-2.09 against steps of 1.44-1.59 (I-frame step). check_loop.py prints MISMATCH because it expects the last frame to equal frame 0; here the last frame is frame -1.
+- Events per 5 s: 105 / 118 / 58. The last third is the payoff plus the hold, so the rate does not climb to the last frame.
+- Args: --seed, --label, --cap ('a|b ^hi^|~c~'), --search N (sim only), --still --frame, --sound 0. Tuning flags exist for search only: --kc --imp --rate --wlim --pexp --panic --pcap --cn0 --cn1 --np --airm --dwb.
+- Other good seeds (same params): 3, 35, 52, 60, 74.
+- Delivered <VIDEOS_DIR>\batch34\coin_bridge.mp4. Owner review: pending.
+- Owner review 2026-10-15: "good idea but I don't like the sounds: make the coin grab a pleasant sound like coins or slot-machine coins, also a better glass crack sound; also Bolt is boring there, make him grab more coins once in a while". Rebuilt as coin_bridge2 (docs/scenes/coin_bridge2.md); batch34 was deleted.

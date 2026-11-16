@@ -1,0 +1,22 @@
+# loop_ladder — Mochi vs Bolt, glass pods up a ladder of loop-the-loops
+
+- New format (2026-10-06, from reference idea #9 "Loop Ladder"). Two identical neon tracks stacked (Mochi's lane on top at y 785, Bolt's at y 1293). One shared camera follows the mean progress +300 px ahead and zooms out when the pods spread (z = min(1, 960/(spread+640)), low-pass 0.05/frame).
+- Track: 6 loops with pod-path radii 70/94/118/142/166/190, each TALLER. A gold booster hoop sits in front of each loop, and a finish flag sits after loop 6. The pod (radius 34) is a glass ball with the character inside. "Down" for the character is the APPARENT gravity (g - a, smoothed, held in free fall), so it turns head-over-heels through a loop.
+- Physics: the pod rides the inside of the loop under g = 2400 px/s² with rolling friction 30 px/s². It stays on only while v²/r + g·cos(phi) >= 0. If it fails, it detaches (124-178° seen) and makes a free arc, landing with restitution 0.32. The booster magnet (520 px/s²) pulls it back, catches it (0.12 s), charges (0.30 s) and flings it again. Launch = sqrt(q·g·r + run friction), with q = U(3.7, 5.7) per loop + 0.45 per retry + N(0, 0.12) noise, seeded per rider. A forward pass through the next hoop re-boosts.
+- Look: navy -> plum stage with soft lane haze in the rider colour and parallax specks. The violet neon floor rail sits on a dark beam. Unlit loops go sapphire -> magenta up the ladder. The running attempt lights the rail behind the pod in the rider's colour (and fades on a fall). A cleared loop is lit in the rider's colour with a ring-wave and 18 sparks. Boosts give gold sparks and chevrons; landings give violet dust. No full-frame flashes.
+- HUD: caption "Every loop is TALLER / ~First past loop 6 wins~". Counters at 1432/1510 read "Loops n/6" (n = cleared). A lead must be held 0.25 s to count, so the 2.57/2.58 sync clear is not a change. "LEAD CHANGE!" (y 420), "MOCHI WINS!" + "by 0.33 s" when the loser finishes in the hold.
+- Sound: a pitched steel clack per 64 px of loop rail (the pitch climbs the ladder), a pleasant upward zip per boost and a wooden tonk per landing, all in a scene-synthesised bed, foley +12 ms off the notes. Marimba: one eine_kleine melody note per boost (simultaneous boosts = 1 note). A ladder chord per clear climbs G A B C D G' (the 6th adds a 3rd/5th on top).
+- s506 (default):
+  - Both pods fall off loop 1 together at 0.62 s, then clear it in SYNC at 2.57/2.58.
+  - Bolt leads from 3.67 s (loops 2-4 first).
+  - Mochi overtakes at 13.41 (5-4, LEAD CHANGE) and wins at 14.90. Bolt clears loop 6 at 15.24 (by 0.33 s on screen).
+  - Fails 4/4. Tries M [2,2,2,2,1,1], B [2,1,2,2,2,1].
+  - Sounds (clacks + boosts + clears) per 5 s: 52, 65, 99. Note events per 5 s over the whole clip: 23, 18, 28.
+  - Clip 17.58 s (1055 f) = win + 1.30 s hold + 1.38 s rewind.
+- Loop: both pods rewind along the floor to ring 0 while the camera pans back. Lit loops go dark as the pods pass. Rot/roll ease to 0, and ring 0's charge glow ramps into frame 0's level. Pre-encode seam: mean 0.0002 (normal step 0.007).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS, peak -5.83 dBFS; last 0.5 s -78.3 dBFS (last 1.3 s -28: hold ring-out); flash_check 0 = PASS (mean lum 0.017); post-encode seam 0.301.
+- Args: --seed (506), --label, --cap, --melody, --voice, --search N, --still --frame.
+- Other Mochi seeds: 5098 (3 lead changes, last 16.86, t_w 18.34, Bolt falls off loop 6 at 18.31), 4842, 2070.
+- Note: `minuet_in_g` is only in MELODIES_BENCH (not selectable).
+- Delivered <VIDEOS_DIR>\batch14\loop_ladder.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-06: Good idea, but viewers can't tell why a pod has enough force. Make them CHARGE before each loop (too small a charge = fail, enough = pass); also add more interesting things (it's boring).

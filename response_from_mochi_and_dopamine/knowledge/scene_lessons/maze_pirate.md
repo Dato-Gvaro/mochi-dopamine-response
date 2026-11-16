@@ -1,0 +1,23 @@
+# maze_pirate — maze_duel dressed as an old pirate ship at night (2026-10-05)
+
+- Built from the owner's review of maze_duel: "good, works on some colours; cooler on an OLD PIRATE SHIP setup". The BRIEF look rule applies: rich, moody, glowing, like ring_escape2.
+- Same mechanic, same sim: maze_duel.py is IMPORTED unchanged (`base.simulate`, `build_events`, `metal_bed`, reactions, lever and character poses). maze_duel s203 still reproduces. Only the render is new.
+- Scale: the board is drawn K = 360/306 = 1.18x the sim units (the physics is unchanged and identical in cell units). The grid is 720 px = 0.67 of the width (maze_duel's was 0.57). The chart plate (half 376) corners sweep r 532 at 45 deg, inside the 540 half-width. Centre 540/895.
+- Look:
+  - The maze is a dark mahogany treasure-chart plate with a brass rim and gold corner rivets, bolted onto the ship's WHEEL. The wheel (rim r 470, 8 spokes, brass handles at r 540) turns with the board.
+  - Walls are glowing brass rails (glow strokes +22/+12 at alpha 0.05/0.09, dark edge, brass core, cream sheen).
+  - A faint engraved gold compass rose sits under the maze. The goal is a gold treasure pit that breathes (whole cycles per clip); a gem dropping in throws a gold-spark burst (more for the winner).
+  - The marbles are faceted gems: ruby (Mochi) and emerald (Bolt), each with a halo in its own colour and a 6-frame trail. Hatches are brass with a gem dot, the plates are gem tiles that glow when pressed, and the gates are gem-coloured glowing bars.
+  - Background:
+    - Night sky (navy -> dusk plum) with twinkling stars and a glowing moon (790, 330).
+    - A moonlit horizon (y 1170) with a glitter column.
+    - The sky/sea layer ROLLS 1.3 deg and bobs 6 px. It moves in whole cycles per clip, so the seam is exact, and only the background moves; the maze stays level.
+    - Masts and rigging silhouettes, a deck rail with two swinging lanterns, and dark warm deck planks (y 1318). The counters sit on the deck.
+  - Characters stand on barrels at the top corners (88 / 992, 428) with a warm lantern rim light. Each has a ship's lever with a gem knob (pivot 178 / 902). Confetti = gold coins + gem chips.
+- Caption "Both turn ONE wheel|~First gem to the GOLD wins~".
+- Sound: maze_duel's events + steel bed, melody `greensleeves` (PD, old-English sea mood; set via --melody unless given).
+- s91 (a Bolt win, from maze_duel's search): Bolt wins 23.33 vs 23.50. Both were on "1 TO GO" and the final turn drops both gems into the pit, emerald first. 6 lead changes, 6 tugs in 23 turns. Turns/5 s: 5, 5, 6, 7. Hits + seams/5 s: 26, 23, 37, 46. Clip 27.43 s (1646 f).
+- Checks (encoded, Full HD): h264 yuv420p 1080x1920 60 fps; -14.0 LUFS, peak -3.4 dBFS; last 1.3 s -93 dBFS, last 0.5 s -113 dBFS; flash_check 0 = PASS. Pre-encode last->0 mean 0.79 vs 0->1 0.37 (half res): the frame-0 hop landing + hatch pop. Encoded seam mean 1.35.
+- Doubts: the wheel handles leave the screen at some angles (decor only). The grid is 0.67 of the width, not more: a turning square must fit its 45 deg sweep. The counters jump 13 -> 14 for both after the first (synced) turn; that is the honest BFS count, but it reads oddly in the first second.
+- Args: --seed (91), --label, --cap, --melody (greensleeves), --voice, --still --frame. Search: run `python scenes/maze_duel.py --search N` (same sim). Other Bolt seeds: 736 (23.46 vs 23.68, 7 lead changes), 570, 845.
+- Delivered <VIDEOS_DIR>\batch14\maze_pirate.mp4 (Full HD). Owner review: pending.

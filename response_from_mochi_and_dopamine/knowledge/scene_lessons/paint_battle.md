@@ -1,0 +1,17 @@
+# paint_battle — Mochi vs Bolt paint the floor (NEW format)
+
+- Rule: a 12x12 board of white tiles (77 px, arena 78..1002 x 424..1348). Every tile whose centre is within 54 px of a character turns that character's colour, including the other one's tiles. Most tiles when the 27 s timer runs out wins.
+- Escalation (one rule): both keep speeding up the whole clip: v = 500 + 55t px/s (500 -> 1985). Steering: each character re-picks a target tile that is not its own every 0.35-0.8 s. The pick is weighted toward near tiles, tiles ahead of it and white tiles. It also wobbles at random, turn rate 2.6 + v/320 rad/s, and bounces off the walls. A bump between the two mirrors both headings: wow face, squash and 5 small stars.
+- Frame 0: the board is clean, Mochi is in the bottom-left corner and Bolt in the top-right (away from the Shorts buttons), both already moving at 500 px/s. The first tile flips at frame 1.
+- Tile flip: a 0.30 s scale pop (+20%) with a white flash that fades. A tile that is popping draws on top. A lead change (margin >= 2 tiles, held 0.4 s; a change in the last 0.4 s still counts) gives the new leader a 0.6 s happy face and a pop on its % label. The leader's label is bigger.
+- Counters: split bar at y 1384 (0.72h) and "MOCHI n%" / "BOLT n%" at y 1488 (0.775h). The timer pill "0:27" sits above the board. For the last 5 s it turns red and pops on each second.
+- Payoff (2.6 s hold): both coast 0.25 s, then hop to the board centre (x 372 / 708, y 905) and grow x1.45. The winner laughs (HA) at +0.55 s and cheers at +1.55 s with confetti. The loser stares at the camera, annoyed, from +0.6 s for 1.9 s. "<NAME> WINS!" banner at y 700.
+- Loop (1.5 s): the tiles ripple back to white from the centre (scale dip), the counters fall with them, the timer refills to 0:27, and the characters glide back to their start corners and pick up the frame-0 stretch. Pre-encode seam: frame 0 and the last frame are pixel-identical.
+- Sound: eine_kleine (PD). One note per tile flip, rate-capped by a gap of 0.075 -> 0.030 s, so the ceiling rises from 13/s to 33/s. Bolt's notes sit an octave up, panned by tile x. A steal adds pok 0.25 (gain 0.12). A bump plays as a bounce with no pitch, nudged +12 ms off any note. At the timer: arpeggio 60-64-67-72-76 + pop. The cheer plays note 79 + a small pop at +1.55 s. Nothing after 28.55 s.
+- `--search N [--from S]` (sim only, about 1 s per seed) keeps finishes with a 2-6 tile gap, different % numbers, at least 1 lead change, and ranks a lead change in the last 4 s plus a climbing flip rate first.
+- Pick s61: Mochi wins 74:70 (51% vs 49%). Bolt led 48-51 at 0:01, and Mochi retook the lead at 26.9 s. 11 lead changes and 8 bumps. Flips per 4.5 s: 90, 94, 99, 119, 125, 166. Steals per 5 s: 17, 80, 123, 146, 183. Alternatives: s286 (Bolt 51-49, retakes at 26.8, 18 bumps), s19 (Bolt 51-47, 26.6), s26 (Mochi 51-49, 27.0).
+- Measured on the Full HD encode: 31.12 s, h264 yuv420p 60 fps, 1080x1920, 1867 frames. -14.0 LUFS, peak -7.4 dBFS, last 0.5 s -240 dBFS. Sounded events per 5 s: 49, 54, 55, 76, 82, 27 (the last bin is the payoff and the reset). flash_check PASS (3 flashes, worst 1 per s). Encoded seam mean 0.48.
+- Args: --seed, --label, --cap ("Every tile you touch is YOURS|~Who paints more?~"), --melody, --search [--from], --dry, --still --frame.
+- Delivered to <VIDEOS_DIR>\batch7\paint_battle.mp4. Owner review: pending.
+- Owner review 2026-10-04 (batch 7): GOOD.
+- Owner review 2026-10-05: Good (moved to Oct 6).

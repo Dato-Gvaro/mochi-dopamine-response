@@ -1,0 +1,62 @@
+# mousetrap_chain — "Every trap fires 2 more" / "until EVERY trap has fired" (stake: "Spaced out or packed tight?")
+
+- The formula (docs/BRIEF_formula.md) on the famous ping-pong-ball mousetrap chain-reaction demo (the classic "critical mass" demonstration).
+  - Two glass rooms with the SAME 180 loaded mousetraps each (code-drawn: wooden base, copper pedal, steel bar, two ping-pong balls).
+  - Mochi (coral) spaces hers OUT over a big floor (42 x 49 px per trap). Bolt (mint) packs his TIGHT, wall to wall, into a small box (28 x 18 px per trap, 2 px gaps).
+  - Balls are coloured by trap row (violet at the back to red at the front), so frame 0 is a full rainbow mosaic.
+- **Frame 0 / meter:**
+  - One "n/180" counter + fill bar per room, with an ALL goal tick and an "ALL" label at the bar end. Caption line 2 states the end state.
+  - Frame 0 is mid-action. The dropped ball set off trap #1 in each room at -0.90 s, and its two balls are in the air. Mochi's first snaps land at 0.10 and 0.16 s (with "×2" pops), Bolt's first at 0.44 s.
+- **Chain model** (seeded, event-driven, analytic ballistic arcs; G 1150; glass walls reflect):
+  - Every fired trap launches its 2 balls: random azimuth, steep random angle, flights of 0.95-1.35 s.
+  - A ball that lands on a LOADED trap's pedal zone (18 x 11 px) fires it. Any hop of >= 0.36 s can trigger, which covers the landing plus about 3 bounces (e = 0.70). A ball that settles on a pedal also fires it.
+  - Traps that touch (only Bolt's) get kicked by a snapping neighbour with p = 0.10. That fired 31 of Bolt's 180. Without it, Bolt's box always left 1-5 islands unfired (coupon-collector holes). With it, ~3% of seeds reach ALL.
+  - Result: Mochi is subcritical (over 3000 seeds: median final 3 of 180, 90th percentile 16). Bolt goes critical (x2 per generation).
+- **Seeds** Mochi 421, Bolt 1358, picked from 3000 per room for these properties: Mochi has an early lucky run; Bolt reaches ALL at 12.6-14.8 s; there is a snap in the first 0.5 s.
+- **Key times** (clip s; clip 18.00 s = 1080 f):
+  - Counts M/B: 3/2 at 0.5 s; 6/4 at 2 s; 9/6 at 3 s; 12/9 at 4 s.
+  - LEAD CHANGE at 4.62 s (13 vs 14).
+  - Bolt: 56 at 7 s, 129 at 9 s, 90% at ~10.5 s, then the stragglers 177 → 179 → 180.
+  - ALL FIRED + the cadence at 13.21 s. PACKED TIGHT WINS! + "this is how a chain reaction works" at 13.56 s.
+  - Mochi stops at 23, plus one straggler at 14.44 s → 24/180. FIZZLED at 14.61 s.
+  - Dissolve from 17.40 s.
+- **Music = the clock:** Paganini, Caprice No. 24 in A minor (pub. 1820; Paganini d. 1840, PD). Not on the used/banned lists.
+  - Notes: Mutopia #2000, violin, LilyPond MIDI. Saved to `<SOUNDFONTS_DIR>\scores\paganini_caprice24\` with SOURCE_mutopia_2000.txt.
+  - The engraving is CC BY-SA 4.0. Only the PD composition's pitch and rhythm are read, into our own arrangement.
+  - Cut (vb = quarter):
+    - Tema bars 1-4 (vb 0-8).
+    - Tema bars 5-12, no repeat (vb 8-24).
+    - Var. I bars 1-4, triplets (vb 24-32).
+    - Var. I bars 13-16 into the A cadence (vb 32-38).
+  - Tempo: 0.34 s per quarter, then 0.33 in Var. I. The last 6 beats are stretched so vb 38 = Bolt's last trap (13.21 s).
+  - Sync: until vb 32 (10.94 s), every launch picks a FREE melody onset within ±15% of its natural flight time and lands there. The landing point is unchanged; only the arc height and speed change. So every early snap is a note.
+- **Sound** (scene-local bed + SFX; no noise anywhere):
+  - Bed:
+    - Solo violin carries the Tema. Pizz bass/chords come from each bar's own notes (root = the bar's first note; the third only if the bar has it).
+    - From vb 8, strings double the tune, with contrabass and horn pads.
+    - Var. I: strings + violin triplets, brass stabs, timpani, a crash at vb 24.
+    - From vb 34.5: a timpani roll, a strings-tremolo swell and a harp run (A harmonic minor) as the rising flourish.
+    - Cadence: A major (Picardy third) on brass, tuba, strings, choir, timpani, boom and crash (gain ×0.45).
+  - SNAP, one per fire: steel click partials (2.9 / 4.1 kHz, 2 ms), a wood body (880 / 1460 / 2240 Hz), a 172 Hz thump and a 9 ms rebound click.
+    - Pitch is ±10% by trap.
+    - Density gain is 0.45/(dens/1.5)^0.2, so the blizzard becomes a crackle of clicks.
+  - Ping-pong "pok": 1.25-1.6 kHz with a pitch drop, thinned to 1 per 24 ms per room, skipped within 9 ms of a snap.
+  - A marimba plink of the melody note on every onset that has a fire (59 plinks).
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/mousetrap_chain.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/mousetrap_chain.py --label v1` (one process, x264 `-threads 2`)
+  - `--report`
+  - `--search A B` (per-room seed table)
+  - `--seed-m` / `--seed-b`
+- **Checks** (encoded Full HD `output/mousetrap_chain_v2_9x16.mp4`; v2 = v1 video, audio rebalanced):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 18.00 s.
+  - Loudness: −14.01 LUFS, peak −5.5 dBFS, last 0.5 s at −72 dBFS. `peak_db=None`.
+  - Per-second RMS: −21 at the open → −16.4 in the blizzard (9 s); cadence quarter-second −14.4 (≈ +2.5 dB over the blizzard, +3.5 over the bar before).
+  - flash_check: 0 flashes = PASS (mean luminance 0.02).
+  - Loop seam: encoded mean delta 0.55.
+  - Side safe zone: content at x 0.100-0.833w, y ≤ 0.773h at 0, 4.7, 9, 13.3 and 15 s.
+  - Frames read from the encoded file at 0, 0.12, 0.15 (1:1 crop of the first snaps), 4.65, 9, 13.22 (1:1 crop of the box), 13.25, 14.6, 17.0 and 17.98 (= the pre-roll, matches frame 0).
+- **v1 → v2 (audio only):** the SFX sat ~5 dB under the bed and the cadence was +10 dB. Snaps went ×1.9 with a flatter density duck, poks ×1.6, plinks ×1.6, cadence ×0.75 → ×0.45.
+- Delivered `<VIDEOS_DIR>\batch45\mousetrap_chain.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-21): "interesting, i was engaged and watched twice in a row" -> SHIP first (4K, Oct 27 slot 1).

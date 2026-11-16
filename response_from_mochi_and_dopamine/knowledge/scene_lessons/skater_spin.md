@@ -1,0 +1,62 @@
+# skater_spin — "Same push, FASTER spin" / "Arms OUT or Arms IN?"
+
+- The formula (docs/BRIEF_formula.md) on CONSERVATION OF ANGULAR MOMENTUM, the figure-skater spin. Two identical spinning stools in a 3/4 view, each rider holding two iron balls on rods. Mochi (coral) keeps her arms OUT; Bolt (mint) pulls his arms IN. Both get the SAME push.
+- **Muted read at frame 0:** both stools are already spinning, with Bolt's balls trailing mint streaks. There is a gold SAME PUSH label over two equal PUSH bars (with "=" between them), ARMS OUT vs ARMS IN labels, "2 kg balls" chips, big RPM counters reading 32 vs 103, and a gold "×3.2 faster" chip over Bolt's counter.
+- **Honest physics** (every frame, `simulate()`, dt 1/1200):
+  - ω = L / I, with I = I_BODY + 2·m·r² and I_BODY = 0.10 kg m².
+  - One shared L for both riders: the pushes are identical, and bearing friction is dL/dt = −0.025·L, so the two PUSH bars are always equal.
+  - A push is a torque ramp over 0.45 s: L = 9.9 → 20.0 → 31.0. It is the same for both riders, and the bar shows L / L_max.
+  - Round 1, 2 kg: Mochi r 0.82 → 0.88 m, Bolt r 0.46 → 0.39 m.
+  - Round 2, 3 kg plus the bigger push: Mochi 0.88 → 0.93, Bolt 0.39 → 0.36.
+  - Demo: Bolt slides OUT to Mochi's exact radius (0.926 m), and both read 31.4 RPM. He then pulls IN to 0.36 with no push, and the RPM jumps ×6.
+  - Round 3, 4 kg plus the max push: Mochi 0.95 → 0.98, Bolt 0.35 → 0.32. At the cadence Bolt tucks to 0.30.
+  - Within each round Bolt keeps pulling in and Mochi keeps reaching out, so Bolt's RPM climbs through friction while Mochi's sags.
+  - Visual radius = r × 160 px/m (proportional). Ball radius = 14 + 3.6·m px.
+  - Bolt: 103 → 118 → 200 → 31 (demo) → 189 → 279 → 337 RPM (peak at 17.92 s). Mochi: 26-40 RPM throughout. The ratio goes ×3.2 → ×9.4.
+- **Music = Bolt's spin:** Tchaikovsky, Piano Concerto No. 1, the main theme (1875; Tchaikovsky died 1893, PD).
+  - Notes come from the Wikimedia Commons CC0 MIDI by Peter Gerloff: `<SOUNDFONTS_DIR>\scores\tchaikovsky_pc1\commons_gerloff_cc0\Tschaikowski_Erstes_Klavierkonzert_Hauptthema.mid`. See SOURCE.txt there. The file is in F major; the pickup offset is 0.25 beats.
+  - **One score beat = one full turn of Bolt's stool.** Every melody onset lands as his ball passes the front, so the tune's tempo IS his RPM: 0.57 s/beat in round 1, ~0.31 in round 2, ~0.2 in round 3.
+  - The theme's held D4 (beat 21) becomes a fermata while his arms are out.
+  - Beat 48 is our F-major cadence (the score's dominant C at beats 45-47 resolves to F), and it lands on Bolt's final tuck.
+  - The phases trigger on Bolt's turn count. Round 2 = beat 8, arms out = beat 21, pull in = beat 22.5 (a half-turn tick inside the held D4), max push = beat 36 (the climb), cadence = beat 48.
+- **Key times** (clip seconds):
+  - Frame 0 is mid-spin. Beat 0 (C5 + Bolt tick) at 0.10 s; first Mochi tick at 0.42 s.
+  - Round 2 push at 4.43 s (HEAVIER + BIGGER PUSH!, gold push arrows on both seats, timpani).
+  - Arms OUT at 8.56 s: SAME SPEED! with "=" between the counters from ~9.0 s.
+  - Pull IN at 10.66 s: "...now IN!" / "no extra push!", ×6.0.
+  - MAX PUSH at 15.06 s. Timpani roll from 16.88 s.
+  - Cadence and final tuck at 17.70 s: ARMS IN = FASTER SPIN! / "figure skaters use this", the gold seat ring, the orbit ring and the gold glow.
+  - Dizzy faces: Bolt from 18.6 s (X eyes + grin, fast gold stars), Mochi from 19.3 s (X eyes, wobbly mouth, slow white stars).
+  - Dissolve from 21.10 s into the pre-roll. The clip is 21.70 s (1302 frames).
+- **Staging:** Mochi laughs at 0.15 s, worries at round 2, laughs at Bolt's arms-out, wows at the pull-in, worries through round 3, wows at the cadence and is annoyed/dizzy after. Bolt laughs at 1.2 s and at round 2, worries while his arms are out, cheers at the pull-in, laughs at the max push and cheers at the cadence.
+- **Blur:**
+  - Each ball draws shutter ghosts (≤10) plus a speed trail of ω·0.16 rad: a coloured stroke with a white core. The trail turns into a full gold ring at the finale.
+  - Seat wedges lose contrast as the per-frame step grows, and concentric speed rings appear.
+  - Rim swooshes grow with ω.
+  - The 3/4 occlusion: the back half of the orbit is drawn behind the rider, the front half over.
+- **Sound** (the bed carries everything; the sidecar = 29 silent melody markers):
+  - Orchestra: melody on strings, a soft piano double, and cellos −12 from beat 8. The file's 2-note harmony goes on piano; bass on pizz, plus contrabass from beat 8. Horns double from beat 24 and brass from 36.
+  - Timpani F2 on both pushes. A soft Bb-major strings_slow swell under the fermata. A C-major dominant swell over beats 45-48, a timpani roll from beat 44, then the F-major tutti cadence: strings, choir, brass, piano, contrabass, harp roll, timpani, boom and crash (`fin` ×0.35).
+  - SFX (scene synths, tonal, no noise):
+    - A clean wooden tock per half-turn of each stool, so the rate = RPM: Mochi on C4, Bolt on F4. Gain ÷ √density; it fades over the tail.
+    - A collar clack when the weights finish sliding.
+    - A soft low thump per push.
+    - Bell chimes on round 2, the pull-in and the max push.
+    - Bells F5 + A5 + C6 on the cadence.
+    - All ≥ 12 ms apart.
+  - `peak_db=None` (brief).
+- **Laptop:** 1 Python process (BLAS threads 1) + x264 `-threads 2` (`Writer2`). A Full HD render takes ~70 s.
+- **Commands:** `NF_SCALE=1.0 NF_FAST=1 python scenes/skater_spin.py --still --frame N` · `NF_SCALE=1.0 python scenes/skater_spin.py` · `--report` (RPM/ratio/beat table, tick counts per 3 s).
+- **Checks** (encoded Full HD, `output/skater_spin_v1_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1302 frames = 21.70 s.
+  - Loudness: −14.00 LUFS, peak −5.54 dBFS, last 0.5 s at −78.3 dBFS (silent from ~20.35 s).
+  - Half-second RMS: body −18…−21, the pushes −15.8/−15.6, the cadence −15.2…−15.8, so the lift is kept.
+  - flash_check: 0 flashes = PASS (mean luminance 0.013).
+  - Loop seam: encoded mean delta 0.621 (good band).
+  - Side safe zone: lit content x 0.106w-0.831w at 0, 0.1, 10.2, 17.84 and 18.3 s.
+  - Ticks per 3 s, Bolt: 11, 15, 18, 9 (the demo), 19, 29, 37.
+  - Frames read at 0.5, 4.7, 9.3, 11.1, 15.5, 17.95, 19.5 s and the last frame; 1:1 crops of frame 0 and the finale (18.3 s).
+- **Known compromise:** at Bolt's tightest radius (0.30 m = 48 px) the front ball passes over his lower body in the 3/4 view. That is the honest geometry of a hug-tight spin; it is blurred at speed.
+- Delivered `<VIDEOS_DIR>\batch44\skater_spin.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-19): "I don't like this" -> dropped.

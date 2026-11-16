@@ -1,0 +1,49 @@
+# cradle_showdown
+- New format (YouTube Studio AI suggestion 2026-10-15). It replaces the rejected cradle_duel, which was a calm desk-toy rally with no stakes. This version is a turn-based shove duel with peril and a visible choice.
+- Rule: a giant 4-ball Newton's cradle between two stone pillars high above a pool. Mochi stands on the left pillar, Bolt on the right. On each turn the attacker hops onto its end ball(s), rides them back and jumps off. The balls clack through the row, and the far ball(s) BONK the opponent, who slides toward the pillar edge. Every round the balls are swapped for HEAVIER ones: 10, 15, 20, 25 kg ("HEAVIER! n kg" banner plus a flash). Caption: `Every ball is ^HEAVIER^ than the last|~Who gets knocked OFF?~`.
+- Choice duel (same release energy m·g·h each round):
+  - Mochi lifts 1 ball HIGH (h = 84 mm, v = 1.30 m/s).
+  - Bolt lifts 2 balls LOW (h = 42 mm, v = 0.92 m/s).
+  - 2 in, 2 out gives Bolt p = 2·m·v, which is 1.41x Mochi's.
+  - Shove = v²/(2μg), so his shoves are about 2x hers.
+  - HUD shows `MOMENTUM p = m × v (same energy)` with a bar per character and the formula (e.g. `2 × 20 kg × 0.91 m/s`).
+- Physics (1 px = 1 mm, g = 9.81 m/s², wires 450 mm, 40 substeps/frame):
+  - Exact pendulums with sequential elastic clacks between equal balls (1 mm gaps).
+  - A ball that hits a blob stops dead, and the blob (120 kg, μ 0.0825) takes its momentum. 120 kg ≥ 2 balls, so no energy is created.
+  - After the hit, heavy damping settles the row with no echo rally (the blob "soaks" the swing).
+  - A blob further back is reached later in the swing and so hit slower (honest). Bolt's last strike carries p 45.9 but delivers 36.7.
+  - First tune was blob 60 kg / μ 0.33. It gave the same shoves, but Mochi left the edge at 2x speed and splashed off-screen. Keep m_c²·μ constant when retuning.
+- Drama is robust: all 360 seeds searched give Bolt the win with both characters teetering. Only ±5% pull jitter varies.
+- s263 (default):
+  - Shoves (mm): 7, 14, 17, 32, 28, 51, 42, then off.
+  - 5 lead changes. Mochi TEETERING at 0.3 cm (7.8 s), Bolt TEETERING at 0.7 cm (10.3 s).
+  - Mochi knocked off at 12.25 s, splash 12.60 s.
+  - Clip 15.60 s (936 frames).
+- Hook: frame 0 has Mochi in mid-air after release and her ball mid-swing. CLACK at 0.15 s, BONK on Bolt at 0.16 s. Bolt rides his pair at 0.5-1.1 s. BOLT LEADS! and HEAVIER! 15 kg appear at ~1.9 s.
+- End:
+  - KNOCKED OFF!, a 0.3 s fall, then splash (crown, drops, ripples).
+  - Mochi bobs up with an annoyed stare and drips.
+  - Bolt laughs (HA HA) and cheers twice. BOLT WINS! appears with a chime.
+  - The last 0.6 s dissolves into the pre-roll (Mochi riding her ball up and jumping off).
+- Sound: no music, beds, whoosh or creak; all synthesized in the scene.
+  - Steel CLACK: a 0.7 ms transient, five sphere modes from 3.3 kHz·(10/m)^⅓ (deeper for heavier balls) and a short knock. Level follows impact speed; ripple micro-transients come from the 2-ball strikes.
+  - Rubbery BONK: a gliding 180-240 Hz tone plus partials, no noise tail.
+  - Scuff/meter tick per cm slid. Pok on hops/jumps, a tink when a blob lands on a ball.
+  - Upgrade thunk plus 2 low clacks; a soft ting on a lead change; tick-tick on a teeter.
+  - Splash plus blub, and a glass-harp win chime (rung out by 1.25 s).
+  - Onsets kept ≥ 12 ms apart. `master(peak_db=-6)`, because without it the AAC decode peaked at 0.00 dBFS. No events in the last 1.0 s.
+  - The sidecar `_events.json` holds the scene's own sound ids; `tools/regen_audio.py` cannot rebuild it, so re-render the scene instead (~26 s Full HD).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -14.01 LUFS, peak -3.89 dBFS. Last 0.5 s peak -46.4 dBFS.
+  - flash_check PASS (0).
+  - Pre-encode seam 0.615 against a normal step of 0.651 (perfect). Encoded seam 0.98 (I-frame step).
+  - Events per 5 s: 39 / 44 / 19.
+- Safe zone:
+  - Caption at y 196-270; content (water) ends at 1363 (0.71h).
+  - The momentum HUD ends at ~1525, above the Shorts UI.
+  - Bolt's pillar edge is at x 880 (< 0.85w = 918), and the vote banner fits in x 90-900.
+- Args: --seed (263), --label, --cap ('a|~b~'), --vote (OFF by default: "Team Mochi or Team Bolt?" + a drawn arrow from splash+0.55 s to the dissolve), --search N [--from S], --dry, --still --frame N (negative = pre-roll), plus tuning --mu --h --jit --ladder --travel --e0.
+- Delivered <VIDEOS_DIR>\batch36\cradle_showdown.mp4 (no vote). Owner review: pending.
+
+Owner review (2026-10-16): good -> 4K.

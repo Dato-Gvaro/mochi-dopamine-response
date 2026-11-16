@@ -1,0 +1,39 @@
+# spiral_timer2 — crystal-mine spiral: Mochi's gold vs Bolt's two traps, 15 s
+
+- Owner review of spiral_timer (2026-10-05): "good idea but too complicated for the eyes — make the spiral SHORTER but BIGGER, fewer swap doors, more context visuals". The updated BRIEF asks for ring_escape2-style glowing colour on a dark stage. spiral_timer.py is untouched.
+- Rule: Mochi +1 per gold ball that rings the chime into the cart; Bolt +1 per ball knocked off into his barrel. Most when the 15 s countdown ends wins.
+  - Caption: "Bolt's stomps spring the traps|~Most gold in 15 s WINS~".
+  - HUD: BOLT (x 230) | TIME (red under 5 s) | MOCHI (x 850), at y 1446/1528. Each counter jumps on its own sound.
+- Setting (dark crystal mine):
+  - Navy -> plum gradient with an amethyst glow pool behind the spiral.
+  - Seeded rock walls with glowing jewel crystal clusters (ruby, emerald, sapphire, orchid, teal).
+  - Two hanging lanterns (warm pools), a timber beam bolted into the rock, cart rails on the floor.
+  - Characters get a soft colour halo.
+- Machine, cut down from v1 (no feeder rows, no wheel, 2 traps instead of 3):
+  - One big amethyst spiral: RX 300, RY 85, pitch 280, 1.75 turns, TW 56. It fills the frame width (x 212-868). Glowing rails come from layered strokes (cairo has no blur); the back half is dimmed.
+  - Big glowing GOLD balls, R 16.
+  - A glass hopper (9x4, top right) holds the gold; a gate under its outlet glows when open. The pile drains with the granular avalanche rule.
+  - The end ramp brakes to 420 px/s, then a steel chime with a glint, then Mochi's iron mine cart (7x3, coral trim, wheels on the rails).
+  - Bolt's wooden barrel (5x4, mint bands) sits directly under the trapdoor.
+  - Core: the Archimedes screw in the tower's axis (the loop).
+- Gold streams: gate interval 1.3 - 0.035 t (min 0.85); stream size lo = 2 + t/8, hi = lo + t/6. Balls leave the hopper 0.09 -> 0.06 s apart and follow one ODE (VT 1300, tau 0.38).
+  - A stream is released only if its last chime lands before 0:00. A last-call stream is timed to the buzzer.
+  - Total gold = the schedule's sum (36 = hopper capacity), so the hopper runs dry as time runs out.
+- Bolt: stomp interval 1.85 - 0.06 t (min 1.0), x0.8-1.2 jitter. He hops onto a big red button that glows when pressed.
+  - The traps ALTERNATE. Charge 1-3; ARM_T 1.5 s, then a miss.
+  - PICKAXE: a big double pick on an iron rod hangs from the beam (idle -0.42 rad). Armed, it winds up to +0.95 glowing red, then sweeps to -0.10 through the upper turn's left extreme as the first ball arrives. Hit balls arc left (vx -150, vy -300), clear the lower turn and drop into the barrel.
+  - TRAPDOOR: the lower turn's floor at its left extreme drops open (dark hole, red glow), and balls fall straight into the barrel below.
+- Reactions: a knock of >= 2 makes Bolt laugh and Mochi annoyed; a miss makes Mochi laugh and Bolt annoyed. Bolt's idle face is a grin. End: winner cheer + gold/jewel confetti + laugh, loser wince + stare.
+- Loop: t_r = 17.3 s. Cart and barrel hatches open, the piles avalanche into the floor trough, and the screw lifts the balls into the hopper inlet. Each ball pops out and drops onto its frame-0 fill slot. Counters count down, the timer resets, and the last PRE = 3.18 s replay the pre-roll.
+- Sound (scene-side bed; re-render to rebuild):
+  - Steel chime per catch (mountain_king +12, Grieg, PD: "Hall of the Mountain King" for a mine).
+  - Steel tick per ball leaving the hopper and per cart landing, plus whole-second ticks over the last 5 s, then a "time up" chime chord.
+  - Mixer foley: latch on each stream and on each stomp (+ bounce), CLANK on a pickaxe hit, latch when the trapdoor drops, pok on a trapdoor fall and on barrel landings.
+  - Reset: rising chime every 2nd ball refilled. Bed cut at T-1.3.
+- s2381 (Mochi win, as asked): Mochi 19, Bolt 17. 4 lead changes, the last at 14.3 s. 10 stomps, 3 misses. Events per 3 s: 6, 6, 6, 8, 10. First chime 0.30 s. Clip 25.03 s (1502 f).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.00 LUFS, peak -6.95 dBFS; last 1.3 s -91 dBFS, last 0.5 s silent; flash_check 0 = PASS.
+  - Pre-encode seam 1501 -> 0 = 0.329 against a normal step of 0.330/0.335 (perfect loop). Encoded seam 0.85 (I-frame quality step).
+- Search `--search N [--from S] [--bolt]`: wants a Mochi win (Bolt with --bolt), margin <= 2, both piles within capacity, >= 1 miss, last score after 14.3 s, last 3-s bin the busiest. The total is 36, so a non-tie margin is 2. Alternatives: s813 (4 lead changes, last at 14.9).
+- Args: --seed (2381), --label, --cap, --melody, --search [--from] [--bolt], --dry, --still --frame.
+- Delivered <VIDEOS_DIR>\batch14\spiral_timer2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-06: Overall OK, but the claw/pickaxe doesn't move naturally.

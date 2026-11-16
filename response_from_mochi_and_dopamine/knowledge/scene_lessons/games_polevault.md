@@ -1,0 +1,35 @@
+# games_polevault: PHYSICS GAMES · EVENT 1: POLE VAULT (batch73c, replaces the high jump)
+
+- Brief: docs/BRIEF_batch73c.md. Owner rule: the blobs keep their EXACT rest shape (no stretch, bend or squash; only the pit squashes). The bendy-vs-stiff contrast lives in the POLE.
+- Model (per kg; the mass cancels):
+  - Both run in at 9.0 m/s, then hop so the pole hits the box at the top of the hop: COM 0.80 m, vx 8.55 m/s, 40.5 J/kg.
+  - Box 0.20 m deep. The vaulter is a point mass at the grip; the blob outline is rigid around it (toon rounded square, toon pear polygon). The blob turns with the pole (0.35x the pole's angle), then keeps a constant spin in flight.
+- Stiff pole (Bolt): rigid.
+  - At the plant the velocity component along the pole is lost (the jar): 62% of his energy.
+  - He then swings as a rigid pendulum and lets go at the vertical.
+  - Grip scanned 1.40-1.95 m; best 1.80 m gives max bar 1.08 m. A longer grip ends the swing too slow at the top; 2.0 m+ stalls.
+- Bendy pole (Mochi): a pinned-pinned Euler elastica (scipy ellipk/ellipe).
+  - Straight up to its buckling load, then the chord shortens along the elastica load curve.
+  - Unloading at 0.93 of the loading force (~7% hysteresis).
+  - She lets go when the pole is straight again: at 0.26 s, so it acts as a catapult.
+  - Chord shortening capped at 32% (real poles ~30%).
+  - Grip and stiffness scanned; best: grip 1.90 m, buckling load 4.5x her weight, 25% bend, COM peak 4.23 m, max bar 3.71 m (standards at 0.7 m).
+- Fair-play rules in `knock()`:
+  - The body OR the pole touching the bar is a knock.
+  - Landing short of the bar plane is a fail.
+  - Passing UNDER the bar untouched is "TOO LOW".
+  - Standards 0.2-0.8 m beyond the box.
+- Ladder (+50% a round): 0.71, 1.07, 1.60, 2.40, 3.60; a WORLD RECORD 6.31 cell on the meter from frame 0.
+  - Bolt: CLEAR (+16 cm), CLEAR (+1.0 cm, the bar shivers), KNOCK 1.60 (his right side, at the top of the stalled swing), TOO LOW, TOO LOW.
+  - Mochi: CLEAR all; 3.60 by 5.8 cm.
+- History (finale card): Warmerdam 4.77 m, bamboo, 1942; Bragg 4.80 m, metal pole, 1960 (the last stiff-pole record); Davies 4.83 m, 1961, the first WR on fibreglass; Sternberg 5.00 m, 1963; Duplantis 6.31 m, Uppsala, 12 Mar 2026. Sources: Wikipedia, men's pole vault world record progression; Wikipedia, George Davies (athlete); World Athletics report, 12 Mar 2026.
+- Drawn, not modelled: the pole carried in the run-up (its tip slides down the box floor), the pole tipping back after the release, the blob settling upright in the pit.
+- Tried and rejected: one shared 1.90 m grip for both (Bolt then clears only 0.79 m: he reaches the vertical almost stopped); larger blob sizes (1.2/1.5 m change Bolt's limit by < 0.2 m).
+- Checks (encoded Full HD, b73c): 920 f = 15.33 s; -14.01 LUFS, peak -3.9; flash PASS; seam 0.53; events/5 s 16 > 13 > 6.
+- Delivered: <VIDEOS_DIR>/MochiAndBolt/review/batch73/games_polevault.mp4 (high jump v2 moved to archive/batch73_highjump_v2/). Owner review: pending.
+- v1.1 (owner, 2026-11-07): back stands fill the dark panel space (`draw_stands`; `--no-stands` turns them off).
+  - Seeded tiered rows from behind the runway up to the hoarding, each 0.93x smaller and dimmer than the one below, with railing edges, 16% empty seats and a slow idle bob.
+  - Colours are pulled 66% toward the night background at alpha <= 0.42; floodlight glow at 0.07.
+  - On each CLEAR: a ripple of heads pops up from the bar outwards (700 px/s, within 360 px) and 5 tiny flags wave. It is motion only, no brightness change.
+  - Draw cost 0.23 s/frame at FHD (was 0.09).
+- Delivered v1.1 (stands): review/batch73/games_polevault.mp4 (FHD b73c2: -14.01 LUFS, flash PASS, seam 0.94) + games_polevault_4k.mp4 (4K b73c4k: -14.01 LUFS, flash PASS, seam 0.59). v1 FHD in archive/batch73_polevault_v1/.

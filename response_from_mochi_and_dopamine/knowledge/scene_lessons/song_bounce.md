@@ -1,0 +1,40 @@
+# song_bounce — "Mochi grows with every note" (batch24)
+
+- Owner request (2026-10-10): hook within 2-3 s, satisfying, an urge to rewatch, a famous melody. Format: "the bouncing ball plays a song".
+- Rule: Mochi (a glowing coral ball with her face) bounces inside a big glowing ring. EVERY wall hit plays the NEXT melody note, in the real rhythm, and she grows with each hit. On the cadence note she fills the ring exactly: PERFECT FIT. She bursts at the loop seam.
+- Music: Tchaikovsky, Swan Lake, Act II No. 10 "Scene", the oboe Swan theme (1876). **PD: Tchaikovsky died 1893.**
+  - Notes are parsed from MusicXML: IMSLP #917974, Swan Lake Suite Op. 20a No. 1 "Scène", engraving by Gene Gajewski, **CC0 1.0**.
+  - Used: bars 2-9 (the full first statement, 35 notes, ending on the tonic). Oboe I is the melody (one note per bounce). The left hand is soft piano chords from Violin I/II + Viola (one chord per change of the tremolo), with bass from the Cello/Contrabass pizz + the harp's low downbeats + the cello's bar 7-8 descending line.
+  - Transposed down a perfect fifth (B minor -> E minor): melody C4-B4, bass B1-E3. One bass note (B1) is raised an octave (the NoteBank floor is C2).
+  - Tempo: quarter = 75 (Moderato), so every note lands on an exact frame (eighth = 24 f).
+  - Voice: `audio.synth_piano`. A full rolled E-minor chord sits under the cadence, and there is a soft balloon pop under the downbeat at the burst.
+- Physics: the trajectory is solved BACKWARDS from the score.
+  - Flight k lasts exactly note k's length.
+  - Exact circle-billiard reflection: a constant golden-angle (137.5 deg) step, so angle in = angle out on every bounce. Only the speed changes per bounce (chord / note length): 1700 px/s on the first eighths, 230 px/s on the opening half note, and down to 17 px/s at the end.
+  - Gap law: L_k = (R_in - r0)(1 - k/34)^1.15, with r0 = 56 and R_in = 442. Size runs 13% -> 100%. The last gaps are 52, 43, 33, 24, 15, 7, 0 px.
+  - Straight flights with growth that is linear in time can never overlap the rim (|x| is convex along a line; the gap is linear). Measured: overlap 0.000 px, contact error 0.000 px.
+- Visuals:
+  - Rainbow trails of the path.
+  - Per hit: a contact bloom, an imprint ripple, sparks, and a coloured bead left on the rim.
+  - Counter "SIZE n%", which pops on each hit.
+  - Bolt sits small at the bottom-left, outside the ring; his eyes follow her, and he gasps on the fit.
+- Fit hold (22.4 -> 25.6 s, silent): the ring turns gold and "PERFECT FIT!" appears. The beads re-ignite in melody order while the chords between consecutive contact points are replayed as a rainbow star over her. Because every chord has the same length (exact reflection), the star draws a perfect caustic circle around her face: the hidden order, and the blink-and-miss reward.
+- Hook / frame 0: the burst instant.
+  - The frame shows the ring-filling, grinning Mochi, the gold ring, the rainbow caustic star, "PERFECT FIT!" and SIZE 100%.
+  - The first note (the theme's downbeat) sounds at 0.0 s, and she pops to tiny within 0.34 s amid 200 sparks (45% fall back into the ring as glitter).
+  - The first bounce is at 1.6 s; then four eighths zip (1.6-3.2 s).
+- Loop: payoff -> payoff. state(T) vs frame 0, pre-encode: mean 7e-5/255 (a few anti-aliased px), so it is exact.
+- Audio: a raised-cosine damper (scene `mix_audio`) releases the mix from Tc+1.2 s to T-1.35 s, because the piano voice rings 2.4 s and would otherwise be cut, not faded. **tools/regen_audio.py does not know about this damper**; regenerate audio through the scene instead.
+- Numbers: 35 notes, fit at 22.40 s, clip 25.60 s (1536 f), notes/5 s = 8, 8, 9, 10.
+- Args: --label (v1), --cap "line1|~line2~", --still --frame N.
+- Checks (encoded Full HD, output/song_bounce_v1_9x16.mp4):
+  - h264 yuv420p 1080x1920 at 60 fps, 1536 frames = 25.60 s.
+  - -14.00 LUFS, peak -6.78 dBFS. The last 1.3 s is ≤ -54 dBFS (reverb residue); the last 0.5 s is at -90.3 dBFS.
+  - flash_check PASS (worst 1 flash in 1 s, at 21.1 s; the burst is not a flash).
+  - Seam: pre-encode state(T) vs frame 0 mean 7e-5. Encoded seam mean 0.739, at the top of the good band: the I-frame step on a large coral area.
+  - Sync: encoded vs pre-encode wav lag 0 ms. Every hit sits on an integer frame. Piano onsets land 0-14 ms after the hit (< 1 frame). Rim contact error at the hit frames is 0 px.
+- Delivered <VIDEOS_DIR>\batch24\song_bounce.mp4 (Full HD). Owner review: pending.
+- Doubts:
+  - 0.5-1.5 s is the emptiest stretch (tiny Mochi + falling glitter, first bounce at 1.6 s, because the theme opens on a half note).
+  - The bounce RATE cannot climb much with a fixed melody (8, 8, 9, 10 notes/5 s), and px/s falls as the gap shrinks. The escalation is size, glow and sparks.
+- Owner review (2026-10-10): nope. Dropped.

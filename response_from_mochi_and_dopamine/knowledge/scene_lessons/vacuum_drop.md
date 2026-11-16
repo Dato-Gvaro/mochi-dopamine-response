@@ -1,0 +1,64 @@
+# vacuum_drop — "Drop them at the same time…" / "Bowling ball or Feather?"
+
+- Formula (docs/BRIEF_formula.md) on the famous VACUUM-CHAMBER demo (Galileo; Apollo 15 hammer + feather; the big-chamber bowling ball + feathers).
+  - Two glass drop chambers side by side, both 3.00 m from the release line to a floor sensor. Bolt (mint) picks the BOWLING BALL (left chamber). Mochi (coral) picks the FEATHER (right chamber).
+  - Round 1 WITH AIR: BALL WINS. The pumps drain AIR 100% → 0%. Round 2 in a VACUUM: SAME TIME! Round 3: + hammer + brick vs + leaf + paper, all six land on one frame → IN A VACUUM, EVERYTHING FALLS THE SAME / Galileo was right.
+- **Meters at frame 0:** a lap timer per chamber (BALL / FEATHER, already running at 0.58 s), an AIR 100% dial + readout on each cap, 0.25 m ruler ticks with 1 m / 2 m labels. Each tick lights gold as an object passes it.
+- **Honest physics** (g = 9.81, drop 3.00 m, 233.3 px/m):
+  - Ball in air: 7 kg, d 21.6 cm, Cd 0.47, ρ 1.2. Integrated with quadratic drag: 0.7825 s, 7.66 m/s (vacuum: 0.7821 s). Rebound restitution 0.10, a 3 cm hop.
+  - Feather in air: drag-limited, v = vt·tanh(g t / vt) × flutter factor (0.55 + 0.9 cos²φ, cycle mean 1). It swings left/right as a falling leaf, tilting into the swing. vt is solved so it lands on its note: vt 0.689 m/s, fall 4.42 s, mean 0.68 m/s (real contour feathers: ~0.5-1 m/s).
+  - Pumps: 28 strokes, each removes the same fraction of the air left (r = 0.756). AIR reads 76% after stroke 1, 1.5% at stroke 15 and 0.04% after the last, shown as "0%". Readout: integer ≥ 9.5%, one decimal below that. 120 air dots per chamber, and the visible count = the honest fraction. Removed dots fly up into the pump intake.
+  - Vacuum: 0.5·g·t² for every object, bottoms aligned on the release line. All land on the same frame (round 2 frame 819, round 3 frame 1084). The feather stays flat (no air, no flutter).
+  - Slow motion: real speed, then a smooth ramp to 0.5× for the last part of each vacuum fall (from 0.37 s / 0.47 s into the fall), back to 1× 0.3 s after landing. Clip spans 1.12 s / 1.03 s for the true 0.782 s. The timers show the REAL fall time (0.78 s), and "SLOW-MO 0.5×" shows while the clock is slowed.
+- **Music = the clock:** Chopin, Nocturne in E-flat Op. 9 No. 2 (1833; Chopin d. 1849, PD).
+  - Source: Mutopia #1590 MIDI (Schirmer 1881); the engraving is CC BY-SA 3.0, the notes are PD. `<SOUNDFONTS_DIR>\scores\chopin_nocturne_op9n2\`, see SOURCE_mutopia_1590.txt.
+  - Cut: score beats 0-24 (bars 1-4, pickup to the E-flat cadence, quarter = 1 beat), then the coda's E-flat figure and final chord (score 210.5-219.5 = vb 24-33).
+  - Tempo: 0.56 s/beat, ritardando 0.56 → 0.74 over vb 29-31.5.
+  - Sync: ball lands on the pickup B-flat (vb 0). Feather flutter reversals on the melody onsets (vb 0.5, 2.5, 3, 3.5, 5, 6), and it lands on vb 6.5. Winch reset vb 7.5-8.5. Pump strokes on every LH eighth (vb 9-19.5), then on the 16th-note run (20-21.25), so the rate climbs. VACUUM! on the E-flat cadence (21.5). Round 2: release vb 22, land vb 24 (= the coda's first E-flat). Pop-ins on vb 27-28.5. Round 3: release vb 30, land on the final chord (vb 31.5).
+- **Key times** (clip s):
+  - Frame 0: both objects falling (released at −0.583 s), ball at 1.66 m. Ball lands 0.20 (BALL WINS!). Feather lands 3.84 (timer 4.42 s).
+  - Reset 4.40-4.96. Pumps 5.24-12.10 ("PUMP OUT THE AIR!" from 4.96). VACUUM! 12.24.
+  - Round 2: release 12.52, SAME TIME! 13.64 (both timers 0.78 s, gold "=").
+  - Reload 14.48-15.04, pop-ins 15.32 / 15.60 / 15.88 / 16.16, "EVERYTHING!" 15.88.
+  - Round 3: release 17.04, six-object landing + finale 18.07.
+  - Dissolve from 21.02. Clip 21.62 s (1297 frames).
+- **Staging:** characters sit on the chamber caps (Bolt x 193, Mochi x 822, r 38).
+  - Bolt laughs at 0.22 and 2.5 (smug), wows at VACUUM, wows → cheers on SAME TIME, then wow → cheer → laugh at the finale.
+  - Mochi is annoyed through the drift and after her feather lands, worried through the pumps, then wows at VACUUM, wows → cheers → laughs on SAME TIME and wow → cheer → laugh at the finale.
+  - As the air drains, the tube interiors turn a faint violet. Each landing gets a gold sensor glow, floor ripples and flattened contact rings (no flash).
+- **Layout:** chambers at x 155-455 / 560-860 (outer 141-875, inside the 108-907 safe zone), tubes y 462-1300, caps 418-462, timers y 1398 (label) / 1466 (digits), slow-mo tag y 1362. Caption at 150 / 236, centred on x 507.5, max width 779.
+- **Sound** (the bed carries the music; the sidecar = 46 silent markers):
+  - Melody on cello (−12, G4-D5) + celesta + a soft `synth_plink` per note. LH chords on harp, bass on contrabass + pizz.
+  - Strings join with the pumps and get louder in the vacuum. Horns double the coda. Choir pad from VACUUM.
+  - SAME TIME: E-flat swell + timpani. Timpani roll into the final E-flat tutti (strings, choir, brass, harp roll, celesta, timpani, boom, crash; `fin` ×0.38).
+  - SFX (scene synths, no noise/hiss):
+    - Ball: a heavy pitch-dropping thunk + rebound. Feather: a soft two-sine tick.
+    - Clamps: a metal latch click. Winch: tonal ratchet + toks.
+    - Pumps: a tonal "thoomp" per stroke, pitched on the score's bass at that onset (folded to G2-F#3), plus a valve tick.
+    - Ruler ticks: glassy pings on E-flat pentatonic.
+    - Landings: the SAME TIME unison = thunk + clack + tick in ONE sample, plus bells (E-flat 5, G5). The finale = a heavier unison + bells.
+  - Mastering: `peak_db=None`.
+- **Checks** (encoded Full HD `output/vacuum_drop_v1_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1297 frames = 21.62 s.
+  - Loudness: −14.00 LUFS, peak −6.03 dBFS, last 0.5 s at −74.7 dBFS. Per-second RMS: body −15.6…−17.9, finale second −14.1 (+2.4 dB).
+  - flash_check: 0 flashes = PASS (mean luminance 0.012).
+  - Loop seam: pre-encode mean delta 0.607 against 0.568 for a normal step (objects are already falling at frame 0); encoded 0.93 against 0.57-0.64 (I-frame at frame 0). The last frame is the pre-roll at t = −1/60 s.
+  - Frames read at 0, 0.15, 1.0, 4.2, 5.5, 9.3, 12.25, 12.7, 13.7, 16.3, 18.1, 19.7 s, plus encoded 1:1 crops of both vacuum landings (frames 818/819 and 1084).
+- **Laptop:** 1 Python process (BLAS threads 1) + x264 `-threads 2` (`Writer2`). Full HD renders in ~6 min.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/vacuum_drop.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/vacuum_drop.py --label v1`
+  - `--report`
+- Delivered `<VIDEOS_DIR>\batch43\vacuum_drop.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-19): "if you think it might work, we can try" -> my call: ship -> 4K.
+
+## Ship (2026-10-19): approved -> 4K
+- Only change from v1: the final-chord gain `fin` went from ×0.38 to ×0.50 (coordinator: put the finale ~3 dB above the body).
+- Render: `NF_SCALE=2.0 python scenes/vacuum_drop.py --label ship` -> `output/vacuum_drop_ship_9x16.mp4` (the coordinator stages it).
+- Checks (encoded 4K):
+  - Video: h264 yuv420p 2160x3840 at 60 fps, 1297 frames = 21.617 s.
+  - Loudness: −14.00 LUFS, peak −5.93 dBFS, last 0.5 s at −73.4 dBFS.
+  - Finale second −13.8 dB RMS vs body ≈ −16.6 (+2.8 dB).
+  - flash_check: 0 flashes = PASS.
+  - Encoded seam: 0.81.

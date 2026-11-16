@@ -1,0 +1,14 @@
+# bolt_bubbles3
+- Fix for bolt_bubbles2's review ("ok, could be more satisfying — pop more, miss less"). Nameable change: COMBOS — Bolt steers in the air and chains a whole cluster in one jump ("x48!").
+- Air control: in flight Bolt homes on the soonest bubble it can still reach (y-crossing time vs horizontal reach 0.5*A*s^2, A 1900 px/s^2, |vx| <= 1000; split children targeted once their 0.35 s immunity ends). Landing safety overrides the chase when < 0.45 s from the bed or the needed correction > 0.5 A, so Bolt always lands on the bed. Launch planner scores bubbles near the path (reach grows with air time) per second of air, vy0 -1150..-1750, apex >= 470.
+- Rate 3.6 + 10.4*u^1.2 /s (bs2: 3.0 + 8.6), big share 0.25 -> 0.65. Bed widened to 165-915. Bolt R 92 (was 78), Mochi r 80 (was 64) at (165, 1424): bottom 1498, clear of the counter and the bottom 20%.
+- s1 main 30 s: 20 jumps, 0 empty, mean combo 21.6, combos climb 13 -> 48 (x48 at 28.6 s, the last free jump). Pops per 5 s [38, 52, 73, 75, 96, 134] (bs2 s9: [25, 28, 45, 65, 75, 98]). Escaped off the top 79 of ~600 (bs2: 140 of 531).
+- "xN!" sticker above Bolt from 10 pops in a jump (3 read as clutter), size and heat (yellow -> orange) grow with N, kick on every pop, fades 0.55 s after landing. Hidden on the gag jump.
+- Mochi reacts: wow at the busiest 1 s in 45-80% (21.75 s), cheer on the x48 landing.
+- Gag 4.6 s (bs2: 7 s): machines stop -> giant bubble (r 132) grows out of the left nozzle 0-0.5; Mochi drools, hops 0.62, swallowed 1.09; Bolt's last jump lands at BX0 470 at 30.08 and holds; worried Mochi from 1.37; Bolt jumps straight up 1.75 -> POP! 1.88 (also pops ~13 leftovers); Mochi lands soaked 2.65, glance 0.28-0.58 s after, stare; Bolt laughs; stare held to 0.45 s before the end, then back to frame 0.
+- Loop: last 0.45 s leftovers fade out, frame 0's OWN bubble list (sim frame 0, not the pre-step init) rises into place and lands EXACTLY on it at the last frame, counter rolls to 0. Last frame == frame 0 pre-encode (max delta 0): a 1-frame hold, invisible. GOTCHA: ghosting from the pre-step init / with s offset -DT left a 0.86-0.90 post-encode seam.
+- Sound as bs2, pop gate 0.04 s. Giggle = one note (84) at Bolt's landing + 2 short poks: ringing high notes 1.5 s before the end still read -52 dBFS in the last 0.5 s. Last event 33.1 s of 34.6 s.
+- Measured: 34.60 s (2076 frames), h264 yuv420p 1080x1920 60 fps, -14.0 LUFS, peak -5.0 dBFS, last 0.5 s -70.3 dBFS, flash_check 0 PASS, post-encode seam mean 0.35.
+- Args: --seed (1), --dur (30), --label, --cap, --sim (prints jumps/empty/combos/escaped), --still --frame.
+- Delivered <VIDEOS_DIR>\batch5\bolt_bubbles3.mp4. Awaiting owner review.
+- Owner review 2026-10-04 (batch 5): GOOD - approved (Schedule 2026-10-06).

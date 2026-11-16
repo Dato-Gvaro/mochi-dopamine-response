@@ -1,0 +1,12 @@
+# mochi_sort
+- Episode of bolt_sort2: MOCHI'S REVENGE (answers bolt_sort2's pinned "Should Mochi get revenge?").
+- Nameable change: roles swapped. Mochi sorts and Bolt sits under the red jar. After the red trickle (25 tik), jars 1-3 flip late and FLING all 75 candies onto Bolt (the avalanche). Mochi laughs, Bolt looks worried, winces, then stares annoyed at the camera.
+- Own look and tune: lilac theme, mountain_king melody (PD), caption "Mochi's turn to sort|~Can it fill all 4 jars?~".
+- Engine: bolt_sort2 flags HERO/SIDE/THEME/AVALANCHE (AV_DELAY 2.3 s, AV_VY -900), RESET_S 6.2. bolt_sort2 defaults are unchanged (a pixel-identical still is checked after every edit).
+- Seed 2, 39.07 s; avalanche hits 75/75 at 3.53-3.85 s into the reset; annoyed from 3.97 s.
+- Shipped sample: -14.0 LUFS, peak -7.5 dBFS, tail -90 dBFS, flash_check PASS (0).
+- Lesson: no note within ~1.3 s of the loop seam (a late flip-back note left the tail at -22.6 dBFS).
+- Owner review 2026-10-03 (batch 4): v1 (plain swap) was too similar to bolt_sort2 -> rebuilt as the revenge episode.
+- Owner review 2026-10-04 (batch 5): GOOD - approved, but 2-3 ball hits had no note. Cause: mix_events drops ANY onset within 10 ms of the previous one, and 4 bump notes sat within 10 ms of a land pok. Fixed with PROTECT_NOTES (non-note sounds nudged +12 ms); 0 bump notes dropped now. bolt_sort2 (published) has the same 4 drops.
+- Owner review 2026-10-04 (batch 7): Pulled from Oct 6 (sort_thief preferred). Kept as a reserve episode.
+- Owner review 2026-10-04: Revenge episode reads as lazy writing, a duplicate of bolt_sort. Pulled.

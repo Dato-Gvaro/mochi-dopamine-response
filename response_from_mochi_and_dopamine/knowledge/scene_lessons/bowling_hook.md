@@ -1,0 +1,61 @@
+# bowling_hook — "Same ball, same lane" / "Straight or HOOK?"
+
+- Formula (docs/BRIEF_formula.md) on bowling night, aimed at ~30-year-old US viewers. No brands, logos, alleys or real bowlers.
+  - Two lanes side by side, seen from high behind the foul line (stylised camera: the 60-ft lane is compressed, the pin deck is magnified, a mild 10% perspective).
+  - Mochi (coral, left lane) throws STRAIGHT at the head pin. Her bubble: "Aim at the HEAD PIN!" (0-2.45 s).
+  - Bolt (mint, right lane) throws a HOOK into the 1-3 pocket.
+  - Goal at frame 0: the "PERFECT 300" score monitor between the lanes, and a 0-300 meter with a gold 300 flag per bowler.
+- **Honest physics** (all in `simulate()`; nothing scripted per pin):
+  - Lane: a sliding-to-rolling sphere (15 lb, r 4.25 in, k = 0.4) with Coulomb friction on the slipping contact point. Oil μ 0.04 for 40 ft, ramping to 0.20 on the dry backend.
+    - Straight: end-over-end, 250 rpm, 7.4 m/s. Entry angle 0°.
+    - Hook: released on board 12, 350 rpm, axis rotation 50°, 8.1 m/s. It skids, goes out to board ~5, grips the backend at ~45 ft and enters the pocket at 5.5-6.3°. That curve is pure friction; the release angle is solved by bisection.
+  - Pin deck: 2-D rigid discs (pins 3 lb 6 oz, r 2.38 in at the belly), impulse collisions (e 0.65 ball-pin, 0.50 pin-pin), a struck pin falls when it moves > 0.3 m/s and its footprint grows to 3.6 in while it tumbles, kickbacks e 0.45, gutters, pit. The ball keeps its spin on the deck, so friction drives it on after each deflection.
+  - Seeded release noise per throw (speed, angle, revs, release board); pros (Bolt) have about half Mochi's scatter.
+  - **Measured strike window** (noise-free sweep, ball rolling at 6.6 m/s): 0° entry strikes only at 1.8-2.8 in from the head pin centre (~1 in wide); 6° strikes from 1.0 to 5.0 in (~4 in). That is the finale line "a 6° entry angle = a 4x wider strike pocket". A dead-centre nose hit leaves the 4-6 split.
+  - **Measured strike rates** (`--search --n 200`, free seeded throws): HOOK 128/200 = 64% (pocket hit +3.06 ± 1.54 in, entry 5.8°); STRAIGHT 55/200 = 28% (entry 0°, all from the narrow pocket/Brooklyn windows). Top straight leaves: 6, 4, 6-10, 4-6. Top hook leaves: 7-10 (13/200, high hits), 10, 2-8.
+  - The clip's game is a seeded draw chosen for the story with `--search-seq` (first sub-seed per delivery that matches the spec in `SPEC`; seeds are hard-coded in `SEEDS`):
+    - Bolt: 12 strikes = 300. Each needed 0-2 extra sub-seeds (consistent with his measured rate).
+    - Mochi: a lucky pocket strike, a 10-pin spare, a 7-10 (sub-seed 69), six ordinary straight-ball frames (4, 4-6, 6, 4-6, 4-7, 6 leaves: her most common sim leaves) and the 7-10 again in the 10th (sub-seed 128). **The 7-10s are cherry-picked for the comedy:** under 3% of her free throws (the classic nose-hit split in the sim is the 4-6, 10%), and the hook actually leaves more 7-10s (6.5%).
+    - Her second balls aim at the middle of what stands, so on a 7-10 she rolls straight between the two pins (MISS).
+- **Scoring:** real ten-pin rules, shown LIVE (strike/spare bonus pins added when they are thrown). Frame boxes show X, /, -, digits.
+  - Mochi X, 9/, 8-, 9/, 8-, 9/, 8-, 8/, 9/, 8- = 143. Bolt X ×12 = 300.
+  - Mochi leads 10-0, 28-10, 46-30, 56-30. LEAD CHANGE at Bolt's 3rd strike (TURKEY!): 60-56.
+- **Music = the clock:** Scott Joplin, "Elite Syncopations" (1902; Joplin d. 1917, PD worldwide).
+  - Source: Mutopia #1540 (Mutopia-2008/09/19-1540), piano, engraving Public Domain. Saved in `<SOUNDFONTS_DIR>\scores\joplin_elite_syncopations\` with SOURCE_mutopia_1540.txt.
+  - Cut: the A strain, bars 5-19, then the bar-20 downbeat F = Bolt's 12th strike.
+  - Tempo: quarter 0.56 s, 0.48 s through the fast-forward (from bar 12), ritardando to 0.68 into the last F.
+  - Every crash lands on a score onset (first contact of the sim = the onset). Bolt's 3rd strike (LEAD CHANGE) is on bar 12's stop-time downbeat; his 10th-frame strikes are the bar 18, 19 and 20 downbeats.
+- **Display timing:** each lane plays its throws in order. Roll time = half the gap to the previous crash (0.20-1.25 s); the pin action plays at 1-4x so it fits before the next roll (a 0.12-s sweep clears the deadwood). Frames 1-4 near real time, frames 5-9 fast-forward (▶▶ on the monitor), FINAL FRAME slows again.
+- **Staging:**
+  - Trails show the straight line vs the hook curve. Real-time strikes/splits show "entry angle N°" under the banner.
+  - Banners: STRIKE! / DOUBLE! / TURKEY! / HAMBONE! / n-BAGGER! (bowling slang), SPLIT! (+ "the 7-10"), SPARE, MISS, LEAD CHANGE!. Finale plate: PERFECT 300! / THE HOOK WINS! / Straight 143 · Hook 300 / the 4x-pocket line, plus confetti from Bolt's deck.
+  - Mochi: smug laugh, cheer at her spare, wow + annoyed at splits, worried after the lead change, annoyed glare at Bolt with the 7-10 standing at the end. Bolt: smirks after strikes, cheers the lead change, wow on the 10th-frame strikes, cheer + laugh at 300.
+- **Sound** (bed + SFX built in the scene; the sidecar = silent markers on the crashes):
+  - Band: GM Honky-tonk piano (registered at runtime only) plays both hands of the score; tuba + pizz on the left-hand bass; a light rag kit (kick, snare, hats); clarinet doubles the tune in the fast-forward; trumpet + strings join for the final frame; a timpani roll into the last strike; F-major tutti on the last strike (`fin` ×1.25).
+  - Pin crash = every collision of the deck sim, at the shown speed: tonal maple knocks (f0 840-1240 Hz, modes 1 / 2.32 / 4.25, 6-28 ms), a deep "thock" for ball-pin, a soft thud for the kickbacks, a pit thump for a clean miss. No noise anywhere.
+  - Rolling ball: soft 58/116 Hz pulses at the ball's revolution rate (capped at 11/s), swelling toward the pins.
+  - Strike: an F-A-C bell arpeggio + tonal clap blips (more for a streak); spare: one bell. Finale: bigger chime + ~110 clap blips. Oohs swell at the lead change.
+  - A marimba plink of the melody note on every crash.
+  - `peak_db=None`.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/bowling_hook.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/bowling_hook.py --label v1` (one process, x264 `-threads 2`, BLAS threads 1)
+  - `--report` (every delivery), `--search --n 200` (strike rates), `--search-seq` (re-derive the seeds)
+- **Key times** (clip s):
+  - Frame 0: Mochi's ball ~10 ft from the pins, Bolt's ball a quarter down the lane, mid-hook. Mochi's lucky STRIKE at 0.25 s; Bolt's pocket strike at 0.95 s.
+  - Mochi 9 at 1.93, spare 3.33, the 7-10 SPLIT at 4.73 (MISS through the middle 5.85), 9/ at 6.69/7.39. Bolt DOUBLE 4.03.
+  - LEAD CHANGE + TURKEY at 7.95 (60-56).
+  - Fast-forward 8.5-13.65: Mochi throws every ~0.5 s, Bolt HAMBONE 9.15 … 9-BAGGER 13.23. Mochi's 10th-frame 7-10 at 13.98, miss 14.53 (143).
+  - FINAL FRAME: Bolt 13.85, 14.97, 300th pin at 16.25 (bar-20 F). Finale plate 16.5, confetti 16.57. Dissolve from 18.9. Clip 19.50 s (1170 frames).
+- **Checks** (encoded Full HD `output/bowling_hook_v2_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1170 frames = 19.50 s.
+  - Loudness: -14.00 LUFS, peak -5.00 dBFS, last 0.5 s at -69.5 dBFS. Per-second RMS: body -15…-19, final-strike second -13.0. Spectrum: 1.6% of energy at 2-5 kHz, 0.04% above 5 kHz (nothing shrill).
+  - flash_check: 0 flashes = PASS (mean luminance 0.062).
+  - Loop seam: encoded mean delta 0.69. events/5 s [7, 17, 8] (the last block is the final frame + finale).
+  - Side safe zone: lanes/HUD/captions within x 111-899 (0.10-0.83w); only confetti goes wider.
+  - Frames read: contact sheets of the -Fast clip (0-19.5 s) and 1:1 crops of the encoded file at 0.35 (first strike), 1.05 (hook in the pocket), 5.15 (the 7-10), 16.30/16.40 (the 300th pin), 16.75 and 17.6 (finale).
+- **v1 → v2:** the finale confetti spawned on top of the last crash; it now starts 0.32 s later.
+- **Laptop:** one Python process (BLAS threads 1) + x264 `-threads 2`. Full HD renders in ~6 min; `simulate()` ~7 s.
+- Delivered `<VIDEOS_DIR>\batch45\bowling_hook.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-21): "i dont get where is the engagement… if it fits our research use it, or test reactions" -> ship as the US pop-culture test (4K exists), Oct 27 slot 3.

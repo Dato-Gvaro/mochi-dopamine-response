@@ -1,0 +1,37 @@
+# collapse_floors
+- Idea #1 in research/reference_dripandflick.md (from DripAndFlick's hex-floor elimination). New file, no shared scene code.
+- Rule: three stacked glass hex floors (37 flat-top tiles each; sapphire / emerald / amethyst) hang over a lava lake. Mochi and Bolt bounce on the top floor. A tile they land on cracks (crack lines, red heat, wobble) and drops `delay` later, spinning and tumbling. It shatters on the floor below (shards, ring, sparkles, glass clink) or plops into the lava. If you land on a hole you fall to the next floor, and through the last floor you fall into the lava. The last one above the lava wins.
+- Look: oblique projection `x = 540+u, y = 640 + 0.42 v - Z`. Floors sit at Z 0 / -250 / -500 and the lava at -760. Each tile is a glass prism with a gradient face, gem facets, back-edge sheen, inner rim glow and dark side faces. Each floor has a glow stroke and a soft under-glow. The stage is a dark navy/plum gradient with specks, a lava lake (crust, waves, bubbles), heat glow and rising embers. Waves, bubbles, embers and pulse all run whole cycles per clip, so the loop is exact.
+- Sim: hops are ballistic (G 2600). After each landing a hop is aimed at a weighted tile (intact 1.0, cracked 0.2-0.55) plus Gaussian aim error. Characters bump each other in the plane, and an invisible rim stops them leaving the deck. The game uses one seeded RNG.
+- Escalation (p = t/15):
+  - Crack-to-drop delay goes 0.5 -> 0.3 s.
+  - Hop height goes 88 -> 145. It is capped so a head never reaches the floor above.
+  - Hop distance goes 100 -> 195.
+  - Aim error goes 14 -> 42.
+  - A landing also cracks 1 neighbour from 5 s and 2 neighbours from 10 s, each staggered 0.07 s, so the drops come as a strummed chord.
+- End (from the plunge t_L):
+  - SPLOOSH, lava drops, steam, a ripple and a shake.
+  - 0.30 s under, then a 0.95 s smoke launch with a flip onto Mochi's frame-0 tile, sooty.
+  - Dizzy, then an annoyed stare. Soot fades 1.25 -> 0.5 s before the end.
+  - Bolt laughs ("HA") and then leaps up to his frame-0 tile.
+  - From t_L+0.4 the dropped tiles rise back into their slots and pending cracks heal.
+  - Both do the pre-roll hop. Frame 0 is mid-air on that hop, so the loop is exact. The pre-roll hop does not crack.
+- HUD: "FLOORS LEFT", with 3 hex pips per character in the floor colours, relit by the reform. Banners are BOLT LEADS! / LEAD CHANGE! / LAST FLOOR! / BOLT WINS!, plus one "SAVED!" for the closest landing on a tile about to drop. The caption is baked: `Every tile they touch DROPS | ~Last one above the LAVA wins~` (y_f 0.10).
+- Sound: two passes mixed in the scene, then `audio.master()`.
+  - Marimba: the pachelbel_canon melody, one note per landing. Bumps add a bounce. The end has a sploosh (splash + steam), a launch hiss + rising arpeggio, a landing bounce and a cheer arpeggio.
+  - Glassharp: one clink per shatter, pitched by the source floor (top 93/90/86, mid 86/81/78, bottom 78/74/69). Simultaneous shatters strum 13 ms apart into a chord. Falls get a 3-note down-glide, and the reform gets a 6-note rising arpeggio.
+  - Do NOT use `master(peak_db=-4)` here: it overshot to -6.3 LUFS (the Limiter's makeup gain).
+- s2509 (default):
+  - Falls: Mochi 4.96, Bolt 7.42 (tied), Bolt 11.29 (Mochi leads), Mochi 12.39 (tied, LAST FLOOR), Mochi 13.26 into the lava at 13.49.
+  - Two lead changes and one SAVED!.
+  - Tile drops per 4.5 s of game: 14, 26, 31 (climbing). Landings: 17, 15, 13 (fewer, because the hops get longer).
+  - Clip is 17.33 s (1040 frames).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -14.01 LUFS, peak -8.3 dBFS. Last 1.3 s peak -47.4, last 0.5 s -84.3 dBFS.
+  - flash_check PASS (0).
+  - Pre-encode seam 0.404 against a normal step of 0.433, so the loop is perfect. The encoded seam is 0.97 (an I-frame step, as in ring_escape2).
+- Args: --seed, --label, --cap ('a|~b~'), --melody, --search N (sim only; filter: Mochi in lava, Bolt on the last floor, lead change, no double-drop), --still --frame.
+- Other seeds: 1934, 320, 739, 2309 (BMMBM, Bolt falls first); 2753 (first fall 2.9 s).
+- Delivered <VIDEOS_DIR>\batch14\collapse_floors.mp4. Owner review: pending.
+- Owner review 2026-10-06: GOOD - approved.

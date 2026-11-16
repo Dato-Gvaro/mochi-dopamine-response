@@ -1,0 +1,12 @@
+# ol_tipping_cascade (DopamineEXE, overnight 2026-11-12, brief docs/BRIEF_overnight_1112.md §2)
+- 63 tipping buckets 1 → 32 over a tank with a gold FULL line. Caption `Every bucket pours into ^TWO^ more…|until the ~TANK~ is FULL`.
+- Model: a scalar fill per bucket, scripted tip (0.16k s, ease-in) / pour (fill τ 0.06k, ≤ 0.22k s) / return (0.20k s, small overshoot). Row time scale k = sqrt(h/h0). Capacity halves per row, so every row tips ~1.6-1.9x the row above.
+- Water = droplets on ballistic paths: lip → wedge apex → the child's mouth (or the tank surface). A droplet's volume lands when it does, so there is no spray (v2's problem). The wedge splits each droplet left/right with a seeded share of 25-45 / 55-75%, and the apex is drawn off the stream.
+- Valve x1 → x2 (2.8) → x4 (5.6) → x8 (8.6); FULL 12.4 s (the tank capacity = its volume then); the valve shuts. The drawn level eases to the brim above FULL.
+- The sim runs twice: the 2nd pass knows the capacity, so droplets aim at the real surface.
+- Music: Handel Water Music Alla Hornpipe (IMSLP MIDI), tempo steps with the valve, FULL on bar 8 (beat 42) + an F-major tutti. A wooden tok per tip (≥ 14 ms apart for rows ≥ 3).
+- Checks (FHD seed 1): 14.25 s, −14.01 LUFS, peak −5.0, flash 0, seam 0.18 base. Tips 426 by FULL; tips/s 1 → 14 → 38 → 51 → 95 (pulsed).
+- Lessons:
+  - A frame of 63 outline buckets on black is DARK (mean luminance 0.009). Fill the bodies at 30% of the row hue.
+  - Bottom-row buckets are ≤ 19 px wide at 32 across the safe width.
+  - The tip rate pulses with each top-bucket dump.

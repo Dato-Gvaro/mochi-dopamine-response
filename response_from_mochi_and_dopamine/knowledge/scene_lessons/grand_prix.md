@@ -1,0 +1,32 @@
+# grand_prix — MARBLE GRAND PRIX, Team Mochi (5 coral) vs Team Bolt (5 mint)
+
+- NEW format (2026-10-06), idea #2 from research/reference_dripandflick.md. One tall neon marble course (world 1080 x ~3560 px) on a dark navy-to-plum stage. The camera follows the pack down: a critically damped spring (w 3.2) tracks the median live marble at screen y 760, never leaving the leader below screen y 1250. It holds at the bottom (CAM_MAX = pockets at screen y 1250).
+- Course, top to bottom, each section a new mechanism and a new jewel tone:
+  - teal start tray, with a gold gate that opens at 0.35 s;
+  - opal SPINNER: a 4-arm cross, r 175, 2.6 rad/s;
+  - opal switchback ramp;
+  - amber SEE-SAW tipping cup: a counterweighted lever (I 3e4, K 2.2e5). It rests left-up and tips with 1 marble slowly, or 2+ marbles fast, dumping the batch;
+  - amber ramp;
+  - emerald PEG field: 6 rows, dx 92, r 9; each peg flashes when hit;
+  - sapphire V-funnel to a 1-marble NECK, with a timed sliding DOOR (0.70 s period, 0.50 s open);
+  - amethyst DROP shaft: 430 px, glass rings that light up as a marble passes;
+  - orchid kicker and ramp;
+  - ruby switchback into the FINISH chute (checkered line at y 3262).
+- Physics: own in-file engine (lib/physics2d has no moving parts). Capsules, kinematic spinner/door/gate (surface velocity w x r), a dynamic see-saw (impulse with (r x n)^2/I), R 18, G 1750, 6 substeps, near-frictionless rolling. Sim 0.2 s per seed.
+- Scoring: finish places score 10-8-6-5-4-3-2-1-0-0. After the line, each marble rolls (scripted; 760 px/s, +640 px/s^2) round the chute curve, along the gold pocket rail, and drops into its place pocket. The pocket lights in the team colour. "+N" pops at the finish, the HUD number bumps, the leader's score turns gold.
+- Interpretation note: with this scale the total is 39, so the closest result is 20-19 and places 9-10 score 0. "The last marble decides" is built as "the last SCORING marble decides": it is 19-19 after 7th, and Mochi's 8th-place marble makes it 20-19. Bolt's two 0-point marbles come in 0.31 s and 0.98 s later.
+- Teams are assigned AFTER the sim (marbles are physically identical) under the loop constraint colour(body j) == colour(place j). The pockets feed the lift in place order, so the tray at frame 0 holds the same colour order. Search = cycles of the finish permutation, 5/5 splits, then scored on: final 20-19 Mochi, score lead changes, a tie before the decider, mid-race leader changes, and finish timing.
+- HUD (y 1488, over a soft dark band): Mochi + score | FINISHED n/10 | score + Bolt. Characters react only to their own team's finishes (cheer), lead changes (wow), the tie (worried), the decider (Mochi cheers + confetti; Bolt winces), and Bolt's 0-point marble (Mochi laughs, Bolt stares annoyed). Banners (newest only): LEAD CHANGE! at 4 mid-race leader swaps (gold ring marks the race leader, 30 px hysteresis) and at score swaps, TIED 19-19!, then MOCHI WINS! 20 - 19.
+- Loop: the sim starts 1.10 s BEFORE frame 0 with the lift pouring 10 marbles (0.10 s apart, 520 px/s) into the tray. After the result holds 1.0 s, the pockets open into the return trough. The marbles ride the left lift tube (up to 3000 px/s) while the camera eases back to the top, and the clip's last 1.10 s replays the pre-roll, so frame N = frame 0. The spinner/door/gate use t - T after the pockets open (offscreen at the switch).
+- s230 (default): order B M B M M B M M B B. Running score 0-10, 8-10, 8-16, 13-16, 17-16 (LC), 17-19 (LC), 19-19 (TIE), 20-19 (Mochi wins), 20-19, 20-19. Mid-race lead swaps at 2.67/3.80/4.77/7.00 s. Finishes 10.89-14.97 s, decider 13.99 s. Clip 19.65 s (1179 frames).
+- Sound: a numpy bed of synth_metal_tick:
+  - one per impact (vn > 110), pegs brighter, ball-ball softer;
+  - a 32 ms window keeps the strongest; offscreen hits are at x0.35;
+  - plus a gate tick, pocket ticks, and see-saw stop clanks;
+  - plus a rail-joint tick at each pocket-gap edge a rolling marble crosses (later places cross more, so the finish speeds up).
+  Notes: eine_kleine (Mozart, PD), one per finish, a strummed chord on the decider, a 72-76-79-84 win arpeggio. Ticks/s: 8-20 through the race, then 12, 18, 22, 14 over 12-16 s.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.02 LUFS, peak -5.18 dBFS. Per-second RMS climbs from -24.8 to -15.3 dB at the finishes. Last 1.3 s -115 dBFS. flash_check 0 = PASS (mean lum 0.022). Pre-encode seam 0.71 against a normal step of 0.63 = perfect loop; encoded seam 0.985 is an I-frame quality step.
+- Args: --seed (230), --label, --cap ("Team Mochi vs Team Bolt|~1 POINT decides it~"), --melody, --voice, --search N, --debug (course overview + trails PNG), --still --frame.
+- Other seeds (same story shape): 743 (M first, 4 score LCs, tie 18-18), 274, 452, 645.
+- Delivered <VIDEOS_DIR>\batch14\grand_prix.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-06: OK - approved.

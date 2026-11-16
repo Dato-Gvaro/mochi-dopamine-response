@@ -1,0 +1,81 @@
+# thin_ice — Run or slide? Crossing thin ice (batch32, 2026-10-14)
+
+- **Duel:** Mochi CHOSE to RUN (hop fast); Bolt CHOSE to SLIDE flat on his belly. Same weight, different contact area. P = F / A judges both.
+  - Mochi: each landing puts weight times impact on a tiny patch, so her peak pressure is ~90-125 kPa.
+  - Bolt: 30 kg over a 0.25 m² belly = 1.2 kPa, steady.
+  - Ice limit: 230 kPa at the shores, down to 82 kPa at the thinnest point (v = 0.77). That zone is drawn darker blue and labelled THIN ICE.
+- **Honest by construction:** simulate() makes Mochi break through on the FIRST landing whose peak P exceeds limit(v) at that spot. Nothing is scripted.
+  - Per-landing P = 96 + 0.95·k ± 9 kPa (she lands harder as she speeds up). A leap landing adds 16 kPa.
+- **WHY is visible:**
+  - Each character has a PRESSURE gauge with a moving ICE LIMIT marker (the limit under them).
+  - A stress ring on every landing, coloured by P/limit: cyan, then gold, then coral.
+  - Bolt has a broad soft glow under him (spread load).
+  - Fracture lines grow from every impact (decelerating growth, branching, spider-web rings when P/limit > 0.72). They get longer as the ice thins.
+- **Story (seed 3, clip time):**
+  - 0 s: Mochi is mid-landing with a crack bursting, and Bolt is already sliding.
+  - 0.9-3.2 s: SAME WEIGHT, DIFFERENT AREA.
+  - 4.5 s: MOCHI LEADS!
+  - 7.2 s: THE CRACK OUTRUNS HER! A long crack shoots ahead and a crosswise split opens into a gap of open water. She freezes for 0.36 s, then leaps it (NEAR MISS!).
+  - 10.7 s: a landing at 88% OF THE LIMIT.
+  - 11.8 s: SPLASH! She punches through at 125 kPa against a 109 kPa limit. She sinks, bubbles come up, and at +1.3 s she pops up onto an ice floe and gives an annoyed stare for the rest of the clip.
+  - ~14.4 s: CRACKS INCOMING! Cracks from the hole race under Bolt.
+  - ~16.9 s: BIG AREA = LOW PRESSURE, while Bolt crosses the thinnest ice.
+  - 22.0 s: BOLT WINS! at the flag, with a chime and sparkles.
+  - The clip ends at 24.12 s.
+- **Loop:** a 0.6 s pre-roll. The last 0.6 s dissolves the stage into the pre-roll, which flows into frame 0. The HUD switches at the midpoint, and the audio fades over the same 0.6 s.
+- **Sound (no music, all synthesised in the scene):**
+  - Mochi's landings: a crunchy footfall, a sharp ice snap (+13 ms), a crackle, and the lake-ice "pew". The pew is a dispersive descending chirp at 2.9 kHz → 230 Hz with shore echoes, low-passed at 4.2 kHz to keep it warm.
+  - Creaks/groans on landings above 80% of the limit, the gap, and the creeping cracks.
+  - Bolt: a continuous slide hiss that follows his speed, plus a swish per scoot.
+  - Plunge: crack + thoom + sploosh + splash, then bubble gurgles, a bloop on the pop-up, and drips while she sits on the floe.
+  - Flag: a rolled C-major plink chord with a soft bell.
+  - The pre-roll landing's sounds are moved to clip 0, so the first crack is heard at ~0.0-0.1 s.
+- Palette: icy cyan/teal ice over deep-blue water, a dusky violet night sky, coral Mochi, mint Bolt, gold flag.
+- Args: `--seed` (default 3; searched 0-19 for the strongest near-miss before the plunge), `--cap "line1|line2"`, `--label`, `--report`, `--search a b`.
+- **Checks** (encoded Full HD, seed 3):
+  - Video: h264 yuv420p 1080x1920, 60 fps, 1447 frames = 24.12 s.
+  - Loudness: -14.01 LUFS, peak -7.4 dBFS. The last 0.5 s peaks at -16 dBFS (the bed fades over the dissolve).
+  - flash_check: 0 flashes = PASS (mean luminance 0.107).
+  - Loop seam: the pre-encode last→first frame delta is 0.50, smaller than the dissolve's own step (0.71) and well under the 0-1 step at the impact moment. The encoded seam is 1.10 (IDR vs P frame) and check_clip reports 0.86. Frame 0 is a landing moment with the crack growing, so a 1-frame step there is naturally large.
+  - Frames read: 0, 0.5, 1, 1.5, 2, 2.5, 3, 7.6, 11.9, 13.3, 15 and 22.2 s, plus the dissolve.
+- **Fixes during the build:**
+  - The crack field was a dense hatched column. Fixed with fewer, longer lines that scale with P/limit, and older cracks settle to ~42% brightness.
+  - The start line was moved up so the frame-0 crack is not clipped by the shore.
+  - An earlier pre-roll landing was added so a crack star is already visible at frame 0.
+  - Mochi freezes for 0.36 s before the leap, so the gap opens before she jumps.
+  - Banners were moved off the characters and the near-miss banner is cut before SPLASH!.
+- **Doubts:**
+  - Both characters face the camera while travelling away from it (cartoon license, so faces stay readable).
+  - The middle of the clip is a dense ice texture (~15 sound layers per second while Mochi runs).
+  - After the plunge, only Bolt's scoots, drips and creaks carry the rhythm (~1 event per 0.25-0.5 s).
+- Delivered <VIDEOS_DIR>\batch32\thin_ice.mp4 (Full HD). Owner review: pending.
+
+## v2 — tightened (coordinator review 2026-10-14: ~10 s slow stretch after the plunge)
+- Seed **24**. The plunge moved from 11.8 s to **14.6 s**. The post-plunge section went from ~10 s to **5.1 s**. The clip is **21.92 s** (was 24.12).
+- **Ice:** the thinnest ice moved to v 0.84 (half-width 0.14). A second THIN PATCH at v 0.56 (-108 kPa) gives an honest first near-miss.
+- **Mochi:** hop speed 0.0395 v/s.
+- **Bolt:** slides slowly (0.030 v/s, a scoot every 0.52 s) until 0.85 s after the plunge. Then he pushes hard: 0.100 v/s, a scoot every 0.34 s.
+- **Two waves of cracks** from the hole chase Bolt (+1.55 s and +3.0 s).
+- **Mochi on the floe:** shivers every 1.15 s (0.38 s, with a teeth-chatter sound), stares annoyed between shivers, and is angry when Bolt wins.
+- **Sound that builds to the finish:**
+  - Creaks come closer together (0.62 s → 0.26 s apart) and louder.
+  - An ice tick on every scoot gets louder as Bolt nears the flag.
+- **Beats (clip time):**
+  - 3.6 s: MOCHI LEADS
+  - ~7 s: crack outruns her + leap
+  - 10.0 s: 94% OF THE LIMIT
+  - 13.6 s: 87% OF THE LIMIT
+  - 14.6 s: SPLASH (135 kPa > limit)
+  - 16.2 s: CRACKS INCOMING
+  - 17.6 s: BIG AREA = LOW PRESSURE
+  - 19.8 s: BOLT WINS
+- **Banners moved:** CRACKS INCOMING, BIG AREA and BOLT WINS now sit in the empty lower lake so they never cover Mochi.
+- **Checks:**
+  - Video: h264 yuv420p 1080x1920, 60 fps, 1315 frames.
+  - Loudness: -14.01 LUFS, peak -7.1 dBFS, last 0.5 s at -19.4 dBFS.
+  - flash_check: 0 flashes, PASS.
+  - Seam: 0.74 pre-encode, 1.11 encoded (frame 0 is an impact).
+  - Events per second after the plunge: 11, 11, 11, 12, then the win.
+  - Encoded frames read at 0, 3, 14.7, 16.3 and 19.85 s.
+- Re-delivered <VIDEOS_DIR>\batch32\thin_ice.mp4.
+- Owner review (2026-10-15): nope. Dropped.

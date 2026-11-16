@@ -1,0 +1,36 @@
+# murmuration — 5,000 starlings vs one hunter (batch23)
+
+- **Rule:** a 3-D boids murmuration with topological interaction (each bird steers by its 7 nearest neighbours: separation, alignment, cohesion; scipy cKDTree; fixed dt 1/60; seeded). The flock lives in a slowly turning, flattened roost volume and is drawn through a perspective camera, so the folds come from the sheet turning edge-on.
+- **Stake:** Bolt (a small falcon, mint body + swept wings) dives 5 times; "Can they dodge EVERY dive?". Answer: yes. A hard clearance disc (46 px) keeps every bird out of Bolt's body; min distance logged = 46.0 px, caught = 0 by construction.
+- **Escape wave:** birds inside the strike radius flee; the alarm hops neighbour-to-neighbour (every 2 steps, amplitude x0.975 per hop, refractory 1.2 s). Alarmed birds swerve and flash white-cyan, so a bright ripple runs through the cloud.
+- **Escalation:**
+  - Flock grows continuously, 500 -> ~2,000 (5.7 s) -> 5,000 (12.6 s), in 9 groups streaming in from the sides. Counter `BIRDS: N` counts birds that joined.
+  - Dives at 4.44, 8.89, 13.33, 16.67, 18.89 s (gaps 4.4, 4.4, 3.3, 2.2 s). Strike radius 80 -> 175 px, flee accel 900 -> 1800, lead 1.45 -> 0.80 s (faster each time).
+  - D1 skims the edge; D3-D5 go through the middle; D5 (climax) splits the flock, which reforms on the cadence.
+- **Hook:** frame 0 = the end state (5,000 birds, wide swooping fold, bright blue core). A 0.75 s rewind (smoothstep in state index) runs the sim back to the 500-bird start; then it plays forward and ends on the same state. Loop seam = sim state n -> n-1 (exact).
+- **Camera:** fits the joined flock's 3-97 % box to 0.94 W x 820 px (zoom 0.80-2.10, Gaussian-smoothed sigma 36 frames, 75 % follow). Bolt is drawn at a fixed on-screen perch between dives and blends to his true position during the dive.
+- **Characters:** Bolt determined on the dive, annoyed after each miss and at the end. Mochi (r 25) on the marsh at the lower left: worried during dives, hops and grins after each dodge, cheers at the end.
+- **Look:** dusk-to-night gradient, moon, stars, dark marsh with reeds in front of the birds (birds occluded by the ground). Birds are additive light dashes, coloured by screen heading (gold / cyan / rose) plus alarm flash. Glow, short trails, and a hue-preserving tone-map (as butterfly_effect3).
+- **Music:** Vivaldi, "L'Inverno" (Winter), The Four Seasons Op. 8 No. 4 RV 297, 1st mvt Allegro non molto.
+  - Status: published 1725, composer died 1741, so public domain.
+  - Notes from the Mutopia Project edition (VivaldiA/O8/winter: winter-score.mid + winter1*.ly, "Performers' Facsimiles" source). The engraving is CC BY-SA 3.0; the notes themselves are PD.
+  - Excerpt:
+    - Bars 6-11: repeated stabbing eighth chords over the F pedal (Fm, Bbm/F, F7, G7/F, dim7, G7).
+    - Bar 22 beats 3-4: the C-major roll.
+    - Bars 23-26: the "batter li piedi" stamping octave 16ths and 32nd rolls.
+    - Ends on bar 26's F-minor chord (rolled, held 1.55 s).
+  - Arrangement: violins and viola played 1 octave down, cello at pitch plus an octave below on the pedal. Range G1-Ab4 (top note Ab4), quarter = 108, a small ritardando into the cadence.
+  - Dynamics: dive impacts are sforzando chords (accent envelope peaks at each impact); crescendo through bars 6-11.
+  - Music starts at 0.0 s on the full Fm chord. Last 1.35 s silent.
+- **Seed/args:** `--seed 9` (picked from 1-17 by end-frame fill/fold contrast; YAW_PH 4.0), `--cap`, `--label`, `--still --frame N`, `--report`.
+- **Render:** `NF_SCALE=1.0 python scenes/murmuration.py` (Full HD). The sim takes ~20 s; the render takes ~0.3-0.5 s per frame when the CPU is free (about 1 h when sharing the CPU with 7 renders).
+- **Lesson:** additive splat energy must scale with render_scale² (the look was tuned at scale 0.5). Without that, the first Full HD render came out 4x too dim (mean lum 0.016 vs 0.028).
+- **Checks (Full HD v1):**
+  - h264 yuv420p 1080x1920 60 fps, 1518 frames = 25.30 s.
+  - Audio: -14.00 LUFS, peak -5.6 dBFS, last 0.5 s at -78 dBFS.
+  - Flash check: 0 = PASS (mean lum 0.028).
+  - Seam mean delta 5.90 vs normal frame-to-frame 5.7-6.4. This clip has 5,000 moving strokes, so the 0.12-0.72 band does not apply; the seam is visually invisible.
+  - Min bird-Bolt clearance 46.0 px; caught 0.
+  - Dive impacts are +2-3 dB louder than the bar before.
+- **Delivered:** `<VIDEOS_DIR>\batch23\murmuration.mp4` (Full HD). Owner review: pending.
+- Owner review (2026-10-10): interesting; make them dive one by one; the monotone music sucks (the melody itself is good) -> murmuration2.

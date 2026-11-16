@@ -1,0 +1,22 @@
+# vacuum_race2 — fast, more satisfying remake of vacuum_race (new scene file; vacuum_race stays reproducible)
+
+- Why: owner review of vacuum_race v3: "good idea but it doesn't really give satisfaction, needs something to change; also they are too slow".
+- Same rule: 120 marbles per half, first CLEAN floor wins. Hose to the tank, counters at 0.775h, content faces (happy) while vacuuming. Caption "Vacuum EVERY marble|~First clean floor WINS~".
+- Speed is v = k*(178 + 8.5t) px/s, ~178 -> ~300. k is a per-side glide factor of 0.95..1.05 from the seed, which gives a fast-glider vs big-ring duel: without it every seed finished within 1 marble.
+- Lanes: 9 lanes with g 1.03..1.15 and COVER 0.42 (big ring vs the lane, so bands get grabbed at once). Character r 46.
+- Race ~14.8 s, clip 19.1 s.
+- Satisfaction layers:
+  - Ripple pull-in: the pull time is 0.16 + 0.0016*distance, so a grabbed cluster streams in near-first along a 1.7 rad swirl.
+  - Each flying marble has 3 fading ghost trails.
+  - Rising runs: landings in a burst play a pentatonic run (0, 2, 4, 7, 9, 12, 14, 16). Each run starts on the next note of spring_vivaldi (Vivaldi 1725, PD). Bolt's runs sit 5 semitones lower.
+  - Clean-floor reveal: an 8x13 tile grid per half. Dusty tiles with specks turn bright cream with a gloss strip and a glint sweep when the ring passes. The loser's uncleaned tiles stay dusty.
+  - Tank pile-up: marbles hop 7 px on landing.
+  - Speed swoosh: a tapered trail behind each character over the last 12 frames.
+- Finish (shortened): the loser powers off; "MOCHI WINS!" (132 px). The steal ring swells 0.35 s, holds 0.25 s and shrinks 0.35 s. Loser worried, then annoyed. Winner laughs at tw+1.25 and cheers at tw+2.05. Hold 2.9 s.
+- Loop (1.4 s): dust settles back top-down, the tanks empty top-first, marbles arc home, characters glide back. Pre-encode seam: frame 0 and the last frame are pixel-identical.
+- Seed s119: Bolt leads by up to 13. Mochi's growing ring brings it back, it takes the lead at 14.4 s and wins 120 vs 117 (3 left), final 123:117 after the steal. Other candidates: s925 (Mochi), s316, s1067 (Bolt). The search keeps 1-6 leftovers with a lead change in the last 3 s.
+- Measured (Full HD encode): 19.10 s, 1146 frames, h264 yuv420p 1080x1920 60 fps. -14.0 LUFS, peak -7.5 dBFS, last 0.5 s -84.3 dBFS. flash_check PASS (0). Post-encode seam mean 0.67. Captures per 7.4 s: total [104, 136]. Sounded per 5 s: [53, 75, 34] (the last bin includes the payoff and the reset). 27 distinct notes, top pitch 12%.
+- Doubt: the glide is ~1.6-1.8x v3, not a full 2x. A full 2x would end the race in ~12 s on 9 lanes.
+- Args: --seed (119), --label, --cap, --melody, --search, --dry, --still --frame.
+- Delivered <VIDEOS_DIR>\batch11\vacuum_race2.mp4. Owner review: pending.
+- Owner review 2026-10-04 (batch 11): Idea: give them different STRATEGIES (one horizontal lanes, one diagonal; or one random, one line by line). TODO.

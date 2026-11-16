@@ -1,0 +1,67 @@
+# snake_duel: Greedy AI vs Safe-Cycle AI in the classic snake game (2026-10-11, batch26)
+
+- Rule: two identical 16x8 boards (58 px cells, 928 px = 0.86 of the width) are stacked; the bottom board ends at y 1348 (0.70h).
+  - Both start with the same 3-cell snake in the middle row.
+  - Both use the same SEEDED gem list: gem k is the first FREE cell of the k-th seeded shuffle. Both boards get the same gem wherever that cell is free on both.
+  - One shared clock: both make the SAME number of moves per second, so the only difference is the strategy.
+  - MOCHI = GREEDY: each move is the first step of the BFS shortest path to the gem, around her own body (the tail counts as free).
+    - With no path she chases her own tail, the textbook fallback, shown as a red plan line and a "NO PATH!" pop.
+    - When she has no free neighbour, she is TRAPPED.
+  - BOLT = SAFE CYCLE: a Hamiltonian cycle (row 0, then a zig-zag over columns 1-15, then back up column 0), drawn faintly on his board.
+    - He takes a shortcut only while it is provably safe: it lands strictly between head and tail in cycle order, it never skips the gem, and only while his length is < 64.
+    - He can never trap himself, and he ends at 128/128.
+- WHY is on screen: each snake's real next moves up to the gem are drawn ahead of it as a dashed plan. Mochi's is a straight BFS line. Bolt's follows the zig-zag; after 64 cells it visibly takes the long way round to a gem right next to him.
+- Seed 447 (searched over 600 seeds; filters: Mochi leads every move from 3 s to the trap, first gem by 1.6 s, Bolt passes 2+ s after the trap and 1.8+ s before the win, rates increasing):
+  - Mochi leads from the first gem. "MOCHI LEADS!" at 3.55 s. "NO PATH!" at 7.77, 9.74 and 11.59 s.
+  - At move 749 Mochi grabs the corner gem at length 68 (53 %) and is walled in by her own body: TRAPPED at 12.82 s, with a lead of +20.
+  - "BOLT PASSES MOCHI!" at 16.55 s. Bolt's 2,455th move fills cell 128 at 20.82 s: PERFECT GAME.
+  - Lengths: 5 s M15/B12, 10 s M45/B32, 13 s M68/B49, 17 s 68/71, 20 s 68/99.
+  - Alternatives: seed 63 (Mochi 67, +23), seed 101 (62, +26, only 2 no-path episodes).
+- Clock: the move rate ramps linearly 12 -> 113 moves/s from GO to the trap, then 113 -> 314 moves/s to the win. Exactly 749 moves are done on the bar-17 downbeat and 2,455 on the bar-111 downbeat.
+  - Bolt's gems per 2 s: 0/5/7/9/8/12/10/12/12/21/29, still climbing at the payoff.
+  - The HUD shows "SPEED xN" (moves/s divided by 12).
+- Hook / loop:
+  - Frame 0 = the payoff: Bolt's board 100 % rainbow under a gold frame with "PERFECT GAME!", against Mochi's dimmed 68-cell snake under a red frame with an X on her head and "TRAPPED!". Counters 53 % vs 100 %. Mochi gives an annoyed stare; Bolt grins.
+  - 0.03-0.74 s: both games REWIND (white double-arrow icons) over the opening descending chromatic run. GO! at 0.82 s on bar 2.
+  - First gems: Mochi 1.44 s, Bolt ~1.6 s. "+1" pops on gems until 6.5 s.
+  - The end holds the payoff, identical to frame 0. Confetti is gone by T-1 s. The gem pulse runs a whole number of cycles per clip.
+  - Pre-encode seam: max delta 7/255 on 7 px (exact). Encoded seam mean 0.753.
+- Look: dark violet stage, a synthwave horizon grid behind the characters, a crisp cell grid, neon coral/mint board frames.
+  - The snake is pixel tiles with necks. The rainbow runs by distance from the head (red head ... violet at cell 128), so it unlocks colour as it grows. The head is bright with eyes.
+  - Gems are glowing ruby diamonds.
+- HUD: caption "Greedy AI vs Safe AI | ~First to fill the board WINS~" (y_f 0.092, size 66). Labels "MOCHI: GREEDY (shortest path)" and "BOLT: SAFE CYCLE (zig-zag loop)".
+  - Characters r 44 at x 112 / 808 (y 1452). Big % counters with LENGTH beneath, at x 268 / 646.
+- Music: Rimsky-Korsakov, "Flight of the Bumblebee" (The Tale of Tsar Saltan, Act III, 1899-1900; the composer died 1908, so it is public domain).
+  - Notes are copied from Charles A. Johnson's orchestral MIDI on IMSLP: file #872813, "For Orchestra (Johnson)", **CC BY 4.0, which allows commercial use WITH attribution**.
+    - IMSLP's /images/ host is behind a bot check, so the file came from the Wayback copy. Its sha1 `9ff71dd8ce6321339bd03a8786e17c7bee7b0308` equals the sha1 IMSLP's API reports for the file.
+    - Cached with a SOURCE note in `<SOUNDFONTS_DIR>\scores\rimsky_bumblebee\`. The copied note data is embedded in the scene (LEAD/CHORDS); `--extract` re-parses the MIDI and confirms both match.
+  - Excerpt: bars 1-22, then bars 107-113. The flute's C# at the end of bar 22 resolves into the D chord of bar 107, then the clarinet -> flute chromatic rise over two octaves runs into the bar-111 arrival and the closing chords.
+  - Lead: bars 1-4 flute/violin I, bars 5-14 violin I, bars 15-22 flute, bars 107-111 clarinet then flute, bars 112-113 violin I. It is played on square_lead + saw_lead in unison.
+  - Transposed down 9 semitones, so the theme sits at G3-F#4. The opening run goes 21 down (C5 -> C#3), and the final arrival note is F5.
+  - Our arrangement (owned):
+    - warm_pad on the chord tones (all parts' sustained notes), 16th-gated and kick-ducked, plus synth_strings.
+    - synth_brass stabs on bars 1, 3, 107, 111, 112 and 113.
+    - synth_bass 8th-note octave pump on the chord root, plus a sine sub.
+    - Electronic kit:
+      - From bar 5: kick on quarters.
+      - From bar 7: clap and 8th hats.
+      - From bar 15: 16th hats.
+      - Bars 109-110: 16th snare roll.
+    - tr808 crashes.
+    - Booms on bar 1, the trap (bar 17) and the win (bar 111), smaller ones on bars 107 and 113. Cymbal swells into bars 17 and 111.
+  - Gem plings: our own synthesised chip blip, F minor pentatonic, whose pitch climbs with the board filled. Rate-capped at 1 per 75 ms per snake and panned Mochi left / Bolt right.
+  - Sync: GO is on bar 2. The trap lands on the bar-17 boom (+3 dB step measured). PERFECT GAME is on the bar-111 boom (+2.5 dB). The final chord is at 22.42 s; the bed is silent from T-1.5 s.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps, 1519 frames = 25.32 s.
+  - Audio: -14.01 LUFS, peak -4.44 dBFS, last 0.5 s at -84 dBFS. 2-6 % of the energy is above 2 kHz (not shrill).
+  - flash_check: 1 flash, PASS (mean luminance 0.05).
+- Args: --seed (447), --label, --cap 'a|~b~', --search N, --report, --extract, --still --frame N, --sound 0.
+- Delivered <VIDEOS_DIR>\batch26\snake_duel.mp4 (Full HD). Owner review: pending.
+- Credit line for the description (CC BY 4.0): "Music: Rimsky-Korsakov, Flight of the Bumblebee (public domain), our synthwave arrangement; note data from Charles A. Johnson's MIDI on IMSLP (CC BY 4.0)."
+- Doubts:
+  - Mochi traps at 53 %, not "nearly full". Plain greedy tops out around 48 %; with the tail-chase fallback, the best of 600 seeds is 53 %.
+  - Mochi's fallback (tail chase) is a standard greedy-snake fallback, but a purist could call it "not pure greedy". She still always takes the shortest path whenever one exists.
+  - The near-end speed (~5 moves/frame) turns Bolt's last 30 cells into a blur of bursts. That is intended as a finale, but the eat rings stack up.
+  - The opening run sits an octave below the theme, so there is an octave jump at bar 5 (arranging choice to keep the top at C5).
+- Owner review (2026-10-11): good, but the approach labels are easy to miss; put the approach clearly near the characters; length/% should be small at each board's top corner, not big -> snake_duel2.
+- Owner review (2026-10-11): "good, but their approach is easy to miss; % and length don't need big symbols". This led to snake_duel2 (approach bubbles by the characters, small stats pill on each frame).

@@ -1,0 +1,37 @@
+# spiral_machine — Mochi vs Bolt, two helix marble MACHINES (redesign of spiral_towers)
+
+- Built from the owner review of spiral_towers ("needs something satisfying - balls just drop"). It keeps the helix tower and adds a mechanism. spiral_towers.py is untouched. The "stuck marble" jam is gone (too close to hourglass_race).
+- Rule: every marble in your bin = +1, first to 40 wins. Caption "Both doors open together|~First to 40 WINS~". Counters "n/40" at y 1446/1528, x 262/818.
+- Mechanism per tower (cx 262/818, mirrored), top to bottom:
+  - Feeder: 3.5 zig-zag rows (x ±135, y 370-520) holding 40 steel marbles.
+  - DOOR: a hinged steel door with a coloured counterweight, at the helix start (GATE 110,520).
+  - Helix: 2.75 turns (RX 110, RY 38, pitch 150, Y0 530, theta pi/2 -> 6pi). It ends at the front, moving toward the centre.
+  - Ramp to a 6-pocket WATER WHEEL (centre 142,1014, pocket radius 34, rim 50).
+  - Steel CHIME bar (118,1090 -> 216,1099) over a 5x8 glass bin (u 132-268, floor 1352).
+  - The tower's core is a glass tube with an Archimedes SCREW (pitch 30). A wheel strut joins the core.
+- Door/train: both doors open on ONE shared timer. Each door lets k marbles through (seeded per side), then shuts. All released marbles follow the same ODE from rest (v -> VT 1050, tau 0.42), so the train stays touching and both towers' leaders stay frame-identical. The held queue rides along, then brakes over its last 20 px onto exact slots: a gap opens, the door drops in, and the feeder clacks to a stop.
+- Wheel: entry only when a pocket aligns (integer p). While any marble is aboard, the wheel spins up (80 pockets/s^2) to wheel_rate(t) = 8 -> 11.5 pockets/s. When empty, it brakes onto the next integer (detent), so every train meets an aligned wheel. A marble tips out 2.5 pockets after entry (angle 120 deg), falls on the bar (contact solved analytically), bounces (0.32, cap 170 px/s) and flies into its slot, far column first. The queue on the ramp follows the entering pocket's arc. A marble's drop time depends only on the marbles before it, so the shared part of two trains chimes in exact sync.
+- Escalation: gate_interval 1.6 - 0.03 t (min 1.0). Train sizes lo = 2 + t/8, hi = lo + 1 + t/10. The first 2 openings are equal on both sides (2, 3). The wheel speeds up. Chimes per 2 s (both): 6 9 4 5 10 6 14 6 19; the race's last 2 s are the densest. Chimes per 5 s: 19, 21, 39, then 7/s over the last 3 s.
+- Finish: the loser's in-flight trains (about 3 s of pipeline) always fill its bin too. The search therefore wants the loser 1-3 short at the win and full 0.25-1.5 s later (clearly second). No door opens once a side's feeder is empty.
+- Reactions: the short-train side gets annoyed and the other laughs when |kL - kR| >= 3 (none in s1472). Lead change (hysteresis 2) -> cheer. Finish: winner cheer + confetti + laugh, loser wince + annoyed stare. Banner at y 760.
+- Loop (t_r = max(t_w + 2, t_l + 0.6)):
+  - The bin hatch (near wall) slides open.
+  - The pile drains bottom-near first, with a granular avalanche: a top marble rolls one column nearer when it stands >= 2 rows above, or onto an empty floor column. The pile keeps a natural slope.
+  - Marbles roll along the floor trough behind the character into the core base.
+  - The screw (22 turns/s, spin-up 70/s^2) lifts one marble per turn up the middle of the spiral. It stops on an integer turn.
+  - Marbles roll down the feeder into their frame-0 slots. The counters count down.
+  - The last PRE = 2.97 s replay the pre-roll.
+- Sound: chimes and ticks are a BED rendered in the scene (synth_chime: free-bar partials 1/2.756/5.404/8.933 + a 1.0019 shimmer + a strike), so regen_audio cannot rebuild them. Re-render instead.
+  - Chimes: turkish_march (Mozart, PD). A sync pair = ONE walker step: left plays the note, right plays the note +7 (fifth), at the same sample. Solo hits play the melody note.
+  - Steel ticks (audio.synth_metal_tick): wheel pawl per pocket (gain 0.16); the train over the 2 front joints (0.11).
+  - Foley via the mixer: latch on each door opening, pok when the feeder queue stops, pok when a train hits the wheel (once per train, contact-based), cheer pop.
+  - Reset: soft tick per scooped marble, a rising chime every 2nd marble at the top.
+  - Bed hard-cut at T - 1.3 s.
+- s1472: Bolt wins 40 vs 39 at 17.97 s; Mochi fills at 18.76 s. Lead changes: 2 (Mochi cheers at 14.07; Bolt retakes the lead at 17.6). 36 synced chime pairs + 8 solo. First chime 0.31 s. Clip 26.95 s (1617 f).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -13.99 LUFS, peak -6.3 dBFS; last 1.3 s -73 dBFS, last 0.5 s -111 dBFS; flash_check 0 = PASS.
+  - Seam pre-encode: last->0 is 0.506, a normal motion step (0->1 is 0.500, 1615->1616 is 0.492). The encoded seam mean of 0.92 is the keyframe-vs-P-frame quality difference (the caption text edges show in it), not a jump.
+  - Chime onsets match the sim (0.309 -> 0.305, 1.899 -> 1.895).
+- Search `--search N [--from S]`: keeps t_w 16.5-24, loser 1-3 short, t_l - t_w 0.25-1.5. Score = lead changes, a late change, closeness, and a Bolt bonus. Alternatives: s49, s1051, s1555, s1942, s2019 (Bolt), s1009 (Mochi, 3 lead changes).
+- Args: --seed (1472), --label, --cap, --melody, --search [--from], --dry, --still --frame.
+- Delivered <VIDEOS_DIR>\batch12\spiral_machine.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05: New format: one character's spiral, the other stomps a button to create obstacles, on a timer -> spiral_timer.

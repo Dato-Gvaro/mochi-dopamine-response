@@ -1,0 +1,41 @@
+# territory_hockey2
+
+- v2 of territory_hockey, built after the owner's review ("they score too easily, make them sweat"). New file; v1 stays bit-reproducible (re-checked: s24 gives the same stats).
+- **Rule:** the v1 rink and the same twist: each goal moves the centre border 3 rows toward the loser, so the loser defends from a shrinking half. First to 3. Caption: `Every goal STEALS territory|~First to 3 goals wins~`.
+- **Earned goals:** each rally is a script of shot TYPES, each solved by the real puck physics (planned forward at 240 Hz):
+  - `r` rally shot.
+  - `s` goal-bound shot -> a DIVING SAVE at 140 px from the goal line. The striker is caught on the wrong side and dives in (panic face), then deflects sideways into a bank (save squash 0.24).
+  - `b` shot straight at the striker -> BLOCKED (sideways deflection, short 250 px/s jab).
+  - `p` shot that PINGs the steel post (ringing steel-post ping) and rebounds to the shooter. The defender was beaten and shows relief (closed eyes, sweat); the shooter scowls.
+  - `w` shot that grazes the end wall just wide of the post (SO CLOSE!), then rebounds.
+  - `g` goal. The defender is fooled, dives and misses by 8-90 px (fingertip).
+- **Script:**
+  - B: `r s r g`
+  - B: `r p r g`
+  - M: `s r b w g` (Mochi in the 3-row strip at 0-2)
+  - M: `s p r g`
+  - M: `r s s w r b r g` (the decider)
+  - Score B B M M M: Bolt leads 2-0, then Mochi comes back and wins 3-2 (owner asked for a Mochi comeback; overrides the brief's "prefer Bolt").
+- **Strain:** from rally hit 3, both strikers wear determined brows and a sweat drop that keeps sliding down (faster as the rally runs). A goal flashes a happy face on the scorer and a worried face on the conceder. HUD centre: RALLY n counter (pops per hit).
+- **Speed:** 1500 -> 2800 px/s over 13 s. Bank chance rises 0.35 -> 0.85.
+- **Sound:**
+  - habanera (Bizet, PD; least-used list), one note per striker hit.
+  - Numpy clack bed: wall clack, striker tock (saves louder and lower), steel post PING (2.35 kHz ring), pocket thud. The bed is NOT in `_events.json`, so re-render rather than regen_audio.
+  - Goal = strummed chord + glass note.
+  - Tile ticks per row; the reset wave is silent.
+  - Post-master fade to silence 1.3 s before the seam.
+- **s237 (default):**
+  - 25 hits, 20 wall/post hits. 11 tension pops: 4 saves by Mochi, 2 by Bolt, 2 blocks, 2 PING, 2 SO CLOSE.
+  - Goals at game 2.38 / 5.94 / 9.99 / 13.31 / 17.45 s. Defender misses by 70 / 25 / 21 / 8 / 9 px.
+  - Final goal at video 18.26 s in slow-mo (Bolt dives, misses by 9 px).
+  - Clip 21.63 s (1298 frames). First hit 0.14 s.
+  - Hits+walls per third of play: 11 / 15 / 19. Striker vmax 1608 px/s.
+- **Checks (encoded, Full HD):**
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -13.96 LUFS, peak -3.0 dBFS. Last 1.3 s at -240 dBFS.
+  - flash_check PASS (0).
+  - Pre-encode seam 0.897 vs a normal step of 0.878, so the loop is exact. The encoded seam of 1.35 is the I-frame step.
+- **Args:** --seed, --label, --cap, --melody, --dry, --still --frame, --search N [--from S]. About 31 of 300 seeds plan.
+- Other seeds with fingertip finishes: 276, 167, 21.
+- Delivered to <VIDEOS_DIR>\batch17\territory_hockey2.mp4. Owner review: pending.
+- Owner review 2026-10-08: OK - approved (Oct 12).

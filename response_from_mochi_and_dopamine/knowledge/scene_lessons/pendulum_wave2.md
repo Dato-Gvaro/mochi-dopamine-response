@@ -1,0 +1,28 @@
+# pendulum_wave2 — one slow cycle of 40, on Gymnopédie No. 1
+
+- Built from the owner's review of pendulum_wave (2026-10-08): "start with 40 and move WAY slower so humans can enjoy the visuals; calm classical space/violin music." v1 is untouched.
+- Law: 40 pendulums. Pendulum k makes (10 + k) full swings in Tc = 32 s, so 10..49 swings.
+  - L_k = g (T_k/2pi)^2 = 254.5 .. 10.6 cm.
+  - Physical frequencies 0.31 .. 1.53 Hz.
+  - Exact small-angle motion, all released from the same line. The realignment error is 0.
+- Time-warp (playback only; physics untouched; the clip is EXACTLY one cycle):
+  - Video seconds per sim second = 0.68 + 1.0 per group moment (gaussian, w 0.022 of the cycle) + 1.35 at the line-up (w 0.040 on the approach, 0.013 after the start).
+  - That gives about 1.5x through the chaos, about 0.6x at the 2/3/4-group moments and 0.5x into the line-up.
+  - Group moments in video: 4 groups at 6.56 s, 3 at 9.62, 2 at 14.50, 3 at 19.38, 4 at 22.44. The second half mirrors the first in time (frames at s and Tc - s are identical).
+  - Clip 30.03 s (1802 frames).
+- Loop: perfect. There is no bar and no hold: the last frame flows into frame 0, and the line-up IS the seam. Pre-encode seam 0.128 (a normal step is 0.111).
+- Look:
+  - Bob r 11.2 (half the row spacing), brighter gradient and glow. Strings are visible (alpha 0.6). Soft glow trails over 0.16 s.
+  - Thin curves join every q-th bob while the row forms q waves, with a "q GROUPS" label at each moment.
+  - At the line-up there is a gold line glow (only once the spread is < ~60 px), the gems' glow boost, and the label "ALL IN LINE".
+  - Mochi and Bolt are r 29 on the end pendulums, in calm awe (small open mouth). They make a wow face at group moments and are happy at the line-up.
+- Sound:
+  - Music: lib/bgm.py gymnopedie_1 (Satie 1888, PD), violin section + pad, starting at beat 15 (bar 6). Tempo x1.062 (74.3 bpm) is solved so that the phrase's second arrival on the held F# (bar 9, the cadence) lands 3.4 s before the seam. It fades by T - 1.3 s, and the line-up completes in silence.
+  - Soft marimba plucks (D major pentatonic, long = low) sound only on centre passes while the row is ORDERED (coherence >= 0.5): merged into chords of up to 3 notes, gap >= 0.11 s, 88 plucks.
+  - A glass chime marks each group moment, snapped to the music's downbeat when within 0.12 s (3 of 5 land on one: 9.68, 14.53, 19.37 s).
+  - A D-major glass chord plays on frame 0, which on the loop lands on the line-up.
+  - Measured pre-master: music -20.1 LUFS, plucks + chimes -28.7 LUFS (8.6 dB under).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps, 30.03 s. -14.01 LUFS, peak -7.42 dBFS, last 0.5 s -90.3 dBFS. Encoded seam 0.423. flash_check: 0 flashes = PASS.
+- Args: --cap, --voice (violin), --music-gain (1.0), --label, --reuse (skip the video render, re-mux the audio), --video-only, --audio-only, --still --frame.
+- Delivered <VIDEOS_DIR>\batch20\pendulum_wave2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-09: Doesn't like it. Dropped.

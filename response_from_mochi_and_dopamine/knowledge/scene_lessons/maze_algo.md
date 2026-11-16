@@ -1,0 +1,46 @@
+# maze_algo: Depth-First vs Breadth-First Search through one perfect maze (2026-10-09, batch23)
+
+- Rule: one seeded perfect maze (backtracker generator, 36x17 cells of 26 px, 936 px = 0.87 of the width) is drawn twice, stacked and identical. The top copy is MOCHI's Depth-First Search; the bottom copy is BOLT's Breadth-First Search. Both start top-right and exit bottom-left.
+  - The sim runs with the start top-left; the render mirrors x so the exit stays clear of the Shorts UI column.
+- Fair clock: both search the SAME number of new cells per second. The rate ramps linearly 1x -> 2.2x (16 -> 35 cells/s). The winner is the algorithm that needs fewer cells.
+  - DFS: tries LEFT, DOWN, RIGHT, UP (as drawn) in that order. It is drawn as a coral snake of light (the stack) that retracts to the last fork on backtrack. Dead ends it has left stay as a dim rose/crimson fill.
+  - BFS: drawn as a rainbow flood. Hue = distance from the start, one full hue cycle over the explored depth. Frontier cells glow white-hot for ~0.2 s.
+- Counter per side: "N TO GO" = the true maze distance from the explored cell closest to the exit. Both start at 303.
+- Seed 4799 (searched over 5,000 backtracker mazes; BFS wins only ~3% of these corner-to-corner mazes):
+  - D = 303. BFS reaches the exit at visit 559. DFS would need 560: Mochi is 1 cell short.
+  - MOCHI LEADS from 2.0 s. DEAD END pops at 2.98, 7.41, 11.01, 14.49 and 20.93 s (the last is a 30-cell retract).
+  - Mochi stalls at 64 to go from ~17.5 s. BOLT TAKES THE LEAD at 18.55 s.
+  - Mochi charges back 64 -> 1. PHOTO FINISH at 22.49 s. BOLT WINS at 23.70 s, "by 1 CELL!".
+  - Alternatives: seed 3556 (Mochi 5 short, lead change at ~17 s, a 9 s stall).
+- Payoff: on the cadence (bar 25 downbeat) the unique path is traced GOLD from the exit back to the start through both mazes over 0.85 s. One sparkle then runs along it. Bolt cheers twice; Mochi gives a shocked "wow", then an annoyed stare at the camera.
+- Hook / loop:
+  - Frame 0 = the finished payoff: a ~91 % rainbow flood, a full rose DFS map, and the gold path in both mazes.
+  - From 0.01 s the gold retracts, and the searches rewind to the start by 0.70 s (counters count back up to 303) while the theme's first E rings.
+  - The race starts on the F# (bar 10, beat 3, 0.81 s). The clip ends on the identical payoff.
+  - Pre-encode seam: last -> 0 mean 0.003 (character breathing step only; 14 whole cycles per clip).
+- HUD: caption "Same maze, two search algorithms | ~First to the EXIT wins~" (y_f 0.092, size 66). Labels above each maze. Characters r 44 at the bottom left/centre (x 112 / 808, everything x < 900) with TO GO counters. Eyes follow their own search head.
+- Music: Antonin Dvorak, Symphony No. 9 "From the New World", 4th mvt Allegro con fuoco, bars 10-25: the main theme twice, ending on the E-minor cadence.
+  - Composed 1893; Dvorak died 1904, so the composition is public domain.
+  - Notes are parsed (mido) from the Mutopia Project MIDI DvorakA/O95/Sym9 `Mvt4_conFuoco.mid` and embedded as data in the scene:
+    - Theme: horn 2, played in octaves with the trumpet line.
+    - Chord stabs: trombones.
+    - Octave bass: double basses.
+    - 16th fills: cellos, bars 18/21/22.
+    - Pickup into bar 18: violin 1, an octave down.
+  - The Mutopia edition is CC BY-SA 3.0. We copy only pitches and rhythms of the PD work, no engraving and no recording.
+  - Our arrangement: driving 8th-note bass under the theme, single in the 1st statement and in octaves in the 2nd. A held E1/E2/G3 under the final chord.
+  - Played on `audio.synth_piano` at quarter = 152. Range E1-B4, nothing above B4. No per-cell sounds.
+  - Sync: the theme starts at 0.02 s, the race starts on its 3rd beat, the 2nd (octave) statement starts at 12.65 s, and the cadence lands at 23.70 s exactly as the exit is found.
+  - Everything is faded out by T-1.40 s.
+- Checks (encoded Full HD v2):
+  - h264 yuv420p 1080x1920, 60 fps, 1620 frames = 27.00 s.
+  - Audio: -14.00 LUFS, peak -6.33 dBFS. 25.7-27 s peak -72 dBFS; last 0.5 s -240 dBFS.
+  - flash_check: 1 flash, PASS (mean luminance 0.06).
+  - Encoded seam mean 0.699. Note events/5 s: 70/69/82/97/48.
+- Args: --seed (4799), --gen (backtracker|prim|wilson), --label, --cap 'a|~b~', --search N, --report, --still --frame N.
+- Delivered <VIDEOS_DIR>\batch23\maze_algo.mp4 (Full HD). Owner review: pending.
+- Doubts:
+  - Equal cells-per-second is the standard "nodes expanded" measure. DFS backtracking is free (the snake retracts within one step), so DFS is not charged for walking back.
+  - 1 s and 2 s show mostly empty (tinted) mazes; the cold open carries the hook.
+  - "BOLT TAKES THE LEAD!" touches Bolt's sprout while he cheers.
+- Owner review (2026-10-10): good, can get better with better music -> maze_algo2 (orchestral).

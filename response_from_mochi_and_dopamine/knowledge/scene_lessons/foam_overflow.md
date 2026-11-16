@@ -1,0 +1,66 @@
+# foam_overflow — "Every bubble makes 2 MORE" / "until the foam OVERFLOWS" (stake: "Weak mix or CATALYST?")
+
+- This is the formula (docs/BRIEF_formula.md) applied to the famous foam-eruption demo. It is framed as an adult "satisfying" eruption: the word "toothpaste" is not on screen and no classroom words are used.
+  - Two identical tall flasks (cylinder body, shoulder, neck) stand in one tray on a bench. A gold dashed OVERFLOW line sits at each mouth from frame 0, with an "OVERFLOW" tag between them.
+  - Mochi (coral): WEAK MIX from a big bottle (shown pouring at frame 0). Bolt (mint): a small amount plus a CATALYST (a dropper releases its last drop at 0.08 s).
+- **Volume model:** honest litres, one flask profile, so the level and the litres always agree.
+  - Capacity from the liquid to the mouth = 2.0 L. Both flasks have the SAME liquid level, so the counter lead and the level lead never disagree.
+  - Bolt: V = 0.25 L × 2^((vb−2)/6). His foam doubles every 6 beats (2.0 s); each doubling is a "×2" generation with a badge.
+  - Mochi: 0.36 L + a pour head of 0.533 L (τ 1.4 s) + a creep of 0.025 L/s (the "+0.1" chips).
+  - Why Mochi only gets ~2/3 up: a +N rival that leads until 4.8 s and is passed by ×2 cannot also reach the neck. The flask is bounded, so ×2 has only ~1 doubling between the lead change and the overflow. If she reached the neck she would nearly overflow too.
+- **Outside the flask:**
+  - The foam is a column 72 px wide (1060 px per L). It rises 135 px, arcs over (r 102 px, top at y 0.15h) and falls between the flasks at x 515.
+  - It lands in a pile, a half-ellipse of a = 150·M^⅓ and c = 110·M^⅓ (×0.86 on Mochi's side), which partly buries her flask.
+- **Bubbles** are material points: a volume coordinate u (oldest on top) and a lane w.
+  - New foam forms on the liquid and pushes older foam up the neck, along the column and onto the pile. Newly landed bubbles slide down the pile's surface over 0.4 s.
+  - Colour: rainbow LAYERS by age in the flask and column (0.14 L bands for Bolt, 0.085 L for Mochi), which makes the striped snake. In the pile, colour is a fan of sectors by lane, blended during the slide. With lanes, the column had read as speckle.
+  - Bolt's bubbles are 5.6-8.8 px, Mochi's 9.5-15.5 px. Bubbles are scaled up where the 2D view is sparse (neck, column). Half of the pile bubbles are culled as buried.
+- **Key times** (clip 17.17 s = 1030 f):
+  - Litres M/B: 0.52/0.19 at 0 s; 0.85/0.38 at 2 s.
+  - Generations (×2): 0.77, 2.77, 4.77, 6.77, 8.77, 10.77, 12.97.
+  - LEAD CHANGE at 4.77 s (1.00 = 1.00 L, generation 2, exactly on the end of the tune's first phrase).
+  - OVERFLOW at 6.77 s (generation 3; boom + crash).
+  - The column lands at 8.03 s.
+  - CADENCE at 12.97 s (generation 6, 16.0 L; Bolt's mix is spent, with a 0.4 s ooze to 17.5 L). CATALYST WINS! + "the catalyst makes it go FASTER" at 13.27 s.
+  - TOO SLOW over Mochi at 14.27 s (she ends at 1.32 L). Dissolve from 16.57 s.
+- **Music = the clock:** Beethoven, Rondo a capriccio Op. 129 "Rage Over a Lost Penny" (1795; Beethoven d. 1827, PD).
+  - Notes: Mutopia #498, piano, LilyPond MIDI. The engraving licence is "Public Domain". Saved to `<SOUNDFONTS_DIR>\scores\beethoven_rage_penny\` with SOURCE_mutopia_498.txt.
+  - Not on the used, banned or kid lists.
+  - Cut: score beats 0-32 (theme + 2nd phrase), then 40-47 (the theme's closing 4 bars into the G cadence).
+  - Tempo: 1/3 s per quarter, with a ritardando over beats 35-38 (0.345 → 0.48).
+- **Sound** (scene-local bed + SFX, no noise anywhere):
+  - Bed:
+    - Tune an octave down on piano + clarinet; left-hand 8th chords as pizzicato; contrabass from beat 8.
+    - From the lead change: strings double the tune, with horn pads.
+    - From the overflow: more strings, brass stabs, tuba, choir pad.
+    - Timpani on every ×2 generation.
+    - Run-up from beat 34: soft timpani roll, tremolo swell, harp run in G.
+    - Cadence: G major on brass, tuba, strings, choir, piano, timpani, boom, crash (gain ×1.25).
+  - Note per event: every melody onset (79) is a bubble event in a flask (alternating before the lead change, then 3 of 4 for Bolt). Each plays a pitched bubble "bloop" at the note (folded to C5-D6) + a soft marimba plink. Bolt's before the overflow are visible SPLITS (one → two bubbles, "×2" tags on the first six).
+  - Free pops are tonal rising-chirp blips: Mochi 430-670 Hz at 4.5/s; Bolt 760-1210 Hz at 3 + 16·dV/dt per second.
+    - Gain is ducked by density.
+    - They are thinned to 55 % in the 1.4 s before the cadence, to leave room for the lift.
+  - Pile plops: 190-300 Hz. Overflow whoomp: a 150→70 Hz sine swell. Every SFX onset is ≥ 12 ms from the previous one, and notes win.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/foam_overflow.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/foam_overflow.py --label v1` (one process, x264 `-threads 2`; Full HD in 2 min 16 s)
+  - `--report`
+  - `FO_DIAG=1` prints the bed vs SFX levels.
+- **Checks** (encoded Full HD `output/foam_overflow_v1_9x16.mp4`, now delivered):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 17.17 s.
+  - Loudness: −14.01 LUFS, peak −4.3 dBFS, last 0.5 s at −62 dBFS. `peak_db=None`.
+  - Per-second RMS: −21.6 at the open → −16 in the eruption → −12.4 on the cadence.
+    - Cadence quarter-second: −12.4, against −14.9 for the 0.5 s before (+2.5 dB) and ~−16.5 for the eruption body (+4).
+    - Overflow: −19.7 → −13.1.
+  - Bed vs SFX in the opening: −30 vs −29 dB, so the pops are audible.
+  - flash_check: 0 flashes = PASS (mean luminance 0.03).
+  - Loop seam: encoded mean delta 0.557 (the last frame = frame 0, with the bottle and dropper back).
+  - Side safe zone: content at x 0.109-0.834w (0.840 at 15 s, the slumped pile edge), y ≤ 0.770h.
+  - Frames read from the encoded file at 0, 0.45 (1:1 crop of the first split), 2, 4.80, 6.80, 8.0 (1:1 crop of the column), 10.5, 12.98 (1:1 crop of the pile + column), 15 and 17.13.
+- Delivered `<VIDEOS_DIR>\batch46\foam_overflow.mp4` (Full HD). Owner review: pending.
+- **Doubts:**
+  - Frame 0 is less full than mousetrap. The flasks are ~1/3 foam and liquid plus the rainbow wall drips, and the frame is FULL from ~8 s. An honest ×2 starts small.
+  - Mochi stops at ~2/3 of the body, not the neck.
+  - After the cadence the column freezes (the mix is spent), with only pops and the pile slump moving.
+
+Owner review (2026-10-21): "if you think it has potential we can try" -> yes (x2 to OVERFLOW skeleton, full rainbow), Oct 28 slot 2.

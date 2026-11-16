@@ -1,0 +1,21 @@
+# ring_escape2 — ring_escape with jewel-tone glowing rings
+
+- Built from the owner's review of ring_escape s5133 (2026-10-05): "good idea, maybe some colour effects make it even more alive — those white rings."
+- ring_escape.py is untouched (bit-reproducible). This file IMPORTS its sim, race rules, reactions, reset/loop and sound (`base.simulate`, `build_events`, `build_bed`, `draw_character`) and replaces only the render.
+- Look:
+  - Dark night stage (navy -> plum gradient, faint fixed specks) with a soft violet colour pool behind each plate. The plates are smoked glass with a thin lilac rim. The floor is dark.
+  - Rings are jewel tones, inside out: ruby, fire opal, amber, citrine, peridot, emerald, teal, sapphire, amethyst, orchid.
+  - Each tube is drawn as layered glow strokes (TH+20/12/6 at alpha 0.04/0.075/0.14; cairo has no blur), then a dark edge, the core, a lower-right shade and an upper-left sheen. A GLINT is fixed to the ring opposite its gap, so the spin reads everywhere.
+  - Active ring: the glow switches to the owner's colour and pulses (a 1.6 Hz breath + a kick per bounce, 0.22 s). A thin owner-colour line sits on the tube's inner face. Do NOT mix the owner colour into the core: orchid + mint read grey.
+  - Bounce: a local bloom in the ring's colour (r 26) + 5-8 sparks in the ring's colour (seeded per bounce index, 0.30 s).
+  - Break: a colour ring-wave (two thin strokes) + a gap bloom (r <= 68). The shards keep the ring's colour with glow, core and highlight, and spin. No full-frame flash.
+  - The ball has a small halo in its own colour (r 2.1x) and a 7-frame trail.
+- s2562 (default; the search now prefers a MOCHI win, since Bolt won all of batch12):
+  - Bolt breaks its first ring at 0.22 s and reaches its LAST ring at 14.05 s (Mochi has 4 left). It then stays stuck on that last ring for 5.6 s.
+  - Mochi climbs 16.25 -> 18.33, then breaks a DOUBLE at 19.70/19.71 and wins at 19.71 s. Bolt is left with 1 ring and escapes at 21.3 s in the sim, after the clip stops it.
+  - Bounces/5 s: 46, 68, 71. Clip 22.50 s (1350 frames).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS, peak -4.18 dBFS; last 0.5 s -61.7 dBFS; flash_check 0 flashes = PASS (mean lum 0.027). Pre-encode seam 0.267, against a normal frame step of 0.394 = perfect loop. Encoded seam 0.78 (an I-frame quality step, as in v1).
+- Args: --seed (2562), --label, --cap, --melody, --voice, --search N, --still --frame.
+- Other Mochi seeds: 5490 (t_w 17.84, Bolt escapes 0.4 s later, 5 lead changes), 553, 8564.
+- Delivered <VIDEOS_DIR>\batch13\ring_escape2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05 night: OWNER'S FAVOURITE: perfect, loves the colour scheme. Use colours like this more often. APPROVED.

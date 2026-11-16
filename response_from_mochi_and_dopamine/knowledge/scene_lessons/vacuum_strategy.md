@@ -1,0 +1,17 @@
+# vacuum_strategy — FREESTYLE vs LINE BY LINE on the same marble floor (new scene; vacuum_race2 stays reproducible)
+
+- Why: owner review of vacuum_race2 (batch 11): "give them different STRATEGIES (one random, one line by line)".
+- Rule: 120 marbles per half, and the first CLEAN floor wins. Both halves have the SAME layout (mirrored), so only the strategy differs. Hose, tank pile-up, counters at 0.775h, happy faces while working: all as v2. Caption "Freestyle vs Line by line|~First clean floor WINS~". The caption order matches the sides: Mochi is on the left, Bolt on the right.
+- MOCHI = freestyle (greedy). Every 6 frames it re-picks a target. Score = n^0.5 / (d + 40) x a heading bonus, where n is the number of marbles within 0.85R of a candidate marble, aimed at their centroid. Hysteresis is 1.3x. Steering is turn-rate limited: tightest turn rho 85 px, gain 5, w low-pass 0.09 s. Walls push it off within 120 px. Result: big sweeping loops, early mass grabs, then it chases the stragglers it left.
+- BOLT = line by line: v2's 9 robot-vacuum lanes, bottom to top, ending at the top of the divider. g is 1.12..1.18 (wide spread, so the ring grows a lot).
+- Both rings grow on the same clock: R_mochi(t) = R0 + (RL - R0)(t/T_bolt)^1.6, using Bolt's first and last lane radii. Speed is v2's k*(178 + 8.5t), with k per side 0.95..1.05.
+- Readability: each path stays on the floor as a faint trail (body-dark colour, alpha 0.30, 6 px). Bolt's reads as neat stripes, Mochi's as a scribble. Tiles are cleaned only where the ring actually passed (computed from the real frames), so Mochi's floor keeps dusty patches.
+- Layout (seeded, `layout()`): a small start cluster at the start corner (hook: captures from frame 1), 5-7 clusters biased to the top (y ~ u^2.2, weighted heavier higher up), 8-14 strays, and a row along the top wall next to the divider (END_W 2.5). That row is the lanes' last sweep, so Bolt's rate climbs late.
+- Finish/steal/reactions/loop: as v2. The steal ring is capped by seed choice (R_big <= 340).
+- Seed search (`--search N [--from S]`) ranks: Bolt wins, a late lead change, total captures rising over 3 bins, then tail (rate in the last 1 s / the previous 3 s). It filters for 1-8 leftovers and R_big <= 340. Of 6000 seeds, Mochi wins 63%.
+- Pick s24: Mochi leads by up to 72 (102:35 at 9.5 s). Bolt's lanes reel it in, it takes the lead at 14.5 s and wins 120:118. Mochi's last capture would have come just 0.12 s later. Final 122:118 after the steal. g 1.163, k [0.968, 1.034], R_big 229. Captures per 3 bins: total [64, 77, 97], Mochi [52, 51, 15], Bolt [12, 26, 82]. Alternates: s3872, s4688, s5655 (all Bolt).
+- Measured (Full HD encode): 19.03 s, 1142 frames, h264 yuv420p 1080x1920 60 fps. -14.0 LUFS, peak -7.5 dBFS, last 0.5 s -80.8 dBFS. flash_check PASS (1 flash, at the 18.1 s reset). Pre-encode seam max delta 0; post-encode mean 0.67. Sounded per 6.3 s: [52, 60, 32] (the last bin is the payoff and reset). 144 notes, 24 distinct, top pitch 9%.
+- Doubt: the combined capture rate peaks ~1.5-2 s before the finish, at Bolt's 7->8 U-turn, then eases (tail 0.64). The last lane only gets the strip its predecessor could not reach. Through ~13 s the rate rises, and the lead change carries the last second.
+- Args: --seed (24), --label, --cap, --melody, --search [--from], --dry, --still --frame.
+- Delivered <VIDEOS_DIR>\batch12\vacuum_strategy.mp4. Owner review: pending.
+- Owner review 2026-10-05: Better, but they should EAT instead (the vacuum tubes look like snakes). Glowing orbs, not candy -> orb_eaters.

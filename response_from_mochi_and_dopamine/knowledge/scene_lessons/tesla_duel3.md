@@ -1,0 +1,39 @@
+# tesla_duel3 — TESLA DUEL 3: Für Elise floods a 112-dot board
+
+- Built from the owner's review of tesla_duel2 (2026-10-08): "make more dots to fill, and some good melody — don't forget copyright."
+- v2 is untouched. This is a new file that keeps v2's two machines, sphere finish, loop and look.
+- Board: 14x8 = 112 glowing dots at 40 px spacing (v2 had 40 bulbs at 50 px). It is about 520 px wide and hangs above the toroid and the dome.
+- Music:
+  - Beethoven, "Für Elise" (1810), a public-domain composition. It is played note by note by our own synth (`--voice piano`, `audio.MELODIES["fur_elise"]`). No recording is used, so it is copyright-safe.
+  - It is played on the real rhythm, in 16th-note units: dotted A/B/C, the final A held for 4 units, and 8 bars of 3/8 per pass.
+  - The tempo speeds up from 0.192 to 0.132 s per 16th.
+- Bolt (Van de Graaff): ONE spark per melody note. His sparks fill the board in a tidy serpentine sweep from the right edge.
+- Mochi (spark-gap Tesla coil):
+  - Every 2 bars, on the downbeat, she fires one huge arc. It hits the nearest free dot, then crawls dot to dot through a branching BFS cluster of 6, 8, 9, 10, 11, then 12 dots, flooding 0.022 s per level.
+  - Each blast sounds the chord under that bar (Am or E).
+  - Her stomps land every dotted 8th, so each blast lands on a stomp.
+- Lead: it swings every bar (9 changes). Bolt creeps past between blasts, and each blast jumps Mochi back in front.
+- Challenges:
+  - Bolt's BELT SLIP (notes 25-30, 6.0 to 7.4 s): six sparks fizzle mid-air, but their notes still play, so the tune never breaks. Mochi laughs.
+  - Mochi's 6th blast is DEFLECTED into the sphere (11.18 s). Bolt laughs and overtakes.
+- Finish:
+  - Mochi's +12 lands at 12.95 s (56-50). Bolt's sweep then ties it 56-56 on the last dot, on the downbeat A (13.80 s): TIED, SPHERE DECIDES.
+  - In the clash (14.20 to 17.00 s), Mochi's arc swells with a chord on each downbeat. Bolt's volley IS the melody (16 notes), growing faster and harder.
+  - On the next downbeat A, Bolt's spark wraps the sphere: BOLT WINS 57-56.
+  - Mochi's spark gap overloads: puff, soot, frizzy static hair.
+- Sound:
+  - Melody events at gain 0.85, chords in the bed, then an A-major resolution (A, C#, E, A).
+  - Foley is kept quiet so the melody leads: spark ticks, the blast crackle and thump, low hums and pedal ticks, the slip squeal, deflect clanks and the poof.
+- s3 (default): the seed only shapes Mochi's cluster branching, and every seed ties.
+  - Clip 20.75 s (1245 frames).
+  - Arcs per 5 s: 26, 28, 31. Note events per 5 s: 21, 23, 26.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 at 60 fps.
+  - -14.01 LUFS, peak -6.99 dBFS.
+  - About -57 dB at T-1.3 s; the last 0.5 s at -90 dBFS.
+  - flash_check 0 = PASS.
+  - 82 notes, 11 distinct.
+  - Pre-encode seam 0.0 (exact). Encoded seam 1.21 against a median step of 0.82 (p90 1.30): the I-frame step.
+- Args: --seed (3), --label, --cap, --voice (piano), --still --frame.
+- Delivered <VIDEOS_DIR>\batch18\tesla_duel3.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-09: Good, but the finish is too fast to enjoy; keep Für Elise, slow the ending -> tesla_duel4.

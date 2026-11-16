@@ -1,0 +1,49 @@
+# maze_algo3: maze_algo with ASMR search sounds (no music) and a faster, bolder start (2026-10-11, batch27)
+
+- Built from the owner's review of maze_algo / maze_algo2 (2026-10-11): "remove music, sound effects of filling (tik tik, or what suits it); the start needs to be more hooking, maybe a faster start."
+- scenes/maze_algo3.py imports maze_algo (sim, drawing, story; the file is unchanged, md5 8b525bf6...) and re-times its module globals at import time.
+- Unchanged from maze_algo:
+  - seed 4799, same maze;
+  - DFS snake vs BFS rainbow flood at the same cells per second;
+  - BOLT WINS BY 1 CELL;
+  - the gold path payoff, characters and HUD.
+- Hook:
+  - Frame 0 = the payoff, unchanged.
+  - The rewind takes 0.02-0.38 s (was 0.07-0.70).
+  - While it drains, the camera dives into both start cells (x2.4, each maze clipped to its plate, walls redrawn as vectors). It pulls back out over 0.40-1.45 s as both searches burst out.
+  - The race starts at 0.40 s (was 0.81 s), already fast: 24 -> 39 cells/s (RAMP 1.6; was 16 -> 35). The race is 17.5 s (was 22.9 s).
+- Story timings: MOCHI LEADS 2.03, DEAD ENDs 4.87 / 7.55 / 10.27 / 15.55 s, BOLT TAKES THE LEAD 13.57, PHOTO FINISH 16.87, BOLT WINS 17.90 s.
+- Banners pop from 0.85x scale (batch25 rule): lead/photo 66 px, WINS 80 px, DEAD END 46 px.
+- Sound (no music; all synthesized in the scene into the bed; `audio.master` -> -14 LUFS, `peak_db` -4):
+  - Ticks: one per searched cell, thinned with a budget accumulator to 20 -> 30 ticks/s per side (measured 21 -> 30, still climbing at the end).
+    - Mochi DFS: a soft wooden tick (3 damped bar modes + a felt click).
+    - Bolt BFS: a glassy droplet (a sine "bloop" gliding up 45% + a glass partial).
+    - Pitch: E-minor pentatonic E4-E5 (7 notes).
+      - DFS: by the cell's distance to the exit, so you hear it getting warmer or colder.
+      - BFS: by flood depth, a steady rise.
+  - Dead ends: a soft low thunk (150 -> 95 Hz, gain by retract length) for every DFS retract of >= 2 cells (38).
+  - Glass dyad B3/E4 on MOCHI LEADS / BOLT TAKES THE LEAD / PHOTO FINISH.
+  - Rewind at 0.0 s: a falling 12-step flurry of both timbres.
+  - The exit:
+    - glass bell E4 at 17.90 s;
+    - an 11-note rising pentatonic chime sweep (E3 -> E5) that follows the gold tracing head;
+    - a warm rolled E-major piano chord (E2 E3 G#3 B3 E4) + bell as the path completes.
+  - Everything is cut by T-1.35 s. Onsets are kept >= 10 ms apart: a near-coincident onset is nudged +12 ms (CLAUDE.md mixer rule).
+- Clip 21.40 s (1284 frames).
+- Checks (encoded Full HD v1):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - Audio: -14.00 LUFS, peak -7.47 dBFS, per-5 s RMS flat at -16.5. Last 1.3 s peak -47.8 dBFS (master reverb tail); last 0.5 s -84.3 dBFS.
+  - flash_check: 1 flash, PASS.
+  - Pre-encode seam: last -> 0 mean 0.004 (one breathing step). The encoded seam mean is 0.815, the I-frame step; maze_algo measured 0.699.
+- Args: --seed (4799), --label, --cap, --report, --audio-only, --still --frame N.
+- Delivered <VIDEOS_DIR>\batch27\maze_algo3.mp4 (Full HD).
+- Owner review (2026-10-11): approved ("ok I guess it's good").
+- 4K ship: 2160x3840 h264 yuv420p, 60 fps, 1284 frames = 21.40 s.
+  - Audio: -14.00 LUFS, peak -7.47 dBFS, last 0.5 s -84.3 dBFS.
+  - flash_check: 1 flash, PASS. Encoded seam 0.527.
+  - Staged as <VIDEOS_DIR>\Schedule\2026-10-12\2_maze_algo3.mp4.
+- Doubts:
+  - Sound checked by measurement only, not by ear.
+  - With ~50 ticks/s combined late in the race, the texture is dense. Each side is under 30/s, but together it may read as a patter rather than single ticks.
+  - The zoomed walls get thick (the glow scales with the zoom) for ~1 s; that is intended as "bold".
+- Owner review (2026-10-11): good -> APPROVED, 4K.

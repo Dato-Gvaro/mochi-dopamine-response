@@ -1,0 +1,26 @@
+# clones_battle2 — the clone war, readable (fewer, bigger clones)
+
+- From clones_battle after the owner's review ("too crowded"). Same shared board and the same rules (LAND = multiply, BONK = steal from above); clones_battle.py is untouched.
+- Readability:
+  - Clones MR 32 (was 20).
+  - 6 rows of r=14 pegs (5-6 per row, 158 px apart, edge 92 px) instead of 10 rows of r=9.
+  - Live cap min(76, 16 + 1.8t). Measured max live: 74.
+  - 6 starts per side sit mid-gap between peg rows.
+- Counter = clones ON THE BOARD + the WAITING line. The waiting line is drawn as a "+N waiting" pill beside each big character, so nothing counted is hidden. Landings pop the bin's own "x2/x3/x5" in the lander's colour (this fixes the "+1 on x2" confusion).
+- A steal is readable as an event: the stolen clone pops in its NEW colour (scale 1.38 plus a colour ring), the old-colour ghost fades under a star, and the stealer shows a small "HA!".
+- Feed: each free slot goes to the side furthest below its fair share of the board (fair = its share of the waiting line).
+  - Random odds by waiting share made the board count a Moran random walk; finishes were 42:22 blowouts.
+  - Spawns leave the pipe at vy=300 and only into a free spot. At vy=0 the top row jammed and the board stalled at about 50 live, under its cap.
+- Tried and dropped: counting only the clones on the board (target 40-42). Board share random-walks by ±1 per landing/steal, so every finish was a 42:22-type blowout, and with the fair-share feed it got stuck at ~50/50 with no winner by 50 s.
+- The waiting line dominates the counter late (e.g. 339 waiting + 28 on the board). It is shown, but the board is only a slice of the count.
+- Seed search: `--search 150` takes about 1 min. The filter is a race of 25-35 s and a loser ≥ 90% of the target, ranked by how late the last lead change is.
+- Reactions: as clones_battle, with the wince threshold set to 3+ steals in 0.5 s.
+- Sound: as clones_battle (landing note gap 0.014 s, x5 pop, bonk = bounce + quiet penta by x, quiet pegs, finish chord). Melody: ode_to_joy.
+- Pick s41: Bolt wins 380:368 at 34.1 s; the clip is 37.5 s.
+  - Lead changes at 15.2, 31.5 (Mochi) and 33.6 (Bolt, 0.5 s before the finish).
+  - Landings per 5 s: [31, 60, 71, 96, 106, 130]. Steals per 5 s: [2, 19, 23, 41, 58, 68]. Stolen m/b: 112/99.
+  - Sounded landings per second: 2 → about 20.
+  - Alternatives: s136 (Bolt 380:368, last change at 34.0), s45 (8 changes, 380:343).
+- Measured (s41): -14.0 LUFS, peak -5.0 dB, last 0.5 s at -65.7 dBFS. flash_check: 8 flashes, worst second 2 = PASS. h264 yuv420p 60 fps 1080x1920, 2250 frames. Pre-encode seam: max delta 0. Encoded seam mean delta 0.443.
+- Owner review: pending.
+- Owner review 2026-10-04 (batch 5): Starts mid-action; start when the drops start (empty board) -> clones_battle3.

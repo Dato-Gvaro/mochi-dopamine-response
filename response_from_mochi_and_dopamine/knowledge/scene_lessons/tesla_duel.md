@@ -1,0 +1,34 @@
+# tesla_duel — TESLA DUEL (coil vs coil, bulb board)
+
+- New scene. It does not depend on any other scene.
+- Rule: two Tesla coils face each other in a dark lab. Mochi (left) and Bolt (right) each stomp a treadle that spins a flywheel dynamo. Every stomp sends a ring of light up the copper winding. The coil fills with glow, the glass charge-meter tube fills and the toroid rim brightens. Corona streamers crawl on the toroid when charge is above 0.6. At full charge the coil fires a branching arc at a 7x4 bulb board hung between the coils, which lights the nearest dark bulb in the shooter's colour. Mochi fills from the left and Bolt from the right, so arcs get longer as the colours meet. Goal: most bulbs lit.
+- Unique challenges, each happening once:
+  - Mochi's arc FIZZLES short (MISS!). Bolt laughs.
+  - Bolt's arc is DEFLECTED into the hanging steel sphere. Mochi laughs and Bolt stares at the camera.
+  - Mochi's coil OVERHEATS for 1.4 s: red windings, red meter, steam vents. Bolt runs ahead. After it, Mochi cranks about 10% faster.
+- Escalation: charge period goes from 1.12 to 0.52 s. Arcs get thicker (core 2.6 to 5.2 px). From 11.0 s, arcs FORK and light 2 bulbs (DOUBLE!). Lead-change banners appear on sign flips only.
+- Finish: the board fills TIED 14-14, then "SPHERE DECIDES". Both coils charge with frantic stomps, then fire at the sphere. The arcs meet mid-air in a spark burst, and the clash point swings back and forth (tug-of-war, 1.7 s). Bolt's winding heats red. Mochi pushes through and her arc wraps the sphere (coral), final score 15-14. Bolt's coil overloads: smoke puff, sparks, a sooty toroid, frizzy static hair, a dizzy beat, then an annoyed stare. Mochi cheers twice.
+- Loop: the bulbs dim from the centre out, the score counts down, the soot and hair settle. The next round's pre-roll (stomps and charge cycles copied at t+T) is identical to frame 0. Pre-encode seam 0.012 against a normal frame step of 0.59, which is a perfect loop.
+- Look: navy-plum lab wall with riveted panels and coral/mint colour pools. The toroids are chrome donuts with owner-colour rim light. The windings are copper. Arcs use midpoint displacement with 2-3 branches, a layered glow (7x/4x/2.2x width) and a white-tinted core. Each arc lives 9 frames and its shape is re-seeded every 2 frames. Blooms stay at r 34-58 or less, with no full-frame flash.
+- Sound:
+  - bach_toccata (PD) on marimba, one note per landing arc. Sync double hits merge into one event, with an octave-below note added to the bed.
+  - A zap layer on every arc event, plus a scene-local crackle (a click cluster of 60-110 ms).
+  - One soft rising "vmm" hum pulse per stomp, whose pitch follows the charge. There is no constant bed.
+  - Steam puffs on the overheat and a metal tick on the deflect.
+  - During the clash: crackles every 0.105 s and an accelerating, rising D-minor run.
+  - On the win: a D-major arpeggio and a soft poof.
+- s399 (default):
+  - Fizzle at 2.47 s, deflect at 4.95 s, overheat at 6.18 s.
+  - Lead changes: Bolt 2.77, Mochi 5.33, Bolt 6.72. Bolt leads 13-14 until Mochi lights the last bulb at 11.78.
+  - Sync double fork at 11.30. Clash 13.08 to 14.78, win at 14.78.
+  - Clip 18.28 s (1097 f). Note events per 5 s: 12, 13, 16. Arcs per 5 s: 10, 11, then 7 in the last 1.8 s before the clash.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 at 60 fps.
+  - -14.01 LUFS, peak -5.90 dBFS.
+  - Silent from about 16.5 s; last 0.5 s at -240 dBFS.
+  - flash_check 0 = PASS (mean lum 0.016).
+  - Encoded seam 0.92-0.99 against a median frame step of 0.77 (p90 1.32), which is an I-frame step.
+- Args: --seed (399), --label, --cap, --melody (bach_toccata), --voice, --search N, --still --frame.
+- Other seeds (all 14-14 with the last bulb Mochi's): 281, 239, 224, 149, 123.
+- Delivered <VIDEOS_DIR>\batch17\tesla_duel.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-08: Good idea, but each must use a DIFFERENT method of generating the bolt; challenge each other in different ways -> tesla_duel2.

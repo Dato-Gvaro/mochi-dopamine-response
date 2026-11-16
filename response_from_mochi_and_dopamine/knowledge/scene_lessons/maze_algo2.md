@@ -1,0 +1,40 @@
+# maze_algo2: maze_algo with a full-orchestra soundtrack (2026-10-10, batch25)
+
+- Rule / picture: identical to maze_algo (see docs/scenes/maze_algo.md). scenes/maze_algo2.py imports maze_algo's simulate/render/score data; maze_algo.py is not modified.
+- Seed 4799, 27.00 s, 1620 frames.
+- The one change: the soundtrack. The lone `synth_piano` is replaced by a `lib/orchestra.py` arrangement (MuseScore_General soundfont via FluidSynth, docs/orchestra.md).
+- Notes and timing are the SAME as maze_algo: Dvorak 9 / 4th mvt, bars 10-25, quarter = 152, from maze_algo's Mutopia-parsed HORN / TROMBONE / BASS / CELLO_FILLS / VIOLIN_PICKUP data.
+- Arrangement:
+  - Theme:
+    - 1st statement: horns + strings + cellos 8vb.
+    - 2nd statement (12.65 s) FULL: adds trombones 8vb, trumpet and "oohs" choir.
+    - The bar-17 violin pickup goes to horns + strings, 8vb.
+  - Chord stabs on trombones + tuba. Choir "aah" pads on the same harmony from bar 16, with a CC11 swell 0.55 -> 1.0 into the cadence.
+  - Bass:
+    - Contrabass + sub octave + a sine sub.
+    - maze_algo's driving 8ths on cellos + a low piano octave for attack: single in the 1st statement, octaves in the 2nd.
+  - Hits:
+    - BOOM (concert bass drum + taiko + sub drop) at 0.02 s (the hook), 11.07 s (bar-17 ff), 12.65 s (2nd statement) and 23.70 s (cadence).
+    - Timpani on every chord change.
+    - A timpani roll and a cymbal swell into 12.65 s and into 23.70 s.
+- Sync:
+  - Measured steepest onsets in the wav: 0.018 / 11.18 / 12.53 / **23.704 s**. The cadence is maze_algo's T_WIN = 23.704 s, the frame the exit is found and the gold path lights.
+  - The bed is silent from T-1.5 s.
+- Build: a re-mux onto the delivered maze_algo render (<VIDEOS_DIR>\batch23\maze_algo.mp4). The video stream is copied, with no `-shortest`.
+  - `python scenes/maze_algo2.py --deliver <VIDEOS_DIR>\batch25\maze_algo2.mp4`
+  - `--render` re-renders the frames instead.
+  - `--audio-only` writes just the wav.
+- Bed md5 0bc29ac20697e527fda91dfb3612cde6, identical on two runs.
+- Checks (the encoded <VIDEOS_DIR>\batch25\maze_algo2.mp4):
+  - Format: h264 yuv420p 1080x1920, 60 fps, 1620 frames = 27.00 s; AAC 27.00 s.
+  - Loudness: -14.01 LUFS, peak -5.15 dBFS.
+  - Tail: last 1.3 s peak -50.5 dBFS (master reverb decay); last 0.5 s -90.3 dBFS.
+  - RMS per 5 s: -15.1 / -18.4 / -18.0 / -15.3 / -14.9 / -27.6. The 1st statement is quieter than the 2nd: thin -> FULL.
+  - The video is unchanged, so the seam is unchanged: mean 0.699.
+  - flash_check: 1 flash, PASS.
+- Mastered WITHOUT `peak_db`. maze_algo's `peak_db=-4` limiter flattened this bed's build to a constant -16 dB RMS.
+- Delivered <VIDEOS_DIR>\batch25\maze_algo2.mp4. Audition copy: <VIDEOS_DIR>\music_samples\dvorak_new_world_orch.*. Owner review: pending.
+- Doubts:
+  - The arrangement was checked by measurement only (levels, spectrum, onsets), not by ear.
+  - Choir Aahs has a slow attack (t50 ~200 ms), so the choir is on pads only and the fast melody choir is "oohs".
+- Owner review (2026-10-11): remove the music, use filling sound effects (tik tik); the start needs more hook/faster -> maze_algo3.

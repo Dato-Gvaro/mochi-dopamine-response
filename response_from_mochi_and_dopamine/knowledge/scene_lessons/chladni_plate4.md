@@ -1,0 +1,56 @@
+# chladni_plate4: the sand REACTS to Handel's Sarabande (audio-driven Chladni dynamics)
+
+- **Why it exists:** rework of chladni_plate3. v3 is untouched; this is a new file.
+  - Owner review (2026-10-11): "the whole point of the sand and sound is how the sand REACTS to the sound... the sand rearranges by itself, there is no smooth transition."
+- **The drive is the rendered audio.**
+  - `arrangement(T, keep=)` tags every orchestral note with the SCORE pitch it voices (doublings, octaves, pads) or "perc".
+  - It is rendered once per score pitch: 26 stems + percussion, through the same hall reverb, raw level (`lufs=None, glue=False`).
+  - Each stem's per-frame RMS is that pitch's drive a_p(t): the attack, swell, sustain and decay as heard.
+  - The full bed equals chladni_plate3's (rms difference -132 dB).
+  - Stems are cached as `output/chladni_plate4_stems_<key>.npz` (~3 min to build).
+- **Pitch → mode**, like a real plate: bending-wave frequency ~ k² = n² + m².
+  - D2 → k² 22; one octave up doubles k².
+  - Modes: the D4-symmetric free-plate family φ = [cos nπx cos mπy + cos mπx cos nπy]/2, even n, m.
+  - D2 (2,4) … A3 (0,8) … D4 (4,8) … A4 (6,10) … D5 (6,12) … F5 (8,12).
+  - Mode weight is (k²/40)^0.25, so the fine melody modes stay visible.
+- **Plate field:** the coherent sum u = Σ a_k(t) φ_k; amplitude |u|.
+  - This deliberately differs from the brief's Σ|φ|. A sum of absolute values has almost no nodal LINES when a chord sounds (they would only be the intersections of all the notes' lines), so the sand would pile into dots.
+  - The coherent sum keeps lines, and they morph as the note envelopes change.
+- **Grain dynamics, per frame:**
+  - A random bounce of σ = JIT·max(0, |u| − TH) + J0·loud + JP·perc. Sand only leaves the plate where the acceleration beats the gravity threshold TH: antinodes boil, the lines stay still.
+  - Plus a drift down |u| at KD·loudness (1/s), a slide along the lines, and a 2-substep Newton drift (speed-capped).
+  - Silence = frozen sand (0.000 px/frame in the tail).
+  - No targets, no teleports: a chord change dissolves the old lines and grows the new ones.
+  - Values: KD 4, JIT 0.006, TH 0.12, J0 0.00018, JT 0.003, JP 0.006.
+- **Render cues:**
+  - Grains bounce in height ∝ |u|·loudness (perspective + defocus).
+  - Each timpani hit or boom bounces the whole bed and jolts the plate.
+  - A faint antinode glow shows the live u².
+- **Measured** (sim report):
+  - Mean grain motion vs loudness: r = 0.63. Quiet (<0.4): 1.1 px/frame; loud (>1): 4.2 px/frame.
+  - Peaks: the opening tutti 8.8, the bar-13 entrance 9.9, the final boom 11.6 px/frame.
+  - Encoded frames −0.1…+1.0 s around A (2.81 s), Gm (11.25 s) and Bb (15.94 s): the old figure dissolves and the new one grows over 0.4-1.0 s, continuously. The quiet A morphs gently; the Gm boom hazes the bed, which re-forms by ~0.8 s.
+- **Hook / loop:** frame 0 = the sand at REST in the final D-minor figure. Its state comes from pass A, a sim of the last 3 s of music from pre-settled sand.
+  - The opening tutti hazes it at 0.25 s, and it re-forms into the first chord's figure by 1 s.
+  - The clip ends on the same D minor, settled into silence. The last 0.45 s (silent, still) dissolves the trail buffer to frame 0's sand: the same figure, different speckle.
+  - Pre-encode seam: 0.0 / 0.0.
+  - Encoded seam: 1.38 (check_clip). Both encoded frames differ from the pre-encode frame 0 by 2.6-2.7, so this is grain-texture encoder noise, not a step.
+- **HUD/engagement:**
+  - Caption: "Handel's chords shake 60,000 grains | ~Will the sand follow EVERY chord?~".
+  - "CHORD: Dm/A/F…" names the chord the sand is answering (it pops on each onset).
+  - Mochi and Bolt take turns bowing per chord (warm/cool colours); both bow the climax.
+  - The trill + roll: "HERE IT COMES!" (it was "TOO HARD!", changed because the roll only shivers the bed). Then the final boom hazes it, and it forms the frame-0 figure.
+- **Music:** G.F. Handel, Sarabande, Keyboard Suite in D minor HWV 437 (public domain). Bars 9-16, from Pierre Gouin's IMSLP MIDI #365930. Same orchestral arrangement and clock as chladni_plate3 (see that doc).
+- **Checks** (encoded Full HD v1):
+  - Format: h264 yuv420p 1080x1920 at 60 fps, 24.48 s.
+  - Audio: -14.01 LUFS, peak -5.05 dBFS, last 0.5 s at -84 dBFS.
+  - flash_check: 0 flashes = PASS.
+  - The file is 141 MB: moving grain texture is expensive at CRF 18.
+- **Render:** sim ~6 min (two passes, cached). Full HD in 10 chunks × 3 workers ≈ 30 min.
+  - The scratchpad driver is cp4_chunks.py. `--chunk a,b` renders one chunk; `--mux-only` re-muxes `_silent.mp4` (keep a copy: deliver deletes it).
+- **Doubts:**
+  - Lines are thicker while loud; this is intended, as the sand dances.
+  - Pass A runs only the last 3 s, so frame 0's line width can differ slightly from the end state's (invisible in the dissolve).
+  - Phrase 1 is quiet (-20 LUFS), so its changes are gentle. If the owner wants every change as visible as bar 13's, raise the drive in phrase 1 (an arrangement choice, not physics).
+- Delivered <VIDEOS_DIR>\batch27\chladni_plate4.mp4. Owner review: pending.
+- Owner review (2026-10-11): 'just to fill the gap of three videos a day it will do' -> APPROVED (filler), 4K.

@@ -1,0 +1,42 @@
+# sluice_race — Mochi vs Bolt ride boats down two stacked sluice cascades
+
+- NEW format (2026-10-07). Two vertical stone shafts with brass trim on a dark stage, side by side (centres x 280/800, interior 350 wide, walls 28). Each shaft has 6 lock chambers (pitch 280, gate slab 26) and a basin 290 deep. The water is teal and glows. Mochi rides the left shaft, Bolt the right, each in a wooden boat with a brass rim (r 31, scale 1.16). The layout is mirror-symmetric, and the gate names sit on brass plaques in the gutter.
+- Rule: each shaft holds ONE volume of water (depth 120). A gate trips once the boat has settled (seeded delay) and runs a visible wind-up (0.26-0.36 s). The chamber then drains through the opening with Torricelli outflow (per-gate Cd), the stream falls as parcels, and the chamber below fills from what lands. The boat rides the surface down and drops through with the last of the water. First boat into the basin wins.
+- 6 gates, a new machine each:
+  - SLIDE: the plate slides into the wall while a hand-wheel spins.
+  - FLAP: a half-floor trapdoor drops and a counterweight lever swings up.
+  - DRUM: the floor rotor on a brass hub tips 90 deg, pours on both sides, then swings back.
+  - PLUG: a rubber bung is hauled up on a chain from a wall jib. A whirlpool drawdown spins the boat (the character goes dizzy) and swallows it.
+  - MITRE: twin leaves swing down and open from the centre.
+  - WHEEL: a brake lever lifts, the water spins an 8-paddle wheel, and the boat rides a paddle down into the basin.
+- Hiccups (lead changes): gate 1 is identical on both sides, so the start is synced. Each later gate has a seeded speed (0.86-1.14), and ONE side gets that gate's own hiccup (0.34-0.62 s), so no trick repeats:
+  - the slide sticks at 42%
+  - the flap latch catches twice
+  - the drum rocks back
+  - the plug chain slips and the bung drops back
+  - one mitre leaf lags
+  - the wheel brake drags
+- Water render (fracture2's continuous-fluid idea, re-implemented in this file):
+  - Chamber bodies: the level, a 1-D wave equation (36 nodes, c 430) and a drawdown dip at the opening. Each is filled as one polygon with a teal -> deep-blue gradient. They have a foam surface line, flowing highlight dashes, impact foam with bubbles, and teal light on the back wall.
+  - Falls: emission-ordered parcel segments are joined into ONE sheet polygon per opening. Each sheet has a brightening gradient, downward-flowing streaks and foam edges.
+  - Spray: small filled droplets only (cap 110).
+  - The aqueduct jet is a stroked tapered stream.
+- Camera: a spring follows the mean boat depth (CAM0 -560 -> CAM1 625). View fades at y 250-345 and 1385-1445. Counters "gate k/6" sit at y 1505. LEAD CHANGE! banners appear at y 420. "BOLT WINS!" + "by 0.15 s" at y 760, with gold/teal sparks.
+- Loop (no rewind): a hold of 1.75 s after the loser lands. Then the basin's side outlet lifts, the water and both boats are swept out of frame, and the camera flies back to the top (ease, static for the last 0.42 s). The last 1.9 s draw the top chamber, the aqueduct and the new boats from the pre-roll records (t - T). The pre-roll fills chamber 1 off-screen from the aqueduct, and the boats shoot off the chute lip into it = frame 0. Pre-encode seam 1079->0: mean 1.08 against 1.02 for a normal step (the boats are moving). Encoded seam 1.41 against ~1.0-1.07 for neighbouring steps (motion + I-frame).
+- Sound:
+  - Notes: blue_danube (PD Strauss) on marimba, one note per chamber a boat lands in. Landings within 30 ms become a fifth chord (the synced start). The winner gets a 4-note chord, the loser 2 notes.
+  - Gates: a latch on each trip, a clank at each end stop (sized per gate) and a soft latch when a gate shuts.
+  - Hiccups each have their own sound: ratchet rattle, double latch, clank, a clunk when the plug drops back, a late latch, a brake ratchet.
+  - The plug pops out with a deep plop.
+  - Bed (built in the scene, not regenerable from `_events.json`): one soft band-passed water gush per pour impact (discrete, no noise bed), crank and chain ticks, and wheel paddle knocks that speed up as the wheel spins.
+  - Nothing sounds after T-1.3 s.
+- s1499 (default):
+  - Both boats land in chamber 2 together at 2.07 s.
+  - The lead changes at chambers 3, 4, 5 and 6, then the basin: Bolt -> Mochi -> Bolt -> Mochi -> Bolt.
+  - Mochi's wheel brake drags 0.62 s, so Bolt wins at 14.09 s and Mochi finishes 0.15 s later.
+  - Clip 18.00 s (1080 f). Events/6 s: 27, 28, 24; the bed adds the paddle and crank ticks, densest at the end.
+- Search: `--search N` keeps Bolt wins with a margin of 0.06-0.30 s, at least 2 lead changes with the last one at the basin, and the loser landing at 13-16.5 s. 120 of 2400 seeds passed.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps, 1080 frames; -14.01 LUFS, peak -6.1 dBFS; last 0.5 s -84 dBFS; flash_check 0 flashes = PASS (mean lum 0.021).
+- Args: --seed (1499), --label, --cap "line1|~line2~", --melody, --voice, --search N, --still --frame N.
+- Delivered <VIDEOS_DIR>\batch16\sluice_race.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-07: Good starting idea; play more with the water physics, make it heavier -> sluice_race2.

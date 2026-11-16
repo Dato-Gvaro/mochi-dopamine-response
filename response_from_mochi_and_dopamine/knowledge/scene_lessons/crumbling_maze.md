@@ -1,0 +1,52 @@
+# crumbling_maze — a stone maze over a glowing abyss that erases behind its runners (2026-10-07)
+
+- New file, no shared scene code. Rule: Mochi (top-left corner) and Bolt (bottom-right) race through one 17x17 stone maze (9x9 rooms, 0.9 of the width, tile 57 px) to the portal dais in the centre. Every tile they LEAVE cracks (ember crack lines, heat tint, wobble) and drops a fixed number of beats later. It falls spinning, shrinks into the abyss and gives a faint thud. A wrong turn becomes a dead end with no way back, so they LEAP a 1-tile gap (a wall or their own crumbled tile).
+- Maze: two randomised-DFS subtrees grown round-robin from the centre room through two opposite entrances. This is a perfect maze (BRAID 0) with void walls, and each corner has its own branch (seed search requires the two shortest paths to be disjoint). With 13x13 the races were too short (~4-9 s), so 17x17 is used.
+- Sim (pure, seeded, beat-driven):
+  - Both act on ONE shared beat, so the stone ticks land in sync. Beat 0.40 -> 0.22 s over 15 s; a hop is airborne 0.72 beat.
+  - The pathfinder is a time-aware BFS (a tile is passable if it still stands when you leave it). At a junction it takes a wrong branch with p 0.38 (max 2 per runner, 3 s cooldown).
+  - At a dead end it leaps to the cell 2 away with the shortest remaining route.
+- Escalation:
+  - A left tile drops 2 beats later, and from 9 s 1 beat later.
+  - From 3.5 s the rim crumbles inward: 1 tile per beat, 2 per beat from 9 s. It never takes a tile on either runner's current route or within 2 cells of them.
+  - Drops per ~6.9 s: 44 -> 92. Landings: 38 -> 49.
+- End:
+  - The win cracks the whole remaining maze ring by ring from the rim in (0.07 s/ring).
+  - The loser makes a desperate leap at the dais, falls short and PEEKS over the far ledge: the dais hides her lower half and her hands grip the rim. She stares annoyed for 1.45 s while Bolt laughs "HA".
+  - She then slips and drops spinning into the abyss.
+  - The reform raises 158 tiles ring by ring from the portal outward over 1.0 s. Mochi rides her corner tile up, dizzy then annoyed. Bolt dives into the portal and pops out at his corner.
+  - Pre-roll: frame 0 is 0.10 s into the first hop, with the corner tile's crack 0.10 s old.
+- Look:
+  - Slate stone blocks (chamfered, 34 thick, perspective camera with the VP 300 px below the maze centre, so the south faces show).
+  - Faint carved rune glyph per tile (whole-cycle pulse). Amethyst rune glow on every void-facing edge, which relights as neighbours fall.
+  - Abyss: ember core at the VP, magenta/indigo falloff, slow vortex streaks, floating rocks and embers rising toward the camera. All whole cycles per clip.
+  - Portal: cyan vortex + rotating rune ring on a round dais.
+- HUD:
+  - "N TO GO" per runner is the intact maze's walking distance. A wrong branch reads as the count RISING, and a wall-leap as it dropping.
+  - "MAZE LEFT" counts standing tiles: 158 -> 0, then back up during the reform.
+  - Banners: BOLT LEADS! / MOCHI TAKES THE LEAD! / BOLT TAKES IT BACK! / PHOTO FINISH! / BOLT WINS!
+  - Local pops: DEAD END! + LEAP!, and WRONG WAY! + LEAP BACK! for a leap back over the tile just left.
+  - Caption baked: `Every tile they leave CRUMBLES | ~First to the PORTAL wins~` (y_f 0.10).
+- Sound (three layers, then `audio.master()`, then a cosine fade over [T-1.25, T-0.55]):
+  - Marimba: Bach Toccata in D minor (`bach_toccata`, PD, +12), one note per beat landing, with the octave below 13 ms later when both land. Leaps add a hiss.
+  - Glassharp: dead-end two-note "uh-oh", portal chime, falling glide, one rising note per reform ring, warp in/out.
+  - Scene SFX: a synthesized stone tick per landing; a crumble crunch per drop (`synth_concretebreak` resampled, pitched by depth into the maze: rim 0.78x -> inner ~1.4x; same-beat drops strummed 16 ms); a faint far thud per tile (2 beats after its drop).
+- s2103 (default; the only strict match in 30k seeds):
+  - Bolt leads early, then takes a wrong branch at 4.4 s (his count climbs 40 -> 52, and Mochi takes the lead at 5.3).
+  - DEAD END at 8.9 s and a wall-leap shortcut (52 -> 15, Bolt takes it back). WRONG WAY at 9.5 and LEAP BACK at 9.8. Mochi's DEAD END + LEAP at 10.6.
+  - Bolt wins 13.85 s with Mochi 2 tiles out: PHOTO FINISH.
+  - Clip 19.33 s (1160 f).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps, 1160 frames.
+  - -13.93 LUFS, peak -5.37 dBFS; last 1.3 s and last 0.5 s silent (-240 dBFS). The ring tails are cosine-faded over [T-1.95, T-1.3].
+  - flash_check 0 = PASS (mean luminance 0.026).
+  - Pre-encode seam: last->0 is 0.151, against a normal step of 0.160 (perfect loop). The encoded seam mean is 0.743.
+  - 1:1 crops at 9.0 s (dead end, cracked and falling tiles) are clean.
+- `--remux` rebuilds the soundtrack onto the existing render (no `-shortest`).
+- Delivered <VIDEOS_DIR>\batch16\crumbling_maze.mp4 (Full HD). Owner review: pending.
+- Args: --seed (2103), --label, --cap ('a|~b~'), --melody (bach_toccata), --search N (sim only), --still --frame.
+- Doubts:
+  - Three leaps in 1.7 s (8.9 Bolt, 9.8 Bolt back over his own gap, 10.6 Mochi). They are labelled differently, but it is a dense patch.
+  - The tiles are 57 px (17x17), smaller than the BRIEF's "fewer, bigger parts", because 13x13 could not carry a ~14 s race.
+  - "CRUMBLING FASTER" is not bannered: it collided with the 9.1 s lead change.
+- Owner review 2026-10-07: If they can leap, what's the point? Dropped.

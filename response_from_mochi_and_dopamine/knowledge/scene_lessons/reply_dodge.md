@@ -1,0 +1,145 @@
+# reply_dodge: comment reply to "Just Dodge." on rain_run (2026-11-08, NEW scene file)
+
+- Brief: docs/BRIEF_reply_dodge.md. Comment (real, quoted only): @AcelestialOfHeaven: "Just Dodge." No screenshot exists yet in assets/comments/; the drawn `Canvas.comment_card` is the stand-in (no age, no like count; please save the real screenshot as assets/comments/AcelestialOfHeaven.png).
+- Skill conflict (one line): comment-video says a reply is a flag on the source scene. The brief asks for a new absurd sequence, so this is a new file that reuses rain_run's model. rain_run.py is untouched and stays bit-reproducible.
+- **Rain model (rain_run's):** drops fall at 9 m/s (40 px/m = 360 px/s), 8.0e-4 drops/px² at full rain, body r 54 px, HIT inside 0.96 r, the canopy and shelter roofs stop drops. New here: the shower DOUBLES every sim second up to full rain (full at sim 3.0 s = clip 6 s). Shown at SLOW-MO x0.5.
+- **Bolt dodges:**
+  - A planner with full knowledge of the drops, moving at up to 4.8 m/s (rain_run's run speed) and 1,600 px/s² (40 m/s²).
+  - Its velocity choice is applied 0.25 s later (a reaction delay). It minimises predicted hits plus close calls, kept to x 330-690 in the open.
+  - DODGED = a drop that was on course 0.25 s before it reached his height and then missed.
+  - Readout: rain at him = ρ · 2(0.96 r) · 9 m/s = 3.7 drops/s at frame 0 → 29.9/s at full rain, i.e. a dodge every 268 → 33 ms, against a ~250 ms human reaction.
+- **Mochi:**
+  - Stands in the open drizzle (x 290) until clip 7.0 s, then stops time: a 0.6 s HSL-desaturation fade in her lane only, and a floating pocket-watch prop.
+  - Glides to the shelter (x 850) over clip 7.6-10.4 s; time resumes at 10.8 s.
+  - Frozen drops inside her body's swept path are absorbed and counted.
+  - The full-density, no-roof formula ρ(2·0.96r·d + π(0.96r)²) gives 53. The sim gives 25, because the drops at body height fell from the lighter shower and the shelter roof covers the last ~1.8 m.
+- **Umbrella:** floats down over Bolt from clip 12.4 s (lands at 13.1 s); after that its canopy stops the drops above him.
+- Result (seed 74, clip times):
+  - Mochi leads WETTER early (she stands in the drizzle; Bolt dodges). ONE lead change at 7.33 s, when Bolt passes her.
+  - Bolt hits SOAKED (60) at 9.12 s; by the umbrella: 37 dodged, 95 hits; end 109.
+  - Mochi: 25 drops before stopping time + 25 frozen drops in her path = 50, which stays under SOAKED.
+- Honest finding: weaving makes Bolt WETTER. A blob that keeps moving sweeps more drops (the rain_run lesson again): with a still-biased planner he took 73 by the umbrella; with the clearance-seeking weave he took 95.
+- Caption (baked): the comment card 0-3.6 s; then "Can you just DODGE the rain?" / "Bolt DODGES, Mochi STOPS TIME" / "rain_run's rain · SLOW-MO x0.5". Clip 16.8 s (dissolve the last 0.6 s).
+- Music: Chopin, Etude Op. 10 No. 5 "Black Key" (Mutopia #926, PD; RH line, -12 st), one note per dodge (piano) or hit (harp), >= 75 ms apart. Hit plips; a rain hiss that follows the shower (Mochi's side hushed while frozen); a celesta shimmer + held chord while time is stopped; timpani + brass when the umbrella lands.
+- FAST stills (rd1): output/reply_dodge_rd1_f60 (card) / f300 (Bolt dodging) / f560 (frozen time) / f920 (umbrella finale).
+- Doubts: on screen Bolt weaves slowly (x 483-690, mean ~33 px/s at half speed): the honest 4.8 m/s cap at SLOW-MO x0.5 is not "frantic"; DODGED is only 37 (an honest count, not an exploding number; the exploding number is the drops/s readout 3.7 → 30); the first dodge comes ~1 s in, not 0.2 s.
+- Draft titles: "You said just dodge it. So he tried ☔ #satisfying #physics #shorts" / "30 drops a second: can you really dodge the rain? ☔ #satisfying #physics #shorts" / "she stopped time and STILL got wet 😳 #satisfying #physics #shorts". Pin: "@AcelestialOfHeaven we tried. 30 drops a second means a dodge every 33 ms, and even with time stopped mochi walked into 25 of them". Reply text: "we tried it lol, turns out an umbrella wins".
+- Owner review: pending (FAST stills only).
+
+## v2 (2026-11-08, coordinator rework: big lanes, bullet-hell curtains, "speed needed")
+- v1 script kept at scratchpad reply_dodge_v1.py. The world is re-scaled x1.85 so the blobs are ~2x bigger: 74 px/m, r 100 px, fall 666 px/s, full density 2.34e-4/px² (a still blob still takes 29.9 drops/s, as in rain_run). Two lanes, 496 px tall each; HUD inside the lanes; brighter, thicker drops with a glow; a dusk skyline behind.
+- Rain doubles every sim second from x1/16 (frame 0, 1.9 drops/s at him), capped at x4.
+  - Mochi's lane: Poisson rain.
+  - Bolt's lane: the SAME drops/s arranged as bullet-hell curtains: rows of 14 wavy drops with one 262 px gap that zig-zags ±150 px; rows/s = ρ·W·v/14.
+- **Bolt: dodge EVERY drop.** An exact search over the drops gives the smoothest path that never touches one: the minimum sum of squared moves per frame, moving only inside its free run. The readout is the speed that path needs (0.4 s mean, 0.8 s peak).
+- **Honest result:** the speed needed climbs from 3 mph (walking, clip 2.5 s) to 11-26 mph (jogging/sprinting, clip 4-6.5 s). Then at clip 6.48 s (rain x0.6 of rain_run's) there is NO free spot for his body anywhere: the gaps get narrower than he is. No speed can help, so he is hit from then on and SOAKED (60) at 10.52 s. Dodged 51 (drops passing within 260 px of him before the fail); 182 hits by the umbrella, 222 at the end.
+- **Why not jet/sound speed:** dodging falling drops needs lateral speed about the fall speed (9 m/s = 20 mph) times the channel's slope. Before that slope can get steep, the channel gets narrower than his body. A prototype with Poisson rain fails even earlier (x0.25-0.35, under 10 mph). Jet speed would only appear with a much smaller body (a bullet-hell hitbox), which the fixed-shape rule forbids.
+- Mochi: 26 drops in the drizzle before stopping time at clip 8.6 s; 10 frozen drops in her path; 36 at the end (under SOAKED). ONE lead change at 8.82 s (Bolt passes her). First event 0.30 s (Bolt's first dodge, set by the curtain phase).
+- v2 Full HD (rd1, approved option 1): umbrella shaft shortened to float above his head. 1032 f = 17.20 s, -14.06 LUFS, TP -5.1 dBTP, flash PASS (incl. the freeze), seam 0.54; 1:1 frames f389/395/530/900. Delivered videos/MochiAndBolt/review/reply_dodge/reply_dodge.mp4 + README (titles, pin, reply text).
+- FAST stills (rd1 v2): output/reply_dodge_rd1_f60 (card) / f150 (walking pace) / f380 (23 mph, sprinting) / f420 (no gap left, the first hits) / f600 (Mochi frozen) / f900 (umbrella finale).
+- Owner review: pending.
+
+## v3 (2026-11-08, owner: "the SAME setup as rain_run, both travel left → right")
+- v2 video archived: videos/MochiAndBolt/archive/reply_dodge/reply_dodge_v2.mp4; v2 script in the scratchpad (reply_dodge_v2.py).
+- The scene now imports scenes/rain_run.py read-only (make_bg, draw_cafe, draw_shelter, wet_col and the constants), so it has rain_run's plaza, look and model exactly: 40 px/m, 9 m/s, 8.0e-4 drops/px², r 54, lane seeds 54/1054, canopy + shelter roofs. Real time; no feet (no-limbs rule): a small hop while moving.
+- Bolt: every frame he picks a speed (-1.4 .. 4.84 m/s, 15 m/s²) that minimises the predicted collisions over 0.25-0.6 s plus a cost for straying from a walking pace (W 3 per m²). His choice takes effect 0.25 s later (reaction). 10 direction reversals; afterimages when he darts.
+- Result:
+  - To the umbrella (8.91 s): 200 hits, 46 dodged, average 1.29 m/s. A straight walk at that speed in the SAME rain: 248 hits, so dodging saves 19 %. A plain walk at 1.39 m/s: 255.
+  - Bolt reaches the shelter at 10.92 s; end 217.
+- Mochi: walks at 1.39 m/s (156 hits) to x 520, stops time at 5.11 s, glides to the shelter (5.7-8.1 s), resumes at 8.5 s. 24 frozen drops are swept; end 180.
+- Mochi is WETTER until Bolt passes her at about 8 s (one late lead change).
+- Finale lines: "the actual answer: an UMBRELLA" and "dodging: 200 hits · a straight walk at his speed: 248". Clip 15.0 s.
+- v3 Full HD (rd3, approved): the reaction tag moved into the bottom box under Bolt's count. 900 f = 15.00 s, -14.06 LUFS, TP -5.2 dBTP, flash PASS (incl. the freeze), seam 0.73; events/5 s 53 42 0 (the umbrella hold). Delivered videos/MochiAndBolt/review/reply_dodge/reply_dodge.mp4 + README.
+- FAST stills (rd3): output/reply_dodge_rd3_f60 (card) / f240 (Bolt weaving, 4 s) / f390 (Mochi frozen) / f560 / f820 (finale).
+- Owner review: pending.
+
+## v4 (2026-11-08, owner notes on v3)
+- v3 video archived: videos/MochiAndBolt/archive/reply_dodge/reply_dodge_v3.mp4; v3 script in the scratchpad (reply_dodge_v3.py).
+- Mochi stops time at sim 0.45 s, still under the cafe canopy (0 drizzle hits). She walks the whole 16 m at 1.39 m/s through the frozen rain (arrives at 12.9 s) and is hit only by the frozen drops in her path: 52. The formula ρ(2·0.96r·d + π(0.96r)²) over the 13.5 m of open path gives ~51.
+- Bolt's controller:
+  - The sim runs at 120 steps/s. Each step picks a target speed (-4, -2, 0, 1.4, 3, 4.5 or 6 m/s) with or without a hop (3.4 m/s takeoff = 0.59 m, real g).
+  - The cost is the predicted hits plus close calls (0.6 × a Gaussian within 2r) plus 1.5 × (m off a walking pace)², plus 0.4 per hop.
+  - Acceleration is capped at 30 m/s². The choice takes effect 0.25 s later.
+  - The darts are capped at 6 m/s (13 mph), stated on screen as a plausible blob sprint-start burst. The planner used the full range: -4.0 .. 6.0 m/s, 14 direction changes, 13 hops.
+- Result:
+  - To the umbrella (sim 7.31 s): 142 hits, 31 dodged, 14 close calls, average 1.48 m/s.
+  - A straight walk at 1.48 m/s through the SAME rain: 208 hits. Dodging saved 32 % (hops included).
+  - Bolt reaches the shelter at sim 10.43 s; end 158.
+- Visuals:
+  - Afterimages: 8 ghosts every 4 steps, alpha 0.42 fading. Speed streaks above 2 m/s.
+  - Close calls (a miss within 14 px = 0.35 m of his skin): a small white ring + 4 sparks over 0.28 s (small area), plus a metal "close!" tick.
+  - SLOW-MO x0.5 over the busiest 1.5 s (sim 5.1-6.6 s, clip 5.2-8.2 s), with 0.25 s ramps.
+  - The darts/reaction line moved into the caption block (y 268), off the hedge.
+- Clip 16.31 s. No lead change any more: Bolt is wetter from the start, because Mochi now takes 0 drizzle hits.
+- v4 freeze fix (coordinator): Bolt's rain is drawn only in his half (below the hedge, y > 816); Mochi's half gets a full HSL desaturation + a 0.22 grey-blue tint, frozen drops drawn as crisp dots (3 px + a white highlight, no streaks), and a faint double clock-tick ripple (thin rings, 0.9 s) at the moment she stops time.
+- v4 Full HD (rd4): 978 f = 16.30 s, -14.05 LUFS, TP -5.2 dBTP, flash PASS, seam 0.57; events/5 s 45 37 9. Delivered videos/MochiAndBolt/review/reply_dodge/reply_dodge.mp4 + README.
+- FAST stills (rd4): output/reply_dodge_rd4_f60 (card) / f96 (Mochi frozen at the start) / f356 + f454 (Bolt mid-weave, close-call rings, slow-mo) / f940 (finale).
+- Owner review: pending.
+
+## v5 (2026-11-08, owner: "Bolt dodges EVERY last drop")
+- v4 video archived: videos/MochiAndBolt/archive/reply_dodge/reply_dodge_v4.mp4; v4 script in the scratchpad (reply_dodge_v4.py).
+- Planner upgrades:
+  - A vectorised two-segment search: (speed, hop) for 0.30 s after the reaction delay, then a second (speed, hop) to a 1.5 s horizon. That is 196 plans per step at 120 steps/s.
+  - A 6 px safety margin. Hits weighted 40.
+  - A hop preference of -0.6, so he hops whenever it is safe.
+  - Bolt starts under the canopy.
+  - Two prediction/reality mismatches fixed: buffered hops were ignored, and the velocity at the wall clamp was not zeroed.
+- **Zero-hit search** (seed 1054, must reach the shelter):
+  - 2-5 % of rain_run's rain: 0 hits.
+  - 6 %: 1-2 hits. 7 %: 1. 8 %: 2. 10 %: 3-6.
+  - At 9 % and 15 % he never leaves the canopy (0 hits, but no arrival).
+  - **The heaviest zero-hit rain is 5 % of rain_run's** (1.5 drops/s on a still blob, ~27 drops in a lane at once).
+- v5 result at 5 %:
+  - Bolt reaches the shelter at sim 9.69 s with 0 hits: 2 dodged, 0 close calls (within 1 m), 14 hops (about non-stop: the hop airtime is 0.69 s), 14 direction changes, -4 .. 6 m/s.
+  - A straight walk at his speed through the same rain: 11 drops.
+  - Mochi: 1 frozen drop in her path (role reversal: she is the wetter one, 1 vs 0).
+  - No umbrella. The finale stamp reads "0 drops. He actually did it." with "a straight walk at his speed: 11 drops" and "light rain only (5% of rain_run's): in heavy rain the gaps close (we checked)". Clip 16.3 s.
+- Doubt: at 5 % the rain is sparse, so it does not read as bullet-hell, and the dodged and close-call counts are tiny. That is the honest consequence of "0 hits".
+- v5 final (approved + "no slow start"):
+  - Bolt's clock starts 3.22 s into his sim, so the clip opens mid-wait and he leaves the canopy at clip 2.0 s; his counters start at 0 from there. The rain field is unchanged.
+  - Mochi walks the frozen rain at 2.2 m/s: in frozen time her pace does not change her count. Clip 13.5 s.
+  - Hops, landings and turns now add notes.
+  - Full HD rd5: 810 f, -14.06 LUFS, TP -4.8 dBTP, flash PASS, seam 0.39; events/5 s 28 7 (the second half is Mochi's frozen walk + the stamp).
+  - Delivered videos/MochiAndBolt/review/reply_dodge/reply_dodge.mp4 + README.
+- FAST stills (rd5): output/reply_dodge_rd5_f96 / f300 / f380 / f700 / f920.
+- Owner review: pending.
+
+## v5b (2026-11-08, coordinator: option 2, a full-route search, time-boxed)
+- The whole sim now steps at 60/s (DTS 1/60), shared by the search and the playback.
+- **The full-route search:** every drop in Bolt's lane is known in advance, so the search runs over the WHOLE route at once. It is an exact reachability search over the states (hop phase 0..41, speed, x in px):
+  - speeds -4.5 .. 6 m/s in 1.5 m/s steps (1 px/step);
+  - one speed step at most every 3 steps (30 m/s²);
+  - ballistic hops (3.4 m/s takeoff, 0.59 m, real g);
+  - a state is allowed only if no drop is inside his hit circle at that step;
+  - the earliest arrival is taken; the backtrack prefers airborne states and speed changes.
+  - Perfect foresight replaces the 0.25 s reaction (stated on screen: "the best route, every drop known in advance").
+- **The heaviest zero-hit rain is 11 % of rain_run's** (seed 1054; 12-14 % have no route).
+  - If he must leave the canopy within 0.6 s, the ceiling is 6 %.
+  - With waiting under the canopy allowed, he picks his moment: he waits and wiggles there until about 5.5 s, then dashes and hops to the shelter (arrives at sim 8.73 s).
+- Result at 11 %:
+  - 0 hits; DODGED 13 ("would-hit": drops on course for him 0.5 s out, drawn as faint coral rings); 6 close calls (within 1 m; a bug fixed: the 1 m band reached below the ground, so near misses were never counted); 12 hops, 16 direction changes, -4.5 .. 6 m/s.
+  - A straight walk at his average speed: 36 drops.
+  - Mochi (frozen from the start, the same 11 % rain): 5 frozen drops in her path, so she is the wetter one (5 vs 0).
+- Finale: "0 drops. He actually did it." + "a straight walk at his speed: 36 drops" + "light rain only (11% of rain_run's): in heavy rain the gaps close (we checked)". No umbrella. Clip 16.3 s.
+- v5 final (approved + "no slow start"):
+  - Bolt's clock starts 3.22 s into his sim, so the clip opens mid-wait and he leaves the canopy at clip 2.0 s; his counters start at 0 from there. The rain field is unchanged.
+  - Mochi walks the frozen rain at 2.2 m/s: in frozen time her pace does not change her count. Clip 13.5 s.
+  - Hops, landings and turns now add notes.
+  - Full HD rd5: 810 f, -14.06 LUFS, TP -4.8 dBTP, flash PASS, seam 0.39; events/5 s 28 7 (the second half is Mochi's frozen walk + the stamp).
+  - Delivered videos/MochiAndBolt/review/reply_dodge/reply_dodge.mp4 + README.
+- FAST stills (rd5): output/reply_dodge_rd5_f96 (Mochi frozen) / f240 (Bolt waiting under the canopy) / f380 + f440 + f520 (the dash, slow-mo, ghosts) / f820 (finale).
+- Doubts: 11 % rain is still light (~50 drops on screen in his lane); the first ~5 s he waits under the canopy; DODGED is 13, not hundreds (honest at this density).
+- Owner review: pending.
+
+## v6 (2026-11-08, owner: bring back rain_run's splash car, Bolt dodges it too)
+- v5 video archived: videos/MochiAndBolt/archive/reply_dodge/reply_dodge_v5.mp4; v5 script in the scratchpad.
+- The car is rain_run's (RR.draw_car, 640 px/s = 16 m/s, road base y 1206, scale 0.92). Its front wheel enters the kerb puddle (x 640-905) at Bolt-clock 7.2 s = clip-sim 4.07 s.
+- The splash is rain_run's model: 1,000 droplets spawned along the wheel's path; vx 0.05-0.55 × car speed (± 40), vy up 170-520 px/s, real g; each lands back at the puddle height. The last droplet is down at clip-sim 7.10 s.
+- Every droplet is an obstacle in the full-route search, so the route stays zero-hit at 11 % rain. Bolt approaches to x ~550, backs off to ~490 while the wave sweeps right, then goes.
+- Splash result: 0 droplets on Bolt; 56 on a straight walk at his average speed. "SPLASH dodged" stamp (road band, 2.2 s).
+- Totals:
+  - Bolt: 0 hits, 20 dodged (would-hit), 15 close calls; arrives clip-sim 7.75 s.
+  - A straight walk at his speed: 32 rain drops + 56 splash droplets.
+  - Mochi: 5 frozen drops.
+- Mochi splash: not done. Her walkway is behind the hedge, and the splash peaks below her ground line (y ~840 vs 770), so it cannot reach her honestly.
+- Full HD rd6: 810 f = 13.50 s, -14.02 LUFS, TP -5.4 dBTP, flash PASS, seam 0.37; events/5 s 32 16. Delivered videos/MochiAndBolt/review/reply_dodge/reply_dodge.mp4 + README.

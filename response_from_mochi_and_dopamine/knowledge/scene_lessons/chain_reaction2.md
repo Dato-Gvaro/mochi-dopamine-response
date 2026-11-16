@@ -1,0 +1,27 @@
+# chain_reaction2 - v2 of chain_reaction: physical motion, forward reset, Mochi wins
+
+- Owner review of chain_reaction (2026-10-05): "good, but some movements feel unnatural; the reverse at the finish does not look good." Also asked: thicker parts, a more energetic end, Mochi wins (Bolt won all of batch 12). chain_reaction.py is untouched; s7 there is still reproducible.
+- Same machine, lanes, sync moments and caption as v1. Motion changes, each found at 1:1 on v1 frames:
+  - **Lever:** integrated. The ball's impact gives it spin (1.3 rad/s), then gravity torque (26 cos phi rad/s^2) with drag, and restitution 0.30 on the stop block, so it bounces and settles. A jam = the pivot catches after 5 deg with a decaying 21 Hz shudder, then swings on from rest. v1 used a tau^2 tween, |sin| bounces and a frozen stick pose.
+  - **Wheel:** driven by load. Torque = sum of g x arm of riding marbles; a catch adds the marble's tangential momentum; viscous drag 1.0/s plus bearing friction 0.9 rad/s^2. It spins up to ~6 rad/s and coasts to rest. Release at 150 deg (was 128) keeps landings tight (x 345-363). v1's spin was prescribed.
+  - **Bucket:** a damped pendulum (L = 71 px, damping 2.2) driven by the pin's real acceleration, so it swings on the slam. Marbles inside fall under gravity to their slot and bounce (no smoothstep glide). Falling marbles are drawn in front of the beam (the bucket hangs forward of it); in v1 they visibly passed through the beam end.
+  - **Seesaw:** a brass CATCH hooks the ball arm down. Each marble dips/rings the beam on it; the catch strains, swings clear (72 deg in 0.14 s), and the beam falls freely (24 cos beta rad/s^2) onto its rubber stop (restitution 0.24). The throw IS the cup's velocity at impact (424, -487 px/s); the chute catch point is computed from that trajectory. The sync hold = how long the catch holds. v1 used a scripted sine "teeter" and a designed ballistic.
+  - **Balls C/D:** ballistic hop + bounce + rolling friction after impacts (v1: sine lerp). The step ball is pushed (300 px/s^2) off the shelf edge, bumps a steel guide plate (keeps 15 % of vx) and drops onto row 2.
+  - Mounted-basket variant tried and dropped: after the slam the basket sat in the throw path and against the chute.
+- **Reset (forward, no reverse playback),** t_r0 = last bell + 1.9 s:
+  - The dominoes stand back up in a wave: row 2 from its end, then row 1. Each takes 0.2 s with a spring overshoot, 0.075 s apart, with a wood click and a soft descending marimba note (synced in both lanes).
+  - Balls C and D sink into drain slots in their shelves. The camera sweeps to the top (quintic ease, 1.2 s).
+  - On the way up: the bucket marbles fade out, the beam springs home and ball C fades into its cup (latch click), the wheel indexes forward to its 60-deg home, the lever snaps back, the door drops, ball A and the tube marbles fade in at the start.
+  - 0.35 s idle, then the 0.5 s pre-roll (stomp, pins lift) = frame 0.
+- **Readability:** LW 4.4 (3.6); beam 21, lever 19, ramp 20, paddles 14, chute rails 13, hammer rod 9, bell bracket 16, pegs r 9, shelves 18, dominoes outline 4.
+- **Finish:** Bolt's lever jams 0.42 s (Mochi laughs); Mochi's catch holds 0.58 s so both slam together (SYNC 3.67 s). Drop + 4 pegs + 6 row-1 dominoes synced (10.10-13.24 s). Mochi's step ball rocks 0.38 s (Bolt laughs, Bolt leads row 2). Bolt's last domino teeters 0.57 s. Mochi rings 16.07 s, Bolt 16.18 s (0.12 s). Mochi cheers + confetti, Bolt winces then the annoyed stare. `--winner bolt` flips it.
+- **Timing:** funnel 5.3-5.7 s of long big-radius laps (8.9 laps); row-1 wave starts slower (om0 2.2) and accelerates (hits 0.36 -> 0.25 s apart); row 2 ~0.1 s apart.
+- s7: clip 20.98 s (1259 frames). Shorter than v1 (22.7 s) because the 6.4 s hold + rewind became a 4.25 s celebration + reset; inside the brief's 20-35 s.
+- **Density** (distinct onsets, synced pairs merged): per 5 s [29, 16, 26, 9 (15-16.1 s)]; per 2.5 s [15, 14, 6, 10, 10, 16, 9]. RMS climbs from -22 dB in the funnel to -14.6 dB at the bells.
+- **Checks** (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS, peak -4.1 dBFS; last 0.5 s -65.2 dBFS; last 1.3 s -24 dBFS (the decaying seesaw-reset latch at T-1.9 s). flash_check PASS (2 flashes, worst 1/s at 16.42 s = banner + confetti). Seam pre-encode last->0 mean 0.062 = 0->1 0.065; encoded 0.40.
+- **Gotchas:**
+  - Tuning sweeps that `sed` a constant and re-import in the same second can load stale `__pycache__` (same mtime/size). Use `python -B`.
+  - The master wav runs 2 s past the clip: measure the tail on the MUXED mp4 or cut the wav at T.
+- Args: --seed (7), --winner (mochi), --label, --cap, --voice, --still --frame.
+- Delivered <VIDEOS_DIR>\batch13\chain_reaction2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05 night: Chain reactions are interesting, but this execution isn't. Not continuing.

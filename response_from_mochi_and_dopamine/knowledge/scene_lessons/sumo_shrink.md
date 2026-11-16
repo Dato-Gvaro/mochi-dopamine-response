@@ -1,0 +1,13 @@
+# sumo_shrink
+- Owner review of pillow_shrink 2026-10-04: liked it, but pillows read as kids' play -> rebuilt with NO pillows as a sumo duel (made-for-kids risk). pillow_shrink.py stays reproducible.
+- Rule: round dohyo-style ring (clay disc + straw rope, white start lines, night theme); every SLAM (closing speed >= 260 px/s) pulls the rope in 10 px (eased, slight overshoot, soft low tock). First one whose centre is 0.3 r past the rope loses. No HP bars; the ghosted full-size ring stays as a dashed circle.
+- Physics: discs, restitution 0.62, slam impulse x1.2. Mochi r78 m1.0 acc 2700 vmax 940; Bolt r84 m1.12 acc 2200 vmax 800. Charge (shoulder aim +-0.3 rad) / set (skid friction 1.8, spring 3.0 to the middle once the skid ends). At the rope: pull 15 x overlap + friction 2.0. Set time x (0.35 + 0.65 R/R0) = the climb.
+- Balance: Bolt m1.3 = Bolt wins ~100%; edge pull 18 / fric 2.5 = stalemates at RMIN; 8 / 1.0 = 2-6 s fights. 15 / 2.0 / m1.12 = Mochi ~30%, Bolt ~70%, most fights 9-19 s.
+- Hit-rate climb is mild (charge travel time dominates): set floor 0.15 or 0.0 did not change it.
+- Look: squash along the impact normal, stretch while charging, determined face on a charge, angry attacker + wince only on slams >= 1600 px/s, worried + sweat at the rope, dust puff per slam, skid marks (fade 1.6 s, clipped to the ring). KO: loser slides off the clay, flops (dizzy), then annoyed stare at the winner; winner cheer-hops x3; banner above/below the ring, whichever is clear.
+- Loop: ring regrows (first 70% of 1.4 s) + Hermite glide with a sideways bulge picked so the two never overlap. Frame 0 vs last frame pixel-identical.
+- Sound: slam = mountain_king note an octave down + deep squash; rope settle = bounce 0.0; flop = squash 0.9; victory arpeggio. 12 ms nudge pass.
+- seed 413: Mochi wins (Bolt pushed out at 20.2 s); 24 slams, first 0.21 s, slams per 5 s 5, 6, 6, 7; ring 430 -> 190.
+- Sample (batch11, Full HD): 24.20 s, -14.0 LUFS, peak -5.3 dBFS, last 1.3 s at -90 dB, flash_check PASS (1 flash at 23.5 s = ring regrow), encoded seam mean 0.29.
+- Args: --seed, --search, --start, --label, --cap ("Every slam SHRINKS the ring|~Last one inside WINS~"), --melody.
+- Owner review 2026-10-04 (batch 11): Not satisfying enough.

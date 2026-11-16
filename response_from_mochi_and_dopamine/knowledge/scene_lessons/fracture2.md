@@ -1,0 +1,25 @@
+# fracture2 — fracture with an AQUARIUM behind the glass
+
+- From the owner's review of fracture (2026-10-06): "very interesting; when the glass shatters something should break free (water, ...)". The coordinator chose the aquarium. fracture.py is untouched. This file imports its crack field, schedule, shards, Bolt pose, ball and HUD.
+- World:
+  - The pane is the front wall of a tank of glowing teal water: sand and rocks, 4 swaying weeds (they droop when the tank drains), rising bubbles, light rays, caustics, a wobbling surface (WL 440).
+  - 3 glowing fish (gold, violet, ice; eye dot, no faces) and 2 jellyfish (violet, blue) swim on paths that are periodic in T.
+  - A filter spout sits top-right.
+  - Mochi stands BESIDE the tank (front-right, depth 1450), nervous. Hits avoid the Bolt and Mochi areas, and later hits drift to the centre (540, 880).
+- Leaks: from hit 3 on, each hit opens a jet at its point; hits 10 and later open a second jet on a crack end (14 in all). Each jet is drawn as a continuous tapered stream along its ballistic centre line (soft sheath, body, bright core, fading toward the break-up point), plus a few droplets past the break-up. Pressure is Torricelli (sqrt of depth below the surface) x hit progress. A floor puddle grows with the leaks.
+- Shatter (hit 17, 11.20 s):
+  - Water particles leave the broken front at 0.6*sqrt(2gh) from the draining column (up to 1303 alive), fall, then run toward the camera. They are NOT drawn as balls. Each frame, the body particles are rasterised into 8 px columns; the top and bottom contours are smoothed (a triangular kernel, applied twice on the crest) and filled as ONE polygon with a teal -> deep-blue gradient. The surface has flowing dashed highlight streaks, a foam line along the crest and the leading edge, and foam flecks. Only isolated particles (fewer than 4 neighbours) are drawn as small spray dots. The first burst reads as a solid sheet bulging out of the frame, then as a wave rolling across the floor.
+  - The glass shards ride forward with the flood, and the ball is knocked back out.
+  - Fish 1 and 2 fly out and flop on the floor. Fish 0 lands on Mochi's head.
+  - Mochi is rolled away to the right, dizzy, then soaked (drips + sheen) with an annoyed stare at the camera. Bolt laughs.
+- Loop (no rewind): the floor water drains while the shards fade, and a new pane slides down (clank at 14.05). The spout refills the tank (14.15-14.75). The fish leap back in over the glass, the last one off Mochi's head. Mochi hops back, and the new ball is lobbed to Bolt = frame 0.
+- Sound:
+  - Notes: mountain_king on marimba, one note on each bonk and each hit.
+  - Hits and cracks: a pok on each bonk, glass on each hit, glass ticks on crack ends and joins.
+  - Water: a `splash` spurt as each leak opens. The shatter is a B-minor chord + glass, then a splash cascade (0.95 -> 0.35) + a pok as Mochi is hit.
+  - Aftermath: fish slaps, shard tinkles, the clank, 3 splashes as the tank refills, 3 plops as the fish return (the last one has no note).
+- s1 (default): clip 17.15 s (1029 frames). Events/5 s: 35, 52, 30 (the last bin is the aftermath). 2191 crack segments, 392 shards.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS; peak -3.69 dBFS; last 0.5 s -62.0 dBFS; flash_check 0 flashes = PASS (mean lum 0.063). Pre-encode seam: 1028->0 = 0.94, against 0.93 for the step before = continuous (fish, ball and bubbles are moving). Encoded seam 1.24 (a motion + I-frame step).
+- Args: --seed (1), --label, --cap "line1|~line2~", --melody, --voice, --still --frame N.
+- Delivered <VIDEOS_DIR>\batch15\fracture2.mp4 (Full HD). Re-rendered 2026-10-06 after review: the flood had read as a heap of outlined bubbles; it is now one continuous water body, and the jets are continuous streams. Owner review: pending.
+- Owner review 2026-10-07: Change the fish to PIRANHAS with big teeth that bite Mochi when they flood out; Bolt in medieval armour (or at least a helmet) -> fracture3.

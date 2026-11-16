@@ -1,0 +1,27 @@
+# stack_sabotage — Mochi stacks, Bolt sabotages
+
+- Owner request 2026-10-05, after stack_race_sync was pulled: "one of them is trying to stack and the OTHER is interrupting". New file; stack_race and stack_race_sync are untouched.
+- Rule: one wide centre tower (TX 600, W0 400, BH 56, lane 60-1020). Each block slides in, drops, and the overhang is sliced off. 2 perfects in a row regrow it +16 px. A drop with < 22 px of overlap is a MISS: the block falls and the level is retried. Goal: 40 levels before the 25 s timer runs out. Caption "Mochi stacks, Bolt sabotages|~40 levels in 25 s~". A timer bar sits under the caption, a dashed "GOAL 40" line is drawn at the target height, and the counter "n / 40" is at 1520.
+- Speed: 500 + 1150*((k-1)/39)^1.15 px/s. The first drop lands at 0.28 s (the slide starts at -0.62 s).
+- Bolt hangs on a steel crane platform at (185, 640). Four physical sabotages, superposed analytically:
+  - POKE: a wooden pole shoves the top. Slow damped SWAY (1.05 Hz, damping 0.75), cantilever shape (h/H)^2. Wooden latch knock.
+  - GUST: Bolt puffs and the sliding block is pushed 30-55 px (smooth over 0.3 s). Short soft hiss.
+  - BALL: a thrown steel ball clanks the side 2 levels down. Fast 9 Hz SHIVER. Steel clank.
+  - WEIGHT: a thrown kettlebell slams the top. Vertical bounce + sway, Mochi is bounced up (wow face), the weight flies off, and the next slide waits 0.42 s. Slam.
+- First cycle in a fixed order (poke, gust, ball, weight), then shuffled. Gap 2.7 s -> 1.2 s, power x0.55 -> x1.0. Mochi aims at only 40% of the sway (TRACK), so sway and gusts turn into slices and misses. FINAL sabotage: a BIG weight (sway 95) right after level 38. Sabotage ends there.
+- Reactions:
+  - Before every sabotage: Bolt's mischief tell (angry brows + grin), then the action pose (lunge, puff, throw).
+  - On a sabotage-made slice >= 26 px, near miss or miss: Bolt laughs (gap 2.1 s) and Mochi winces. Mochi goes worried + sweat when |sway| > 22 px, and grins on a perfect.
+  - End: "MOCHI MADE IT! / with 0.3 s to spare" + confetti and 2 cheers; Bolt stares annoyed at the camera.
+- Sound: blue_danube note per placed block (+ octave on a perfect), quiet pok, soft snap on a slice. Miss = falling run 79-76-72-67 + bounce; the win adds a 72-76-79-84 arpeggio + pop. Notes go >= 12 ms apart first, then foley is nudged +12 ms off any note. No reset hiss (silent tail).
+- Loop: the tower sinks into the plinth, the counter counts down, the timer refills, the camera returns, Mochi glides to her frame-0 mid-hop pose, and the slider ghosts back in. The pre-encode seam is effectively exact (max 8/255 on 7 px).
+- Search `--search N`: keeps wins with 0.15-1.2 s to spare. Score = near misses, misses, big slices, drama in the last 3 attempts, minus spare time.
+- s1065 (default):
+  - Ending: the final big weight lands at 23.08 s. Level 39 lands with a 42 px slice, which leaves a 44 px top. The next block MISSES at 24.29 s. The retry lands at 24.68 s (top 27 px), with 0.32 s to spare.
+  - Run: 41 attempts. 11 sabotages (3 pokes, 2 gusts, 3 balls, 3 weights). Bolt laughs 4 times.
+  - Drops/5 s: 7, 9, 11, 13. All events/5 s: 9, 12, 14, 17.
+  - Clip: 28.68 s.
+- Checks (encoded, Full HD): h264 yuv420p 1080x1920, 60 fps, 1721 frames. -14.00 LUFS, peak -7.56 dBFS, last 1.3 s silent. Seam mean 0.274. flash_check: 1 flash = PASS.
+- Args: --seed (1065), --label, --cap, --melody, --search N, --still --frame.
+- Delivered <VIDEOS_DIR>\batch13\stack_sabotage.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05 night: Better, but too long: make it shorter, and make each sabotage UNIQUE (paper plane, slingshot, ...), never repeated.

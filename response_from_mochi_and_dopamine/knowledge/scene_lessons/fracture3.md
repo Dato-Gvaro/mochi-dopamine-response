@@ -1,0 +1,22 @@
+# fracture3 — PIRANHA tank + Bolt the knight
+
+- From the owner's review of fracture2 (2026-10-07): "change the cute fish to PIRANHAS with big teeth; when they get out they bite Mochi, teeth on him. Bolt in MEDIEVAL ARMOR, or a helmet at least."
+- fracture.py and fracture2.py are untouched. This file imports fracture2 and, IN-PROCESS ONLY, swaps these hooks: `draw_fish`, `fish_path`, `fish_out_plan`, `fish_outside_draw`, `mochi_state` and `fracture.draw_bolt`. The cracks, leaks, continuous water flood, shards, refill, HUD and timing are fracture2's (s1: shatter 11.20 s, clip 17.15 s).
+- Piranhas (3, L 108-120 px in the tank):
+  - Chunky body, steel back -> glowing red/orange/amber belly; forked tail; spiky fins.
+  - Underbite: a hinged lower jaw with 4 big white teeth (up) + 3 upper teeth (down); an angry eye with a red pupil and a heavy brow. Cartoon, no blood.
+  - After each hit from hit 4 on, the nearest free piranha LUNGES at the fresh crack (0.5 s), jaws wide, then chomps at the glass (13 lunges). Each lunge has a pok + tiny glass tock.
+- Shatter aftermath:
+  - The flood carries the piranhas out, jaws wide. They LATCH onto Mochi (12.24 / 12.40 / 12.56 s): top of the head, left side, right side. Each is clamped by the teeth, dangles, swings and chews, with bite impact lines and a pok + note per bite.
+  - Mochi runs in 2 panic circles (12.4-13.2 s), goes dizzy, then gives the annoyed stare at the camera with the piranhas still on (~1 s).
+  - The piranhas let go one by one after the refill and leap back into the tank. Mochi hops back.
+- Bolt the knight:
+  - A steel dome helmet with a rivet band, a crest ridge, a swaying ruby plume and hinge pins. The visor is DOWN with eye slits (eyes glint through) for the hits, plus a breastplate.
+  - The ball CLANGs off the helmet (clank 0.05 layered 12 ms after each bonk note).
+  - He flips the visor UP to laugh (with a small clank) and drops it again at T-0.95 for frame 0.
+- Sound: as fracture2, plus the helmet clangs, glass chomps, bites and the visor clank; fish slaps removed. Events/5 s: 45, 72, 24 (the last bin is the aftermath).
+- Checks (encoded):
+  - Full HD: h264 yuv420p 1080x1920 60 fps; -14.02 LUFS; peak -4.16 dBFS; last 0.5 s -70.3 dBFS; flash_check 0 flashes = PASS. Pre-encode seam: 1028->0 = 1.25 against a 1.44 step before it = continuous. Encoded seam 1.52 (motion).
+  - 4K ship (2160x3840): same audio numbers; flash 0 = PASS; seam 1.39.
+- Args: --seed (1), --label, --cap "line1|~line2~", --melody, --voice, --still --frame N.
+- Delivered: <VIDEOS_DIR>\batch16\fracture3.mp4 (Full HD); 4K <VIDEOS_DIR>\Schedule\2026-10-11\3_fracture3.mp4. Owner review: pending.

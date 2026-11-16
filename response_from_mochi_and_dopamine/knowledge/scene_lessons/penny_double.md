@@ -1,0 +1,49 @@
+# penny_double — "$1,000,000 now, or 1 penny that DOUBLES every day?"
+
+- Formula transfer (research/breakout_formula.md): the exploding number is Bolt's doubling penny, the visible limit is the FULL line in his vault, the late winner is the doubler.
+  - Mochi (coral) took the million and leads 27 days.
+  - Bolt (mint) took the penny. He passes $1M on day 28 (LEAD CHANGE!), crosses FULL on day 30 (OVERFLOW!), and the lid blows on the cadence (PENNY WINS!).
+- **Honest numbers:** Bolt holds $0.01 x 2^(day-1), exact to the cent. Day 30 = $5,368,709.12, the penny doubled, not the sum of all days.
+- **Visual scale:**
+  - 1 green bundle with a mustard strap = $10,000. Both vaults use the same slot grid (9/8 brick bond, 14.3 px rows), so pile height compares truthfully from day 21, when Bolt's first full bundle lands.
+  - Mochi: 100 bundles. Bolt: day 21 = 1, day 25 = 16, day 27 = 67, day 28 = 134, day 29 = 268, day 30 = 536.
+  - FULL = 476 slots (row 56, y 534). The vault holds exactly 536 to the lid (63 rows), which is Bolt's day 30.
+  - Days 1-20 are a symbolic loose layer: 16 honest pennies by day 5, then 3 silver or gold coins, 2 bills or 2 straps per day. The bundles cover it later.
+- **Music = the timing:** Bizet, Carmen Prelude, beats 0-31 (the A section up to its first cadence in A). Source: Mutopia #635 piano reduction MIDI, notes PD; see `<SOUNDFONTS_DIR>\scores\bizet_carmen_prelude\SOURCE_mutopia_635.txt`.
+  - Tempo map: 0.52 s per beat to beat 16, then 0.54, then a ritardando from beat 24 (0.60 → 0.86).
+  - Days 3-15 tick every half beat, days 16-25 every beat, days 26-30 every 2-3 beats.
+  - Every coin of days 3-20 lands on a score onset. Day 28's 33rd bundle (the one that passes $1M) lands on beat 24, the C-major tutti. Day 30's lid burst lands on the cadence chord (beat 31).
+- **Key times** (clip seconds, seed 3; the layout is deterministic and the seed only jitters positions):
+  - Frame 0 is day 3, with pennies already falling. The first coin and note land at 0.10 s.
+  - Day 15 at 3.2 s, day 21 (first bundle) at 6.3 s, day 25 at 8.4 s.
+  - Day 28 at 11.7 s, LEAD CHANGE at 12.74 s, day 29 at 13.4 s, day 30 at 15.4 s.
+  - FULL crossed at 17.25 s (cracks, shake, OVERFLOW!).
+  - Lid burst and PENNY WINS! at 17.85 s. Bolt rides the lid up, and it drops back at 18.65 s.
+  - Dissolve from 21.95 s. The clip is 22.55 s (1353 frames).
+- **Staging:**
+  - Characters sit on their vault lids. Mochi laughs early, is worried from day 27, goes "wow" at the lead change and is annoyed after the burst. Bolt winces early and cheers/laughs after the lead change.
+  - A ×2 pops over Bolt's pile on every day tick.
+  - DAY flips 0.10 s before that day's first coin lands.
+  - The counter turns gold for whoever leads.
+- **Sound** (bed through `kit.deliver`; the sidecar = melody notes, note_gain 0):
+  - The tune is an `audio.synth_plink` per soprano note (transposed -12, A4-E5, nothing above F#5).
+  - Soundfont strings double the tune. Pizzicato oom-pah plays the score's left hand, plus contrabass.
+  - From beat 22, brass doubles the tune and horns enter at beat 28. Timpani hits on beats 24/26/28, a roll from 30, and timpani + boom + crash on the cadence.
+  - Cadence chord: A major on choir, strings and brass.
+  - SFX are scene-local synths:
+    - A coin clink per coin, with a micro re-bounce.
+    - A paper slap per bundle.
+    - A day tick.
+    - All merged at least 12 ms apart and ducked by density.
+  - Lid clanks on the burst and the landing. The eruption coins clink where they cross Mochi's lid or the floor line.
+- **Levels** (pre-master, after the gain pass): music -23 LUFS early → -15 at the cadence; SFX + plinks -18 → -21. The whole mix builds from -17 to -14.
+- **Encoder:** a local `Writer2` caps libx264 at 2 threads (owner: keep the laptop cool).
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 60 fps, 22.55 s.
+  - Loudness: -14.01 LUFS, peak -7.4 dBFS, last 0.5 s at -70 dBFS (silent from ~21.2 s).
+  - Loop seam: encoded mean delta 0.61; pre-encode 0.30, against 0.80 for a normal step.
+  - flash_check: 0 flashes = PASS.
+  - Frames read at 0, 0.5, 1, 3, 9, 12.8, 17.3 and 18.2 s, plus a 1:1 crop of the burst at 18.05 s.
+- Delivered `<VIDEOS_DIR>\batch41\penny_double.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-18): approved -> 4K.

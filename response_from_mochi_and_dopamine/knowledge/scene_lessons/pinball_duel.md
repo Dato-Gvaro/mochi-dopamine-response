@@ -1,0 +1,63 @@
+# pinball_duel — PINBALL DUEL (Mochi = left flipper, Bolt = right flipper)
+
+- New scene file; no shared scene code.
+- Rule: one neon pinball table. The ball belongs to whoever flipped it LAST, and it glows in their colour (halo, rim, trail). Every bumper, sling, target, spinner or ramp it hits turns that colour and scores for them. The ramp is worth +3, everything else +1. A drain on your side gives the OTHER player +2 and their next ball, which is kicked out of the top saucer. First to 30 wins.
+- Table (logical 1080x1920):
+  - Walls x 80..1000, top 355, corner radius 230.
+  - 3 pop bumpers (R 60) at (435,600), (645,600) and (540,750).
+  - 2 slingshots, with their kicker faces facing the centre.
+  - A centre bank of 3 standup targets with a peaked roof, so balls can't rest on it.
+  - A spinner in the right lane (a hanging plate with a sin 2θ restoring torque, so it settles to kπ).
+  - A U-turn glass ramp on the left: the mouth sits at (318,905), and the ramp returns to Mochi's inlane. Entry needs speed >1000 aimed into the mouth. Ride speed is integrated along the path under gravity, so a weak shot rolls back out.
+  - The saucer at (540,455).
+- Physics: G 2400, ball r 17, 10 substeps/frame, segment grid (64 px cells).
+  - Flippers are kinematic tapered capsules: L 185, pivots (325,1210)/(755,1210), rest ±25°, up -22°, 34 rad/s up / 15 rad/s down, e 0.55 while swinging.
+  - Ownership changes only on contact with a flipper that is swinging UP.
+  - Bumper kick 950 -> 1300 with the leader's progress.
+  - Walls e 0.6, rubber 0.7.
+- Flipper AI: when a ball enters the wedge between a flipper's rest and up lines, that player presses after a seeded delay:
+  - 82%: 0-55 ms
+  - 13%: late, 90-160 ms
+  - 5%: whiff (no press for 0.28 s)
+  - Hold time is 0.13-0.26 s.
+- Lessons:
+  - The funnel must be TANGENT to the top of the flipper pivot (FUN_Y 989.35, FUN_END 335.12,1197.61). The first geometry parked the ball on top of the pivot.
+  - The inlane under a sling needs at least 49 px of vertical gap to the funnel, or the ball gets trapped in the pocket.
+- Escalation:
+  - MULTIBALL releases a 2nd ball when the TOTAL score reaches 14 and a 3rd at 34. The new ball goes to the trailing player.
+  - The bumper kick grows over the game.
+  - Hits per 5 s of game: 7, 22, 23 (the last bin is 2.4 s long, so the rate goes from ~4.4/s to ~9.5/s). Per 2 s: 3 1 3 10 8 5 3 8 11.
+- Lead changes: a lead that flips and flips back within 0.3 s (a hit followed by a drain bonus) is collapsed to nothing (`compress_leads`). A new centre banner cuts the one still showing, so banners never queue late.
+- End and loop:
+  - On the win, the flippers drop and the table goes "dead" (e 0.15, passive bumpers), so the balls roll home.
+  - Elements fade back to violet in a bottom-up wave, and the scores count down.
+  - A winner-owned ball rises into the saucer. Frame 0 is that ball being kicked out (gold ring), at the same position.
+  - Blinks are suppressed in the first and last 0.3 s.
+- Reactions:
+  - On a drain, the drainer stares, annoyed, and the other laughs ("HA").
+  - On a lead change, the player who lost the lead is worried.
+  - On multiball, both say "wow".
+  - On the win, Bolt cheers twice and Mochi gives a 1.9 s annoyed stare.
+  - Each character squashes onto its glowing flipper button on every press.
+- Look: ring_escape2 palette. Navy/plum stage, a smoked-indigo playfield with a dot grid, lilac neon tubes for the walls, jewel-glass bumper caps, owner colours (Mochi coral (1,.42,.38), Bolt mint (.22,.92,.76)) and neutral violet. Hits show sparks, a bloom and ring waves in the owner colour. A swing ghost wedge marks a flipper snap. The centre emblem glows in the leader's colour.
+- HUD: `MOCHI n | FIRST TO 30 | n BOLT` at y 1500, with progress bars at 1522. Banners: LEAD CHANGE! / MULTIBALL! / 3 BALLS! / +2 X / RAMP +3 / BOLT WINS! + "BY n POINTS!". Baked caption: `Every hit scores for the LAST flipper | ~First to 30 WINS~`.
+- Sound (bespoke bed + glassharp bell events, master peak_db -4):
+  - Each scoring hit plays the next note of `entertainer` (Joplin, PD) +12 on glassharp. Notes are rate-capped at 85 ms.
+  - Hits also have their own foley: a bumper "tock" (pitch per bumper), a sling thwap, a target tock + steel tick.
+  - Other mechanics: a flipper solenoid clack (the release is quiet), a saucer kick thunk, steel ticks for ball-on-ball contact, the spinner ticks every half turn, and the wire ramp rattles.
+  - Chimes: lead change 2 notes, multiball arpeggio, win arpeggio, drain a soft 3-note fall.
+  - No noise bed.
+- s4076 (default; search 5000 seeds, only 2 passed):
+  - Final 26-30, Bolt wins at 17.43 s.
+  - Lead changes at 7.33 (M), 11.57 (B), 14.7 (M), 15.15 (B), 15.52 (M), then 16.87 (B), 0.56 s before the win.
+  - Multiball at 7.44 / 13.31. 1 in-game drain (15.52, Bolt's side, so +2 Mochi). Ramp made once, by Mochi (4.83 s); spinner x2; targets x3.
+  - Clip 21.85 s (1311 frames).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -14.01 LUFS, peak -5.89 dBFS. Silent from ~20.4 s; last 0.5 s digital silence.
+  - flash_check 0 = PASS (mean lum 0.019).
+  - Encoded seam 0.509 (good band).
+- Args: --seed (4076), --label, --cap ('a|~b~'), --melody, --voice (glassharp), --search N (sim only, multiprocess; ~12 seeds/s), --still --frame.
+- Other passing seed: 160 (29-30, but the hit rate sags in the last 2 s; not used). Search filters: Bolt wins by 1-4; t_w 14-19.5; ≥2 lead changes, the last after 62% of t_w; multiball at 4-8.5 / 9-14 s; ramp, spinner, targets and slings all fire; no forced sink; hit thirds climbing.
+- Delivered <VIDEOS_DIR>\batch16\pinball_duel.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-07: Nothing new (and copyright worry, which is unfounded for an original table). Dropped.

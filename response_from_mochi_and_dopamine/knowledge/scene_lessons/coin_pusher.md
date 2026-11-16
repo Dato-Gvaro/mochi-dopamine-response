@@ -1,0 +1,48 @@
+# coin_pusher — "Every coin you drop pushes MORE off" / "Drop anytime or WAIT for the push?"
+
+- The arcade coin pusher (US arcade nostalgia; generic, no brands). Two cabinets side by side, stylised 2-D from the front-top.
+  - Each has a shelf of gold coins and 6-hue tokens (50/50), a chrome pusher plate (2-bar cycle, locked to the music), a front ledge, a dark drop well and a WIN tray whose heap rises with every win.
+  - Mochi (coral, ANYTIME) drops as fast as she can (every 0.20-0.36 s). A coin that lands while the plate covers the drop point lands ON the plate and is STUCK there (it rides under the back panel).
+  - Bolt (mint, WAIT FOR PUSH) drops 3 coins around each "fully back" moment, so every coin lands in the gap and the next stroke shoves the carpet.
+- **Physics** (seeded, quasi-static, 2 sub-steps/frame):
+  - Floor coins are discs with position-based contacts (Jacobi, 7 iterations per sub-step, no inertia = shelf friction). The plate face and the side walls are hard; the front is open. A floor coin whose centre passes the ledge falls.
+  - Warm-up from -14 s: a previous player feeds the gap, so the frictionless carpet jams near hex density before the clip starts. Then the output is input-driven: each coin added in the gap advances the carpet ~2 px.
+  - STACKS (towers of 3-7 coins on one floor coin; one wide wall of 11 base coins × 5 layers) ride the carpet as rigid clusters, leaning forward. A stack tips when its centre of mass passes the ledge, and all its coins pour (×N).
+  - The stack distances (`STACKS` d_com) are solved by `--tune` (in target order: earlier stacks tip for real, later ones are ghosts) so each pour lands on a chosen bar. Layouts are seeded per machine (Mochi 3, Bolt 5).
+  - Mochi's early lead is layout luck: her towers start nearer the ledge.
+- **Key times** (clip 18.08 s = 1085 f):
+  - Frame 0: both plates moving, Mochi's ×4 tower already pouring, coins in Bolt's well. First sound at 0.10 s, first tray chinks by 0.2 s. Counts M 5 / B 2 (they have played since -3 s; WON/SPENT and the tray count from then).
+  - Mochi's pours: ×5 at 0.40 s, ×5 at 2.42 s, ×4 at 3.00 s, ×5 at 8.29 s, ×5 at 10.63 s. Counts 21-16 at 4 s.
+  - **LEAD CHANGE at 4.98 s** (Bolt's ×8 tower at 4.74 s). Bolt's other pours: ×4 at 2.49 s, ×6 at 7.06 s, ×7 at 9.38 s, ×7 at 11.56 s, ×6 at 12.86 s.
+  - JACKPOT: Bolt's wall tips at 13.85 s and pours front-first from the cadence (14.09 s), 20 ms apart: **×47**. GOAL 80 at 14.43 s, all landed by ~15.1 s.
+  - WAIT WINS! + "he spent LESS and won MORE" at 14.99 s. Dissolve from 17.48 s.
+  - Final: Bolt won 113, spent 42. Mochi won 37, spent 61 (45 stuck on her plate). Her wall is still hanging at the end.
+- **Music = the clock:** Scott Joplin, *Pineapple Rag* (1908; Joplin d. 1917, PD). Not on the used/banned lists.
+  - Notes: Mutopia #1899 (Mutopia-2014/01/12-1899, typeset by Coyau, engraving + MIDI public domain). Saved to `<SOUNDFONTS_DIR>\scores\joplin_pineapple_rag\` with SOURCE_mutopia_1899.txt.
+  - Cut (vb = quarter, 0.29 s): intro bars 1-4 (vb 0-8), A strain bars 5-18 (vb 8-36), A strain 2nd half, score bars 29-35 (vb 36-50). The B-flat cadence at vb 48 = 14.09 s, with a slight ritard from vb 45.
+  - Pusher fully forward at vb ≡ 3.3 (mod 4), so pushes end on the 2-bar downbeats.
+  - Every non-jackpot win is timed onto a free melody onset (fall 0.22-0.62 s, path unchanged; 1 coin per onset, 2 for stack pours). The jackpot coins each play a rising B-flat major chord tone.
+- **Sound** (all scene-local, no noise beds):
+  - Bed (orc, -20 LUFS): piano plays both hands of the rag, with a tuba oom on the left-hand downbeats. Clarinet doubles the tune in the intro and in the last A section. A light drum kit (kick on the beat, soft snare on the off-beat). A timpani hit at the lead change, a roll from vb 46.
+  - Cadence: B-flat on brass, trumpets, tuba, strings, piano, choir, timpani and crash (gain ×0.72).
+  - Win: `payout_wave`, a struck coin (5 inharmonic free-disc modes, detuned pairs, 1.5 ms attack, 4th-order low-pass at 6 kHz) plus 1-2 settling chinks. Density gain 0.34/(dens/1.5)^0.45, all ≥ 12 ms apart. Plus a marimba plink of its melody note.
+  - Drop: `clack_wave`, coin-on-coin (1.6-2.1 kHz, 320 Hz body, a 28 ms bounce); a duller metal tink when it lands on the plate. Kept ≥ 12 ms from every chink.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/coin_pusher.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/coin_pusher.py --label v1` (one process, x264 `-threads 2`, ~1.5 min sim + render)
+  - `--report`
+  - `--tune [--only bolt:6]` prints the solved STACKS; ~6 min for all.
+  - `--reuse` rebuilds the audio only.
+  - `CP_STEMS=<prefix>` writes the bed/SFX stems.
+- **Checks** (encoded Full HD `output/coin_pusher_v1_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 18.08 s.
+  - Loudness: -14.01 LUFS, peak -7.5 dBFS, last 0.5 s at -66.8 dBFS. `peak_db=None`.
+  - Per-second RMS ≈ -18 in the body. The cadence quarter-second is -16.1 (+2 dB over the body, +3.3 dB over the bar before).
+  - Energy above 6 kHz: 0.03%.
+  - flash_check: 0 flashes = PASS (mean luminance 0.04).
+  - Loop seam: pre-encode seam 0.44 against a normal step of 0.41-0.48, so the loop is perfect. Encoded mean 1.00 (I-frame step in a busy frame).
+  - Side safe zone: cabinets x 124-902, captions ≤ 897. Content ≤ 1182 px (chars), bars at 0.67h, counters at 0.75h, "spent" at 0.78h.
+  - Frames read from the encoded file at 0, 0.15 (1:1 crop of both shelves), 2, 5 (LEAD CHANGE), 14.15 (1:1 crop of the jackpot pour), 14.5 and 17.98 (≈ frame 0).
+- Delivered `<VIDEOS_DIR>\batch46\coin_pusher.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-21): "interesting, lets try it" -> Oct 28 slot 1 (4K).

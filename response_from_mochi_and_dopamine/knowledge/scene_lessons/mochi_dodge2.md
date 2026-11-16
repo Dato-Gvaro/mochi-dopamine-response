@@ -1,0 +1,13 @@
+# mochi_dodge2
+- Remake of mochi_dodge (owner: slow start, wanted to swipe in the first 2 s). mochi_dodge.py untouched. Same rule: every WALL bounce spawns a ball at the bounce point, launched at the centre (+-0.5 rad).
+- Hot open: 10 balls at frame 0 (N0); ball 0 hits the wall at ~0.2 s; ball 1 aimed at Mochi (close call ~0.6 s); the other 8 are backtraced from wall points so their first hits land every 0.3 s from 0.5 s (HIT0/HIT_STEP). Mochi starts mid-dodge (M0V -260,-60). Result: Balls 10 -> 17 by 2.0 s, a bonk at 2.4 s.
+- Dodge feel: lean (vx/1700, +-0.28), dash stretch, flinch squash + sweat + wow face on close calls (pass within 26 px, untouched). Bonk = squash wobble + stars.
+- One counter (Balls). Bonks counter dropped. Caption + counter persist the whole clip; counter ticks 200 -> 10 during the glide.
+- Bolt (r 80) sits outside the rim bottom-left (left side = clear of the Shorts button column): cheers close calls (>= 6 s apart, 3 total), worried for the last 3.2 s. Payoff: ball #200 arcs out of the arena onto his head (bonk + stars), wince, annoyed stare at camera 1.45 s while Mochi laughs (HA).
+- End: balls pop 0.35 s; Mochi glides back to its frame-0 pose (watcher feet-anchor cancelled at handover/seam), frame-0 balls grow in. END 2.9 s.
+- Seed search `--search N`: first spawn <= 0.3 s, close call <= 1.0 s, no bonk before 2 s. Length is ~19-21 s climb at speed 165; slower speeds fail the hot-open filter.
+- s23, speed 165: 23.18 s, t_end 20.28; spawns/5s 12, 26, 53, 99 (+ last 0.28 s); 47 close calls, 29 bonks.
+- Sound: spawn = turkish_march note + pok (0.06 s thinning); bonk = bounce + squash; end pop; Bolt bonk = note 84 + bounce + squash. No reset note (tail silent). peak_db -4.
+- Shipped sample (batch5): -14.0 LUFS, peak -7.4 dBFS, last 0.5 s -84 dBFS, flash_check PASS (0), seam pre-encode mean 0.09, post-encode 0.38. h264 yuv420p 60 fps 1080x1920.
+- Args: --seed, --speed, --n0, --label, --cap, --melody, --search, --dry.
+- Owner review 2026-10-04 (batch 5): Starts mid-action; start with 1-2 FAST balls instead -> mochi_dodge3.

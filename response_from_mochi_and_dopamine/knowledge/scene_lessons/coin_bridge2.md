@@ -1,0 +1,35 @@
+# coin_bridge2
+- coin_bridge reworked after the owner review of 2026-10-15 ("good idea, but I don't like the sounds; make the coin grab a pleasant coin/slot-machine sound, a better glass crack; Bolt is boring, make him grab more coins once in a while"). New file; coin_bridge.py is untouched. The world, look, HUD, caption, loop and Mochi's mechanic are the same as in docs/scenes/coin_bridge.md.
+- Sound (no music, no wind bed):
+  - Coin grab: `_clink`, a struck free disc. Six inharmonic modes (1, 1.59, 2.14, 2.65, 3.23, 4.06 x f0 2.3-3.3 kHz), each a detuned pair (+0.2-0.5%) for shimmer, plus a 1 ms strike. Then 1-2 smaller settling clinks 28-60 ms later, the slot-tray cascade. Pitch is random per coin, not a scale. Spectral centroid about 4.1 kHz.
+  - Bolt's finish: `payout`, 9 clinks 45-75 ms apart.
+  - Glass: `_splinters`, trains of 0.8 ms high transients.
+    - Crackle: 2.4-11 kHz plus a brittle 3.6-5.6 kHz ping.
+    - Crack line: a 3 ms snap plus a 50-130 ms splinter run.
+    - Shatter: snap, a 70-100 ms splinter burst, a crisp >3.5 kHz break and 34-54 tinkling shards, some double-tinging. No low thump.
+    - Mochi's landing: a bright damped glass tock (about 1.3-1.65 kHz) instead of the low thunk. Bolt's ting has no thud. Every glass sound has 0% energy below 500 Hz.
+  - The splash, blub and plinks are unchanged.
+  - Owner tweak 2026-10-15 (dislikes creaks, groans and whoosh/hiss): the 23 glass creaks and the fall whoosh are removed (`CREAKS` / `WHOOSH` = False). The fall reads on the visuals plus the splash.
+- Bolt, the calculated risk-taker (`plan_bolt`):
+  - Under the GLASS LIMIT he takes one coin per pane.
+  - Over it he hops quickly and lightly (dwell 0.30 s).
+  - Every 2nd eligible pane with 3 or more coins he grabs the biggest handful (2-4) whose predicted pane damage stays under 0.9 (RISK_D), using the same physics, at 0.14 s per coin. Then he hops straight off.
+  - Each risk shows a "+n!" pop and a determined grin. When the pane web passes 0.72 he looks wide-eyed with sweat, and a "CLOSE!" banner appears.
+  - It stays honest: the same glass rules apply, he never breaks a pane, and greed (Mochi, 41 coins) still loses.
+- Params changed to give 3-4-coin panes: cn0 1.6 (coins per pane 1-4), KC 0.085, WLIM 1.45, Bolt air 0.52. Default seed 116 (search filter: at least 3 risks, one of 3 coins or more, peak risk damage 0.8-0.97, clip 14.8-18 s).
+- s116:
+  - Mochi 9 coins at frame 0 and 41 at the plunge.
+  - Mochi near-breaks from 3.72 s; the gap after she hops off shrinks to 0.10 s.
+  - Plunge on the jackpot pane at 10.25 s, splash at about 11.2 s.
+  - Bolt's risks: +3 at 3.34 s (pane damage 0.47), +3 at 5.28 s (0.80, CLOSE!), +2 at 10.54 s (0.80), +2 from the jackpot pane at 12.34 s (0.88, CLOSE!).
+  - Bolt finishes at 13.15 s with 15 coins. Clip 15.25 s (915 frames).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps.
+  - -14.03 LUFS, peak -3.9 dBFS, last 0.5 s at -80.8 dBFS (after the tweak; 337 sound events).
+  - flash_check PASS (0).
+  - Pre-encode seam 1.27 against a normal step of 1.31, so the loop is perfect. The encoded seam is 1.75 (I-frame step).
+  - Events per 5 s: 106 / 147 / 84.
+- Delivered <VIDEOS_DIR>\batch35\coin_bridge2.mp4. Owner review: pending.
+
+Owner review (2026-10-15): good -> 4K Schedule/2026-10-18 slot 2 (with on-screen vote A/B test).
+- Shipped 2026-10-15 (owner: "good"): 4K (NF_SCALE 2.0, label ship) with `--vote` ON (default), an A/B test from YouTube Studio. From t_finish+0.35 s a "Team Mochi or Team Bolt?" banner (team-coloured words + a drawn gold down arrow, since cairo has no colour emoji) sits at screen y 1192, between BOLT WINS! and Mochi's head, and fades out with the dissolve. 2160x3840 h264 yuv420p 60 fps, 915 frames, 15.250 s, -14.03 LUFS, peak -3.9 dBFS, flash_check PASS. -> <VIDEOS_DIR>\Schedule\2026-10-18\2_coin_bridge2.mp4.

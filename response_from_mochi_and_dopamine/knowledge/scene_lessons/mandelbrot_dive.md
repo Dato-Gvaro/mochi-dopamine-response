@@ -1,0 +1,38 @@
+# mandelbrot_dive — one continuous x1,000,000,000,000 zoom to a tiny copy of the whole set
+
+- Batch23 brief (docs/BRIEF_brain.md). New scene; nothing else touched.
+- Maths: the true escape-time Mandelbrot set z -> z^2 + c, float64, bailout 256, smooth count nu = n + 1 - log2(log|z|).
+  - Target: the period-1170 mini-brot, nucleus -0.743643886039292 + 0.131825889181881i (Newton on z_1170(c) = 0), size estimate |s| = 7.57e-13, found by the box-period method near the famous Seahorse Valley zoom point.
+  - End view: centre = nucleus + s * (-0.65), width 3.0e-12; start view: whole set, width 3.0. Zoom counter = exp(depth) = exactly x1e12 at the end.
+  - Halfway (x200k-x440k) the dive passes the period-39 mini-brot (|s| 2.17e-6) — copy #1 — and dives into ITS seahorse valley. The camera roll (90 -> 122 -> 332 deg, monotone Hermite in depth) turns both copies upright ("head" up, like the start view), so each reads as the whole set.
+  - float64 is enough at 3e-12 width (pixel ~2.8e-15 = ~25 ulp at |c| 0.74); a 1080x1920 direct render showed no precision blocks.
+- Speed (numpy only, no numba):
+  - The plane is computed ONCE as a log-polar map around the end point P: 6,144 angles x 27,074 radii (166M points, r 3.6e-12 .. 3.8), sampled at ~0.8 px at the frame corner, plus a 1.6x Cartesian patch (4148^2) for the end view. Each frame is a bilinear resample of the map (any zoom/roll/pan) — no per-frame fractal maths.
+  - Kernel: real/imag split arrays, escaped points parked and compacted every 16 iterations, Brent periodicity check, analytic cardioid/2-bulb test, plus the two big mini-brots' cardioid/2-bulb mapped through their size estimates and shrunk to 93% (0 false positives measured on the half-res maps). Maxit 16k (map) / 30k (patch); the <0.3% unresolved points are drawn as interior.
+  - Cache: output/mandelbrot_dive_cache/ (deterministic, keyed on the parameters; ~0.75 GB at Full HD). For 4K the map stays at Full HD density (upsampled — softer, allowed by the brief).
+- Look: jewel palette (violet, sapphire, teal, gold, ruby, amethyst) on log(nu + 4), rotating 1 cycle per loop. Stops pulled 85% of the way to EQUAL luminance (0.16): v1 had night-to-gold bands and FAILED flash_check (29 flashes, worst 9/s at 0:00 and 0:18-0:22: wide bright/dark bands sweeping through the fast zoom). Brightness now comes from the structure: filament glow from the distance estimate DE ~ 1/(ln2 |grad nu|) (screen space), a broad halo, two blooms, hue-preserving soft shoulder. Interior deep indigo.
+- Whoosh levelling: frames 1-59 are re-levelled so the mean (linear) luminance glides geometrically from frame 0 to the whole-set frame (gain clamped 0.45-2.2); the anchors are rendered frames, so it stays deterministic.
+- Camera: depth D(t) = monotone Hermite through music-synced keys:
+  - 0-1.0 s whoosh OUT from the end view to the whole set (time-warped smoothstep, up to 8 motion-blur sub-samples per frame); 1.0 s whole set; dive starts on the trumpet call.
+  - x1,000 on bar 15 (F chord, 7.8 s); copy #1 upright on bar 16's long C (12.1-14.6 s, slowed); x1 billion on bar 18 (19.4 s); the final copy at 34% width on the C major cadence (24.06 s), easing to 50% at the end; last 0.25 s exactly on the end view (= frame 0).
+  - 2x2 supersampling on frames within 1 decade of the end view (hook + payoff).
+- HUD: caption "Zooming 1 TRILLION times | ~What's at the bottom?~"; counter "ZOOM ×N" (0.775h, pops at x1,000 / x1M / x1B / x1T); a short line above it: "a copy?! ...keep diving" at copy #1, "a PERFECT copy of the whole set!" from the cadence through frame 0.
+- Characters: Mochi and Bolt (r 32) in a small glass dive-pod (0.657h) whose lights pulse on the melody notes; eyes on the zoom centre. Happy at the seam, WOW on the whoosh, on copy #1 and on the reveal, determined on the last climb.
+- Music: Richard Strauss, "Also sprach Zarathustra" Op. 30 (1896), the Sunrise. Strauss died 1949: public domain in the EU since 2020 (70 years pma) and in the US (published before 1929). Composition only; played by our own `audio.synth_piano`, no recording.
+  - Source: flutetunes.com flute+organ reduction MIDI (strauss-also-sprach-zarathustra.mid), parsed with mido; the call C-G-C and the major/minor third match Wikipedia's description of the motif. We play the THIRD statement, bars 13-19: C-G-C call over the low C pedal, the E -> A over the F chord, A B C ... D (Ab chord), E F G, G A B, C major cadence.
+  - Arrangement: melody an octave down AND doubled an octave below that (call = C3/C2, G3/G2, C4/C3); organ right hand an octave down; pedal/left hand as written (C1/C2, F1/F2, G1/G2). Highest note C6 (the final cadence), softened. Re-strikes where the orchestra holds (pedal on each half bar, the F chord on bar 15 beat 3, the F pedal in bar 16) — a piano note dies in ~2 s.
+  - Quarter = 0.97 s (~62 bpm; the source MIDI has 50 for bars 5-16), ritardando +0.10/+0.24/+0.42 s into the cadence. Light reverb on the bed. All sound faded out 1.3 s before the end.
+- Args: --beat (0.97), --freq (1.15), --glowk (1.1), --iso (0.85), --cap, --label, --procs (8), --still --frame, --report.
+- Render (Full HD, machine shared with ~7 other renders):
+  - One-time cache: log-polar map 44 min + end patch 14 min (12 processes). Half-res (NF_FAST) cache: ~16 min.
+  - Frames + audio from the cache: 22-36 min with --procs 6 (~2,800 shaded samples: 2x2 AA near the end view, up to 8 blur samples in the whoosh).
+  - 4K estimate: no new cache (the map stays at Full HD density), frames ~4x the pixels -> ~1.5-2.5 h on a shared machine; use --procs 3-4 (each worker holds a few 4K float arrays, ~0.5-1 GB). File size: Full HD is 294 MB at crf 18 (dense detail, ~84 Mbps); 4K will be ~1 GB.
+- Checks (encoded Full HD, label v2):
+  - h264 yuv420p 1080x1920 60 fps, 27.92 s (1675 frames); AAC 48 kHz stereo.
+  - -13.98 LUFS, peak -4.86 dBFS; last 1.3 s <= -63 dBFS, last 0.5 s -240 dBFS. Onsets: first note 0.02 s, the G and high C of the call at 1.94 / 3.88 s, the cadence at 24.06 s.
+  - flash_check: PASS, 10 flashes, worst 2/s (v1: FAIL 29 / worst 9 — see Look).
+  - Loop: pre-encode seam 0.157 mean (a hold step is ~0.19); encoded 2.25 — both encoded seam frames are ~1.8 off their source frames (crf 18 noise on dense fractal detail), so this is encoder noise, not a content jump.
+  - Frames read at 0, 0.25, 0.5, 1, 2, 12.5, 24.1 s + 1:1 crops of the copy's boundary: crisp, no float64 artefacts at x1e12.
+- Doubts: the 2-4 s stretch (x2 - x100) is dominated by the set's dark interior (the dive passes the cardioid/bulb neck into Seahorse Valley) — it goes by fast but is the dimmest part after the hook. Palette is now iso-luminant (less night-to-gold contrast than the first look) for photosensitivity.
+- Delivered: <VIDEOS_DIR>\batch23\mandelbrot_dive.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-10): good but boring at the start; it gets very immersive at ~17 s, so get there within 3 s; the music sucks -> mandelbrot_dive2.

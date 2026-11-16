@@ -1,0 +1,14 @@
+# pillow_shrink
+- Episode 3 of pillow_fight (copied; pillow_fight.py / pillow_fight2.py untouched). ONE change: **every pillow HIT shrinks the bed**. Same rules as ep1 (equal pillows, only pillow-on-body hits, attacker face + swing + POMF + feathers, HP bars, x1.055 speed per hit).
+- Shrink: bed scale -0.026 per hit about the bed centre (540, 875), 5x5 quilt scales with it. Walls start sliding 0.08 s after the hit, 0.20 s easeOutBack (small overshoot = the "stop"); soft thunk (bounce 0.0 + squash 0.05) at slide 60%. Floor SMIN 0.40 never reached (search rejects seeds that get within 0.02). Sim and render share `bed_scale(t, hit_times)`.
+- SHRINK 0.032 -> blowouts (one-sided in the tiny bed); 0.022 -> close but flat hit rate; 0.026 kept.
+- Hit-rate climb is weaker than the idea suggests: shrink alone makes the late section dense, but mid-size beds still produce 2-3.5 s bump-only lulls on most seeds. Search scores max gap + monotone bins.
+- From pillow_fight2: global 0.22 s no-trade gap after any hit; POMF placement clear of bodies AND pillows over the label's life (may sit outside the small bed). New: a POMF fades out 0.1 s after the next hit (three stacked at the climax otherwise).
+- KO banner goes UNDER the shrunken bed (above it collided with the Zzz / caption). Hold phase keeps both bodies and pillows inside the small bed.
+- Reset: bed grows back to full over the first 75% of the 1.4 s Hermite glide; HP refills. Frame 0 vs last frame pixel-identical (mean 0.0).
+- seed 1522: Mochi wins on 8 HP (Bolt led 100-77 early, Mochi came back, 8 vs 12 before the KO); 21 hits, first 0.83 s, max gap 2.4 s, hits/5 bins 2,5,4,4,6 (hits/6s 5,6,10), end scale 0.454 (bed ~390x404). Theme lilac, pink quilt.
+- Args: --seed, --search, --label, --cap ("Every hit SHRINKS the bed|~Who's left standing?~"), --melody.
+- Sample (batch7, Full HD): 22.52 s, -14.0 LUFS, peak -6.1 dBFS, last 0.5 s silent (~3 s silent after the victory arpeggio), flash_check PASS (0), encoded seam mean 0.34. -> <VIDEOS_DIR>\batch7\pillow_shrink.mp4
+- Made-for-kids audit 2026-10-04: children's tune replaced (now ievan_polkka); renders before this used a kid-coded melody.
+- Owner review 2026-10-04 (batch 7): GOOD - better than pillow_fight2 (it replaces it in the schedule).
+- Owner review 2026-10-04: Likes it but fears made-for-kids labelling; replace the pillows / add physics -> sumo_shrink. Pulled from Oct 9.

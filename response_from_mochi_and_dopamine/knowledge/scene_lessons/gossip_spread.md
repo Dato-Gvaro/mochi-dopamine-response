@@ -1,0 +1,64 @@
+# gossip_spread — "A secret told to 2 friends every hour…" / "Billboard or Gossip?"
+
+- The breakout formula (research/breakout_formula.md) on a famous fact: exponential spread (the "tell 2 friends" chain) beats a huge linear broadcast. Two dot-matrix world maps stacked (our own coarse lon/lat polygons, no map assets). The meter: a 0 → 8,000,000,000 bar per rival + "GOAL 8,000,000,000", readable at frame 0.
+- **The rule (honest, exact counters):**
+  - **Mochi's BILLBOARD:** +50,000,000 new people per hour, steady. Count = 50M × elapsed hours. She lights from 3 billboard sites (USA, Europe, China) as expanding rings.
+  - **Bolt's GOSSIP:** every new hearer tells 2 friends the next hour. New hearers double each hour, so the total after hour h is 2^(h+1) − 1.
+    - Hour 31 ends at 4,294,967,295. The world is full 86.3% of the way into hour 32.
+    - The billboard leads 29 hours (hour 29: 1.45 B vs 1.07 B). Gossip passes 37% into hour 30.
+    - At 8 B, Mochi has 1,593,132,257 (19.9%). The billboard would need 160 hours.
+- **Map scale:** 1,385 land dots on each map, 1 dot = 5.78 M people (8 B / dots).
+  - BRIGHT dot = everyone there knows. This is honest on both maps (lit count = floor(count / 5.78 M)).
+  - Bolt's FAINT dots = the secret has arrived there.
+  - Bolt's link network is literal for hours 1-10 (1 link = 1 person told; 1,024 links in hour 10, a growing blob over Africa/Europe).
+  - Hours 11-20 are a 600-link sample per hour that spreads to every continent. This layer is symbolic, like penny_double's loose coins; every dot is touched by hour 20.
+  - From hour 22, Bolt's bright dots are honest and double every hour as a parent → child tree (1, 2, 4 … 1,385). The last 3 hours light about 1,150 dots map-wide.
+- **Seed 5.** The layout is deterministic; the seed only changes the network shape.
+- **Music = the clock:** Grieg, Peer Gynt "Anitra's Dance", beats 17-54 (the theme, then the chromatic descent over the B pedal). Our A-major cadence lands at beat 55 = 8,000,000,000.
+  - Source: Mutopia #281 string-orchestra MIDI, licence Public Domain. See `<SOUNDFONTS_DIR>\scores\grieg_anitra\SOURCE_mutopia_281.txt`.
+  - Tempo: 0.44 s per beat, with a ritardando from beat 42 (→ 0.54).
+  - Hours 4-29 tick one per beat. Hours 29-32 stretch over the descent (2, 2.5, 3 and 5.5 beats).
+- **Key times** (clip seconds):
+  - Frame 0 is mid-hour 3 (13 people; Mochi 138,636,363). Bolt whispers "psst…".
+  - The first link lands at 0.02 s. Hour 4 ticks at 0.10 s on the pickup note. Both counters move every frame from 0.
+  - Hour 10 at 2.74 s (the 1,024-link blob). Hour 22 at 8.0 s (first honest bright dot).
+  - Hour 30 at 12.00 s; LEAD CHANGE! at 12.42 s. Hour 31 at 13.16 s, hour 32 at 14.62 s.
+  - 8,000,000,000 at 17.47 s: EVERYONE KNOWS! plus a soft light sweep, then GOSSIP WINS! at 18.37 s.
+  - Dissolve from 21.27 s. The clip is 21.87 s (1312 frames).
+- **Staging:**
+  - Mochi stands on her billboard (Pacific, off the US coast). She laughs (smug) at 0.2, 3.3 and 6.8 s, is worried from 10 s, wows at the lead change and at 8 B, then is annoyed.
+  - Bolt sits in the Gulf of Guinea by his first whisper (mouth moving until 1.1 s). He is calm and sly mid-clip, then cheers and laughs at the lead change and at 8 B.
+  - Per-hour pops: "+50M" on Mochi's map and "×2" on Bolt's map. The leader's counter is gold.
+- **Sound** (all in the bed; the sidecar = silent melody markers):
+  - Melody: the score's violin-I line on strings, doubled by celesta and a soft `synth_plink` per note (E4-A5, nothing above A5). Pizz accompaniment comes from the score's violin II / viola / cello parts, with contrabass under it.
+  - Brass doubles the descent from the lead change. A horn swell runs over hour 32, then E-major strings under the last E4. A timpani roll goes into the A-major tutti: strings, choir, brass, harp roll, timpani, a soft boom and a crash.
+  - SFX (scene-local synths, no noise):
+    - A glassy tik per link arrival or bright pop, on A-minor pentatonic pitches. Groups within 18 ms are merged, with gain ÷ √density.
+    - A soft A5 ding per hour.
+    - The billboard's tonal A2+E3 "whum" on every bar downbeat.
+- **Levels:** the body sits at −20 LUFS pre-master and the cadence about 4 dB above it. v1 had a 7 dB jump; `FIN_GAIN` 0.5 fixed it.
+- **Laptop:** 1 Python process (BLAS threads 1) plus ffmpeg x264 `-threads 2` (`Writer2`). About 10 min for Full HD.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/gossip_spread.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/gossip_spread.py`
+  - `--report`
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1312 frames = 21.87 s.
+  - Loudness: −14.00 LUFS, peak −7.29 dBFS, last 0.5 s at −68.7 dBFS.
+  - flash_check: 0 flashes = PASS (mean luminance 0.012).
+  - Loop seam: pre-encode mean delta 0.48 (a normal step is 0.20). Most of it is Mochi's counter rolling one frame. Encoded it measures 0.96: the dense dot field plus the I-frame, so it is high but under the 1.1 "broken" line.
+  - Frames read at 0, 0.5, 1, 3, 9, 12.45, 17.5, 18.6 s and the last frame; the last frame matches frame 0.
+- **Known risk:** around hours 20-26, Bolt's faint "arrived" dots plus the link web make his map look busy while his count is only millions. The honest gap shows in the bright dots, the bars and the counters. If the owner reads it as "gossip already ahead", dim `FAINT` further or drop it.
+- Delivered `<VIDEOS_DIR>\batch42\gossip_spread.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-18): "very creative and nice" -> approved; re-layout to the new side safe zone (0.10-0.84w), then 4K.
+
+Owner review (2026-10-18): "very creative and nice" -> APPROVED -> 4K.
+- **v2 side safe zone (measured on a tall phone: tall phones crop ~9% per side, and the buttons sit on the right):** all key content is inside x 0.10w-0.84w.
+  - The maps are drawn scaled by `MAP_S` = 2.15/2.444 at `SCR_X0` 120. The sim keeps its local coords, so seed, timing, counts and sound are unchanged (audio panning still uses the v1 `MAP_X0`).
+  - The caption and banners are centred at x 507.5 with max width 790. The labels, counters, bars, HOUR and GOAL lines, and the +50M / ×2 pops all moved inside.
+  - Measured content extent at 0 s and 12.5 s (Full HD stills): x 109-903 = 0.101w-0.836w.
+- **4K render** (`--label ship`): `output/gossip_spread_ship_9x16.mp4`.
+  - Video: h264 yuv420p 2160x3840 at 60 fps, 1312 frames = 21.87 s.
+  - Loudness: −14.00 LUFS, peak −7.29 dBFS, last 0.5 s at −68.7 dBFS.
+  - flash_check: 0 flashes = PASS. Seam mean delta 0.79.

@@ -1,0 +1,62 @@
+# monty_hall — "3 doors, 1 prize…" / "Stay or Switch?"
+
+- The breakout formula (research/breakout_formula.md) applied to the famous Monty Hall puzzle. Two game-show stages are stacked, each with 3 doors (violet, azure, rose), and each player races a bar to a "100" goal pill that is visible at frame 0. Doors are generic, with no show names.
+- **Honest game (paired):**
+  - Both stages play the SAME seeded draw each round: the same prize door and the same first pick.
+  - The host then opens a dud: a door that is not picked and has no prize. When the pick IS the prize, a seeded coin flip chooses which dud opens.
+  - Mochi ALWAYS STAYS. Bolt ALWAYS SWITCHES to the other closed door.
+  - So exactly one of them wins each round: Mochi with p = 1/3, Bolt with p = 2/3.
+  - Prize = a gold trophy. Dud = a deflated balloon that sags flat as its door opens.
+- **Seed 184385** (searched 0-199,999 for: Mochi wins rounds 1-2, Bolt round 3, exactly one late lead change, 150 rounds):
+  - Mochi leads by up to 8 (round 32) and is tied 27-27 at round 54.
+  - Bolt leads from round 55 on (LEAD CHANGE).
+  - Bolt hits 100 at round 150: 100 vs 50 = 67% vs 33%.
+  - Counts: 5 s 2/1, 8.2 s 9/3, 11 s 22/18, 13.7 s 32/48, 16.3 s 47/73.
+- **Pacing:**
+  - Rounds 1-3 play in full, one step per beat (pick → dud opens → STAY / SWITCH! labels → reveal). Reveals land at 0.99, 2.67 and 4.35 s.
+  - Then the rounds speed up: 2 beats each (rounds 4-5), 1 beat (rounds 6-11), ½ beat (13 rounds), then ¼ beat (~15 rounds/s, a blur of doors with coins streaming into the bars).
+  - The reveal schedule is fitted so round 150 lands exactly on the cadence beat.
+- **Frame 0 is mid-action:** round 1's dud door (3) is already ~85% open with the balloon deflating. The arrows are on door 2 (picked in the pre-roll). The first knock and note land at 0.15 s.
+- **Key times:**
+  - LEAD CHANGE! at 12.02 s.
+  - 100! at 18.40 s: the bar and pill turn gold, a coin fountain starts, and the frames turn gold.
+  - SWITCH WINS! + "67% vs 33%" at 18.71 s.
+  - Dissolve from 21.41 s. Clip 22.01 s (1321 frames).
+- **Faces:**
+  - Mochi laughs and cheers while she leads. She is worried just before the lead change, goes "wow" (confused) at it, stays worried after, and is annoyed after the finale.
+  - Bolt stays smug-idle, cheers his first win, then laughs and cheers from the lead change on.
+- **Music** = the timing: Johann Strauss II, "Thunder and Lightning" polka, Op. 324.
+  - Source: Mutopia #610 MIDI, public-domain engraving. See `<SOUNDFONTS_DIR>\scores\strauss_thunder_lightning\SOURCE_mutopia_610.txt`.
+  - Bars 1-27, then 57, 58 and 60 (the 2nd-ending cadence), transposed −5 to D major. Melody range C#4-B5.
+  - Intro bars 1-4: the static top D is replaced by the chords' moving bottom voice an octave up (A D# D C# B A B), so the opening isn't one repeated tone.
+  - Tempo: 0.42 s/beat through round 3, accelerating to 0.265 s/beat by beat 26, with a small ritardando into the cadence (0.31).
+  - The 100th win lands on the bar 60 downbeat. The third D chord lands on SWITCH WINS!.
+  - Arrangement:
+    - Plink per soprano note.
+    - Strings on the tune, pizz oom-pah from the left hand, and contrabass.
+    - Brass doubles the tune from beat 26 and horns from beat 40.
+    - Concert bass drum on downbeats of the fast part, a crash on the lead change, and a timpani roll into the cadence.
+    - Final D major on choir, strings, brass and contrabass, with timpani, boom and crash.
+- **SFX** (scene-local synths, no noise beds):
+  - A latch click plus a clean wooden knock per dud door (the knock is quieter in the fast phase).
+  - A tick on the switch (full rounds only).
+  - A coin/bell chime for each win and a soft falling "bonk" for each loser's balloon.
+  - Coin clinks in the fountain.
+  - All onsets are ≥12 ms apart (nudged, never dropped) and ducked by 1/√(density/3).
+  - Silent from T − 1.35 s.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 22.02 s.
+  - Loudness: −14.00 LUFS, peak −7.18 dBFS, last 0.5 s at −69.5 dBFS.
+  - flash_check: 0 flashes, PASS (mean luminance 0.022).
+  - Loop seam: encoded mean delta 0.756 (just over the 0.72 band). Pre-encode: 0.45, against 0.37 for a normal step; frame 0 is a fast door swing.
+  - Frames read at 0, 0.5, 1, 3, 7, 11, 12.1, 18.5 and 19.2 s and the last frame, plus 1:1 crops at 1.0 s and 15 s.
+- **Laptop:** 1 Python process, x264 `-threads 2` (local `Writer2`). The full render takes ~35 s.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/monty_hall.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/monty_hall.py`
+  - `--report`
+- Delivered `<VIDEOS_DIR>\batch42\monty_hall.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-18): "I don't get how stay works, maybe overcomplicated" -> simplify as monty_hall2 (switch = you get BOTH other doors: 1 door vs 2 doors).
+
+Owner review (2026-10-19): v1 dropped in favour of monty_hall2.

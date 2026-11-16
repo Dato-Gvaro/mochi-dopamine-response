@@ -1,0 +1,43 @@
+# press_split2 — press_split, faster, with a scroll-stop palette
+
+- Owner review of press_split (2026-10-13): "good, but make it faster and with better colours". The palette follows research/scroll_stop.md and the scroll-stop rules in docs/BRIEF_batch25.md.
+- The rule, physics and caption are the same as press_split (see docs/scenes/press_split.md). This is a new file; press_split stays bit-reproducible.
+- **Faster:**
+  - G 3000.
+  - Press: down 220, squeeze 130, up 900 px/s; hold 0.15 s, pause 0.25 s. Stroke period 3.7 s, shrinking 0.1 s per stroke to 2.6 s.
+  - Pressure wave: 2 hops per frame.
+  - Hammer: falls at 9000 px/s², lifts at 2600 px/s; budget E_K 0.34.
+- **Frame 0 mid-action:**
+  - The sim runs a 0.6 s pre-roll: the plate is descending and the hammer is released from its latch. The clip starts at the end of the pre-roll.
+  - The hammer's first split lands at 0.17 s and the press's just after; both chambers read "Balls: 3" by 0.3 s.
+- **Loop:** a seamless dissolve.
+  - In the last 0.6 s the stage (balls and machines) cross-fades into the pre-roll, which flows straight into frame 0.
+  - The HUD (counters, faces, caption) switches cleanly at the midpoint, so the counters do not ghost.
+  - The audio bed fades out over the same 0.6 s.
+  - The encoded seam scores 1.39. A normal frame step here scores 1.05, because the hammer is falling fast. The last frame is the true frame before frame 0 (checked side by side).
+- **Palette:** 2-3 hue families on black.
+  - Mochi's balls grade by generation: crimson → orange → gold.
+  - Bolt's balls grade: blue → cyan → mint.
+  - Chamber outlines are violet neon. The machines are coral (press) and cyan (hammer).
+  - Every fresh split gets a soft radial glow in its own colour.
+  - Faces are r 34 (was 24).
+- **Banners:** LEAD CHANGE! is cut off when OVERFLOW! starts. They had overlapped as "LOVERFLOW!!".
+- **Sound:**
+  - Notes: one per crush, merged to at most 1 per 60 ms, walking Für Elise (Beethoven 1810, PD), a little louder.
+  - Crunches: rate cap 22 ms, louder.
+  - Machine hits are punchier (press thunk 0.70, hammer clank and thunk up).
+  - A 1.2 s riser into the press's final stroke.
+- **Seed 10** (searched over 0-11; every seed gives the same shape, and seed 10 has the smallest margin), in clip time:
+  - The hammer leads to 23.2 s, when the press's last wave overtakes (LEAD CHANGE).
+  - The press overflows at 24.0 s, with the hammer pile 34 px under MAX at 4,765 balls.
+  - The plate snaps and the pile erupts at 24.4 s. The dissolve runs from 25.25 s.
+  - Clip length 25.85 s (1551 frames).
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 60 fps.
+  - Loudness: -13.98 LUFS, peak -5.6 dBFS.
+  - Notes per 5 s: 8, 18, 14, 17, 20.
+  - flash_check: 1 flash = PASS (mean luminance 0.048).
+  - Frames read at 0, 0.3, 1, 3, 12, 23.3, 24.1, 24.7 and 25.5 s, plus the seam pair.
+- Args: same as press_split (`--seed` defaults to 10).
+- Delivered <VIDEOS_DIR>\batch31b\press_split2.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-15): ok -> APPROVED, 4K (Oct 16 slot 3).

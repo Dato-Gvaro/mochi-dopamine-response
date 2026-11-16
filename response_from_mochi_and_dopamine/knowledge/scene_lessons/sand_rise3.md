@@ -1,0 +1,16 @@
+# sand_rise3
+- New file from sand_rise2 (owner review 2026-10-15: "don't try to simulate the sand's sound, make it tik-tik"). Picture, sim, seed 183, timing and the rope ending are identical to sand_rise2. Only the soundtrack changed.
+- **Removed:** the continuous pour bed and every noise-based sand slide (avalanches, Bolt's slide, the pull-out).
+- **Added "tik-tik"** (`s_tik`): a clean sine blip (f + 0.25 x 2f, 7 ms decay, 35 ms).
+  - Pour rhythm: TIK_RATE 3.2/s x the pour multiplier, so it runs from 3.2/s at 0 s to 9/s at 12.6 s. Pitches alternate 2350/1980 Hz, panned to alternate rooms, gain 0.075 -> 0.10. It stops at the escape.
+  - Each avalanche: a 3-tick falling cluster, gain 0.09.
+  - Bolt's AVALANCHE slide: a 5-tick falling cluster, gain 0.17.
+  - Mochi pulled out of the sand: 6 rising ticks.
+- **Kept:** crunchy landings, steps, pop, fwump on SINKING, valve glass ticks, lead chimes, hatch clank + whoosh, roof poks, rope thups, ding. The pfff is now 0.22 (it was the loudest thing once the bed was gone).
+- **Master:** `audio.master(peak_db=-6)` for the impulse-only mix (without it the peak was -3.1 dBFS). The fade starts 0.35 s before the dissolve and the post-clip tail is zeroed, so the seam is quiet.
+- Checks (encoded Full HD, s183):
+  - 16.83 s, 1010 frames, h264 yuv420p, 60 fps.
+  - -14.02 LUFS, peak -7.7 dBFS. Last 0.5 s peak -32.4 dBFS.
+  - flash_check PASS (0).
+  - Encoded seam 0.84.
+- Delivered <VIDEOS_DIR>\batch36\sand_rise3.mp4. 4K ship render (label ship) -> <VIDEOS_DIR>\Schedule\2026-10-19\1_sand_rise3.mp4.

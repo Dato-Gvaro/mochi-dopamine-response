@@ -1,0 +1,20 @@
+# dodge_gun2
+- Built from dodge_gun (owner 2026-10-05: "make the gun WAY smaller and next to Bolt; give the main character an HP bar; let him WIN on very low HP"). dodge_gun.py untouched.
+- Rule unchanged: every wall bounce spawns a ball aimed at the centre (+-0.5 rad); cap 300; cruise speed 280 px/s; Mochi AI as before (vmax 600).
+- Bolt (r 66) stands just outside the rim at 140 deg. He holds a compact steel blaster in front of him: body, short barrel, muzzle ring, a grip, and a teal charge strip that refills after each shot. Barrel length 62 px.
+  - The muzzle is outside the rim, so each shot enters the arena where its line first crosses R-BR (`entry()`).
+  - Shots leave at 950 px/s and ease to cruise speed. Shot times: 0.0 s (steep, quick first bounce), 0.3 s (at Mochi), then 3.2 / 6.0 / 8.6 s (+-0.15) at Mochi.
+  - Each shot: recoil 9 px, a jewel-colour streak from the muzzle (0.12 s), two small ink-outlined smoke puffs, and a thunk (cannon size 0 + latch).
+- HP: Mochi has 100 HP and every bonk costs 2.
+  - The bar sits above his head: dark case, green -> amber -> red fill, a white chunk that drains 0.18-0.53 s after a hit, and a 3 Hz red glow + heart pulse under 25 HP. Sweat while low.
+  - The search keeps seeds that end on 4-8 HP and are at <= 26 HP 1.5 s before the end. It needs no fudging: damage is a flat 2 per bonk.
+- Bolt laughs when HIS shot bonks Mochi (>= 3 s apart), and once when Mochi drops under 25 HP.
+- Payoff: ball #300 arcs back onto Bolt's head (wince, annoyed stare). Mochi scoots to centre and laughs, sweaty but grinning, with the HP bar near empty.
+- Loop: HP refills to 100 and the counter ticks 300 -> 0 while Mochi settles. The blaster swivels back and reload-clacks (te 1.08, the last sound). Frame 0 fires again.
+- Look (ring_escape2 family): navy -> plum stage with fixed specks and a blue colour pool; a smoked-glass arena with violet guide rings and a layered teal rim glow + sheen. Balls are jewel tones with r 1.9x halos. Spawn = a bloom + ring in the new ball's colour.
+- s295: 20.55 s, t_end 17.65; spawns/5s 15, 59, 221; first spawn 0.33 s, second 0.98 s; 48 bonks -> ends on 4 HP (38 HP 3 s before the end, 24 HP 1.5 s before); Bolt laughs at 9.16 and 16.03 s.
+- Checks (encoded Full HD): h264 yuv420p 60 fps 1080x1920; -14.0 LUFS, peak -7.3 dBFS, last 0.5 s -78 dBFS; flash_check 0 flashes PASS (mean lum 0.025).
+- Seam: the last frame = the frame-0 state just before the shot. Mean 0.28 outside the Bolt/blaster corner and the counter; 1.16 overall, which is the shot itself.
+- Moving the blaster grip changes every run (the shot entry points move). Re-run `--search` after any blaster geometry change. Only 1-2 seeds in 400 pass.
+- Args: --seed, --speed, --nmax, --vmax, --label, --cap, --melody, --search N (8 processes), --dry.
+- Owner review 2026-10-06: OK - approved (not top content, but usable).

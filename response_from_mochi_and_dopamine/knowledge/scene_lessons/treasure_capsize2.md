@@ -1,0 +1,29 @@
+# treasure_capsize2: the recut of treasure_capsize (no rewind, real-speed capsize)
+
+- **Why:** owner rule 2026-10-13 (research/scroll_stop.md): frame 0 is mid-action and never a rewind, slow motion lasts at most ~1 s, and the clip loops through a dissolve. treasure_capsize was staged for the Oct 16 slot 1 and is replaced by this cut.
+- **Build:** `scenes/treasure_capsize2.py` imports `scenes/treasure_capsize.py` (importlib; that file is never edited). It reuses the hull hydrostatics, storm, ships, HUD, chests/coins and the Hebrides arrangement data.
+  - Clip time = old clip time - 1.60 s (`OFF`). Frame 0 = sim index 48.
+- **Opening (0-1 s):** volley 3 of the chests is in the air swinging aboard (they land at 0.30 and 0.61 s with a wood tok). The sky and waves are already building. The first gust (bar 1) hits at 0.92 s. Both faces are visible from frame 0.
+- **Physics changes:**
+  - `tc.RIG = 0` (no floating-rig support).
+  - `tc.ZW = 3` (was 25), so she turns fully turtle instead of lying on her beam ends.
+  - `rate_of`: 0.5x only for old 17.6-18.4 (~0.7 s around the tipping moment), real speed otherwise.
+  - The storm, gusts and loads are unchanged: Mochi peaks 15/21/27/32/37 deg; cargo shift at 9.82 s; tips at 16.07 s (bar 7 = 15.92). She passes 165 deg at 18.43 s and ends at ~175 deg.
+- **Gold:**
+  - Crow's nest and yard chests release at 51-63 deg; the shifted deck chests at 68/71 deg; the remaining deck chests fall out at 96-120 deg.
+  - The open deck chests pour coins only while they are above the sea.
+- **Ending:**
+  - CAPSIZE! at 16.07 s; Mochi is thrown onto her barrel (lands ~17.65 s); LOW GOLD WINS! from 17.8 s with Bolt cheering.
+  - Hold to 20.5 s, then a 0.5 s dissolve into frame 0 (seam 0.615 post-encode).
+  - The gauge reads the heel folded to 0-180 deg (turtled hull).
+- **Music:** treasure_capsize's arrangement, retimed.
+  - 0.02 s: a tutti B-minor hit with boom; the hook bar's last motif note follows.
+  - Storm bars 1-6 unchanged (downbeats 0.92 + 2.5k).
+  - Bar 7 (15.92) = the climax: cymbal swell + boom, i -> V (F#) on beats 3-4.
+  - B-minor cadence at 18.42 with boom and thunder. Silent from 19.5 s.
+- **Checks (Full HD v1):** 1080x1920 h264 yuv420p 60 fps, 1260 frames = 21.00 s. -14.01 LUFS, peak -4.96, last 0.5 s -78.3 dBFS. flash_check PASS.
+- **Doubt:** the post-capsize hold is ~2.5 s (17.8-20.5: landing, cheer, banner), longer than the ~1 s asked. It keeps the cadence plus the 1.3 s silent tail inside the music rule and the clip at 21 s, against the 20 s minimum.
+- **4K (`--label ship`):**
+  - 2160x3840 h264 yuv420p 60 fps, 21.00 s. -14.01 LUFS, peak -4.96 dBFS, last 0.5 s -78.3 dBFS. Seam 0.356. flash_check PASS.
+  - Frames read: 0, 1, 16.5 and 18.6 s. The 12 CHESTS EACH banner ends before STORM! pops at 0.94 s.
+  - REPLACED `<VIDEOS_DIR>\Schedule\2026-10-16\1_treasure_capsize.mp4` (2026-10-14).

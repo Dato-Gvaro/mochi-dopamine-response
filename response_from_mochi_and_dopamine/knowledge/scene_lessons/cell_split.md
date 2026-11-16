@@ -1,0 +1,71 @@
+# cell_split — "Every cell DIVIDES in 2" / "Heat or Food?"
+
+- The breakout formula (research/breakout_formula.md) on a new mechanic: two petri dishes side by side, one founder cell each. The count explodes toward the FULL ring, which is readable at frame 0. Nothing is reused from press_split's look or machines.
+- **The rule (an honest model, exact and event-driven):**
+  - **Mochi HEATS her dish:**
+    - Cycle 1.30 s (jitter 12%).
+    - Every newborn cell is heat-stressed with p = 5% + 1.9%/s; the plate climbs 37 → 46 °C, as the label shows.
+    - A stressed cell swells, blushes and BURSTS at 35-85% of its cycle instead of dividing.
+    - Net growth per cycle is 2(1−p).
+  - **Bolt FEEDS his dish:**
+    - A nutrient drop every 0.55 s. No cell dies.
+    - Cycle T = 2.75 s / (1 + 0.018 × drops), so 2.75 s → 1.6 s by the fill.
+- **The lineage comes first, then physics:**
+  - The lineage is drawn from a seeded RNG: who divides or bursts, and when.
+  - Soft-packing physics then places the cells: overdamped disc repulsion with 6 iterations a frame, and a gap-closer that never compresses.
+  - Cell radius r = 60·N^−0.343, so exactly 2048 cells pack the dish to the FULL ring (R 214). The count race IS the fill race.
+  - Measured: Bolt's colony reaches R 208.6 at the fill.
+- **Colour:** generation colours cycle through 4 hues, so every split recolours its daughters.
+  - Mochi: coral, orange, gold, rose.
+  - Bolt: teal, blue, violet, aqua.
+- **Finale:**
+  - At the fill the wall gives. The winner's cells decompress back to the full-colony size and bulge 40 px over the glass rim.
+  - The FULL ring turns gold, with a soft bloom.
+  - Banners: FULL! at 21.83 s, then FEEDING WINS!.
+  - The last 0.6 s dissolves into the 0.6 s pre-roll (seamless).
+- **Seed 17** (searched 0-39; 21 of 40 seeds have exactly one late lead change and Bolt winning):
+  - Counts M/B: 2 s 4/2, 6 s 23/8, 10 s 78/23, 14 s 238/90, 18 s 492/430.
+  - LEAD CHANGE at 18.52 s.
+  - Bolt FULL at 21.83 s: 2,056 vs 790, with 45 °C and 40 drops. Mochi lost 2,690 cells to bursts.
+  - Clip 24.78 s (1487 frames).
+- **Frame 0 is mid-action:**
+  - Both founders are already pinching.
+  - The first drop plops at 0.10 s.
+  - Splits at 0.15 s (Mochi) and 0.30 s (Bolt); both counters read 2 by 0.3 s.
+- **Sound** (all in the bed; the sidecar notes are silent markers):
+  - **Melody:** Mussorgsky, Promenade (Pictures at an Exhibition, 1874, PD). Read from the Mutopia 475 MIDI (`<SOUNDFONTS_DIR>/scores/mussorgsky_kiev/mids/promenade-1.mid`; the engraving is CC BY-SA, the notes are PD).
+    - Walk: beats 0-21, then 22-32, then 0-21 again, ending on the F major chord (V).
+    - One onset fires on the first division at least q × the score duration after the previous onset (at least 60 ms). q is fitted to 0.324 s/beat, so the walk ends 0.17 s before the fill.
+    - The fill lands the B♭ major tonic (V → I): a harp roll, strings, oohs, contrabass and a timpani hit, after a 1 s timpani roll.
+    - Melody instruments: harp plus a quiet celesta. Chord tones on harp, bass on pizz. Range F3-F5 (nothing above C6).
+    - 66 onsets; per 5 s: 7, 16, 18, 18, 7.
+  - **SFX:**
+    - A synthesised wet "plip" per division: a rising droplet chirp over a soft body, pitched by size, with no noise. Rate cap 24 ms per dish, gain ÷ √density.
+    - Tiny pops for bursts and a bloop per drop.
+    - All SFX onsets are at least 12 ms apart (nudged, never dropped).
+  - The bed is silent from T − 1.35 s.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1487 frames.
+  - Loudness: −14.00 LUFS, peak −7.05 dBFS, last 0.5 s at −59 dBFS.
+  - flash_check: 0 flashes, PASS (mean luminance 0.022).
+  - Seam mean delta 0.640, in the good band.
+  - Frames read at 0, 0.5, 1, 3, 12, 18.6, 21.9, 23.0 and 24.76 s, plus a 1:1 crop of the full dish at 22.3 s.
+- **Audio re-mux:** it was regenerated once (TAIL 0.9 → 1.35 s) and re-muxed with `-t <video duration>`. The soundtrack wav runs 2 s long, and `-shortest` eats frames.
+- **Laptop:** 1 Python process (BLAS threads 1) plus ffmpeg x264 `-threads 2` (the scene's own `CoolWriter`). The sim takes ~20 s.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/cell_split.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/cell_split.py`
+  - `--search a b`
+  - `--report`
+- **v2 (coordinator, 2026-10-18): no slow start.**
+  - v1 had nothing dividing from 0.3 to 1.4 s. Clip frame 0 now sits at sim time START = 4.85 s: same seed, same outcome.
+  - Counts at 0 s 14/4, 0.5 s 20/5, 1 s 24/7. First division at 0.09 s (Mochi); Bolt's at 0.20 s.
+  - The dissolve blends into the pre-roll [4.25, 4.85) s.
+  - Clip times (sim time minus 4.85): LEAD CHANGE 13.67 s, FULL 16.98 s, clip 19.93 s (1196 frames).
+  - The melody re-fits from frame 0: 66 onsets, q 0.289 s/beat, per 5 s 18, 20, 21, 7. The last onset is at 16.64 s; the tonic lands on FULL.
+  - Checks: −14.00 LUFS, peak −7.34 dBFS, last 0.5 s at −61.7 dBFS; flash_check 0 flashes, PASS; seam 0.517. Frames read at 0, 0.5, 1, 2, 3 s and the last frame (14/4, matching frame 0).
+  - The v1 numbers above are in v1 clip time (the sim time); subtract 4.85 for v2.
+- Delivered <VIDEOS_DIR>\batch41\cell_split.mp4 (Full HD, v2). Owner review: pending.
+
+Owner review (2026-10-18): approved -> 4K.
+- Owner review (2026-10-18): "interesting" -> APPROVED. 4K render: output/cell_split_ship_9x16.mp4 (2160x3840, 19.93 s, 1196 frames, -14.00 LUFS, flash PASS, seam 0.360; audio re-muxed with -t).

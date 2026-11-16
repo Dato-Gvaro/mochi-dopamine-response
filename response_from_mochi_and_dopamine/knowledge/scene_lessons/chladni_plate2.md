@@ -1,0 +1,66 @@
+# chladni_plate2 — 60,000 grains, 12 Chladni figures, Bach's Toccata in D minor
+
+- Rework of chladni_plate. Owner review (2026-10-09): "we need engagement and a hook at the start, a better song and better visuals: more grains and beautiful forms with grains." v1 is untouched; this is a new file.
+- **Hook (payoff-first cold open):**
+  - Frame 0 = figure 12, the finished climax: a rainbow lattice with a diagonal X and flowers, 60,000 grains, bright on dark steel, the plate 0.89 of the width.
+  - The mordent fires at 0.02 s and the figure shivers.
+  - The Toccata's 64th-note run (0.62-0.85 s) blows the sand apart, five kicks, one per note.
+  - Figure 1 snaps in on the D at 0.97 s.
+- **Engagement:**
+  - Caption: "Bach shakes 60,000 grains of sand | ~Can they form 12 SHAPES?~". Counter: "SHAPES: n/12" (12/12 at frame 0, reset at the scatter).
+  - Mochi and Bolt take turns bowing the bottom edge. Turn label: MOCHI'S TURN / BOLT'S TURN / TOGETHER!
+    - Her figures glow warm (magenta to coral to gold).
+    - His glow cool (mint to cyan to violet).
+    - The duet figure is rainbow.
+  - Surprise: Mochi bows the big diminished chord too hard ("TOO HARD, MOCHI!", Bolt stares at the camera).
+    - Figure 11 leaps off the plate on the run: a perspective fountain with out-of-focus airborne grains.
+    - Both bow together. The sand rains back from the centre outwards and lands as figure 12 exactly on the D-minor chord (21.45 s). The counter hits 12/12 in gold.
+- **Physics:** free-plate Chladni superpositions u = sum a [cos(n pi x) cos(m pi y) +/- cos(m pi x) cos(n pi y)], normalised to max |u| = 1.
+  - Grains descend u^2, distance-normalised (K 5/s in bars 1-3, 7/s in the prestissimo), with antinode jitter 0.0030 A |u|^1.5, a floor of 0.0008 and 0.0045 along the lines.
+  - Every piano note kicks the plate excitation, so the sand dances to the music.
+  - Figures: (1,3)- | (2,4)+ | (3,5)+ | (4,6)+ | (3,7)+ | (5,7)+ | (4,8)- | (5,9)+ | (6,10)+ | (7,11)+ | (8,12)- + 0.6 (4,14)- | (10,14)- + 0.6 (6,16)-.
+  - On-line within 5 px: 85-97 % by 0.8 s after each change.
+- **Loop:** exact.
+  - The landing targets ARE frame 0's grains: Hilbert-rank matched to the launch positions, so flights are mostly local.
+  - Per-grain sparkle weights follow the permutation. The last 0.5 s holds frame 0's grain set at rest.
+  - The bow glow and antinode shimmer use amp_vis, which is 0 at frame 0 like the silent end.
+- **Look:** float light buffer (bilinear splat, trails 0.84, two-radius glow, hue-preserving tone-map) on dark brushed steel.
+  - Per-grain sparkle weight 0.55-1.45^1.4. Grains glow white for 0.2 s on landing.
+  - Grain weight scales with (scale/0.5)^1.6, so Full HD and 4K match the half-res stills. v1 of this scene rendered 2-4x too dim at Full HD.
+- **Music:** J.S. Bach, Toccata and Fugue in D minor, BWV 565 (Bach d. 1750; the composition is public domain).
+  - Notes are copied from the Mutopia Project MIDI/LilyPond (Mutopia-2011/09/11-1780, typeset from the Bach-Gesellschaft Ausgabe 1867, "Public Domain").
+  - Played on our own `audio.synth_piano` as a bed (events have note_gain 0). No recording.
+  - Bars 1-3 at quarter = 63:
+    - The three statements, each an octave lower than the last. Here they sit at A4/A3, A3/A2, A2/A1, i.e. the manual lines down an octave.
+    - The ornament on each A (`\prall` + fermata) is played as the well-known mordent A-G-A.
+    - Then the D pedal (+ D1), the arpeggiated dim7 (C#3-E4) and D major with the inner E-F#.
+  - Cut to the bar-7 pickup, then bars 8-11 at quarter = 92:
+    - The descending triplet sequence, an octave down. A bass note an octave below the lowest triplet note on each new-figure step (E2 C2 A1 F1 D1).
+    - D pedal, then the big dim7 (C#3-Bb4) held 1.95 s.
+    - The run (A4 down to B3 and back to E4), doubled an octave below, with a ritardando.
+    - The bar-12 downbeat D minor (D1 D2 D3 D4 F4), rolled and held.
+  - Range D1-Bb4: no note above Bb4. Silent from T-1.35 s.
+- **Characters:** r 30, at the plate's bottom corners on their bows.
+  - The owner of each figure grins. The other wows on figures 4, 9, 10 and 11, or gives an annoyed stare on some.
+  - Determined during the duet; both grin after the landing; frame-0 smile at the seam.
+- **Args:** --seed (5), --grains (60000), --tempo-a (63), --tempo-c (92), --k, --kc, --jit, --j0, --jt, --jrest, --gain, --gw, --label, --cap, --still --frame a,b,c [--warm 40], --report, --fresh (ignore the sim cache).
+  - The sim is cached in output/ by a hash of the source + args. It takes ~3.5 min; the Full HD render ~57 min.
+- **Checks** (encoded Full HD, v2, seed 5):
+  - Format: h264 yuv420p 1080x1920 at 60 fps, 25.05 s (1503 frames).
+  - Audio: -14.00 LUFS, peak -6.0 dBFS, last 0.5 s at -90 dBFS. 233 notes, 33 distinct pitches; events per 5 s: 50, 13, 96, 57, 17.
+  - flash_check: 0 flashes = PASS (mean luminance 0.026).
+  - Loop: pre-encode seam (frame 0 vs frame 1502) 0.0 mean, 0.0 max = exact. Encoded seam 1.24, which equals a normal step (frame 0→1 is 1.29; the sand starts shivering on the mordent).
+  - Encoded frames read: 0, 0.25, 0.5, 1, 2, 12.5, 17.9, 19.9, 21.0 and 21.6 s. Frame 0 also read at 200 px wide, plus a 1:1 crop of the climax (the grains stay granular through the encode).
+  - First Full HD render (v1) was 2-4x too dim, and its bow glow and shimmer popped at the seam. Both are fixed (wsc, amp_vis).
+- **Render:**
+  - Two shutdowns killed the sequential 57-min render.
+  - v2 was rendered resumably: 11 chunks of 150 frames in 2 workers, each warmed up 60 frames (0.84^60 residual, the --still method), then concatenated with `-c copy` and muxed with the scene's build_bed via kit.deliver.
+  - The driver lives in the scratchpad (cp2_chunks.py). The chunk joins show only the usual keyframe step (about +0.5 over neighbours).
+  - `NF_SCALE=1.0 python scenes/chladni_plate2.py --label v2` reproduces the same clip sequentially.
+- **Doubts:**
+  - The scatter becomes a uniform rainbow haze from ~0.85 to 0.97 s: bright, but no figure for ~0.1 s.
+  - The leap spray briefly reaches the caption corners (19.5-20.5 s).
+  - The ornament is realised A-G-A (the universally played mordent). Mutopia marks it `\prall`.
+  - Ending on D minor = the end of the Toccata's opening section, not of the piece.
+- Delivered <VIDEOS_DIR>\batch23\chladni_plate2.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-10): needs a different song, and the shapes must be in sync with the music (this one felt out of touch) -> chladni_plate3.

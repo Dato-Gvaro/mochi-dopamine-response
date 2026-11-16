@@ -1,0 +1,16 @@
+# ol_tsunami_city2 (DopamineEXE, overnight 2026-11-12, brief docs/BRIEF_overnight_1112.md §3; v1 rejected)
+- Top view of a street grid (9 N-S x 11 E-W streets, 18-48 px wide), with buildings extruded obliquely (roof offset (0.15h, −0.5h), h 10-36, 3 px sidewalks). A plaza with a fountain, 2 parks, and a sea wall with 2 breaches (x 128, 696).
+- Caption `The wave floods ^EVERY^ street…|until the ~CITY~ is 100% under`.
+- Model: Dijkstra on a 2 px grid from the beach's top row.
+  - Speed = sqrt(width/30) clipped to 0.30-1.25, x (1 + 0.45 downhill).
+  - The beach runs at 800 px/s.
+  - Inside the city a time warp makes the counted street area follow a rising ramp (r0 → 4 r0), with the front never slower than 20 px/s.
+  - Warp on UNIQUE T0 values with counts. Per-cell increments with duplicate T0 collapsed the schedule.
+- Camera: fixed at zoom 2.2 on the beach (frame 0 = the wave racing down, no city), pulling back 0.35 → 2.3 s to zoom 0.93 (city x 136-880, y 433-1363).
+- Water: per-frame numpy RGBA at 2 px cells. Fresh cyan → deep blue (0.5 s on the beach, 1.4 s in the city), ripples trailing the front, foam, spray specks along the arrival gradient. Buildings drawn after the water.
+- Music: Valkyries brass from bar 60, tempo x1 → x1.5, FULL on bar 67. A boom at entry; a pitched plunk per building reached.
+- Checks (FHD seed 2): 13.0 s, −14.01 LUFS, peak −5.6, flash PASS (1), seam 0.52 base.
+- Lessons:
+  - A whole-width shoreline entry reads as a horizontal band sweeping down. Breaches in a sea wall give channelling and splitting.
+  - Tall oblique roofs hide the streets: keep h·0.5 ≤ ~18 px.
+  - The camera's pull-back from a bright sea to the dark city gave 2 flashes/s at FAST. A darker sea and a fixed intro camera bring it to 1.

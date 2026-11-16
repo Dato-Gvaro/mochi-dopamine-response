@@ -1,0 +1,54 @@
+# popcorn_chain — "Every pop makes 2 more POP" / "until the bowl OVERFLOWS"
+
+- The formula (docs/BRIEF_formula.md) plus the early-breakout skeleton (research/early_breakouts.md): ×2 growth toward an OVERFLOW, line 2 = the end state, a ×N badge every ~1 s from 0.16 s. American movie-night popcorn, generic (no brands).
+  - Mochi (coral) cooks on HIGH HEAT: her chain fires every 8 sixteenths (fast), but each child kernel can BURN (black, no pop, no children).
+  - Bolt (mint) cooks on MEDIUM HEAT: every pop's burst of heat pops 2 neighbours 13 sixteenths later, a clean ×2 chain.
+- **Frame 0 / meter:**
+  - Two glass pots with glass lids on one stove. A dashed red OVERFLOW line + label sits 48 px under each rim from frame 0.
+  - Stove front = red/white popcorn-box stripes with HIGH HEAT (3 of 3 flame pips) | MEDIUM HEAT (2 of 3). Mochi's flames are tall orange and wrap the pot; Bolt's are short and blue.
+  - Each pot has a golden kernel bed (~150 drawn kernel sites). POPPED counters at 0.72/0.78h (gold = leader).
+  - Frame 0 is mid-action (v7, coordinator fix: v1 opened on 1 vs 1 and was mostly black for ~3 s): the clip starts at chain slot 31.9 of the SAME simulation, so Mochi has 30 popped and Bolt 7, the heated children already glow, and Mochi's ×1.8 generation fires from 0.16 s (57 vs 15 at 1 s).
+- **Honest model** (seeded BFS chain, seed 6):
+  - Every pop schedules 2 children at +D and +D+1 sixteenths (D = 8 Mochi, 13 Bolt), so each generation spreads like Pascal's triangle across the rag's 16th grid.
+  - Mochi's child burns with p = 0.9 × ramp(slot 20 → 88). Bolt never burns.
+  - Each pot holds 1,023 kernels; Bolt pops every one of them (1, 2, 4 … 512).
+  - Mochi's generations: 1, 2, 4, 8, 15, 27, 36, 34, 33, 22, 16, 8, 1, … = 211 popped, 210 burnt. The badges read ×2, ×2, ×2, ×1.9, ×1.8, ×1.3, ×0.9, ×1, ×0.7, ×0.7, ×0.5, ×0.1.
+  - Each pop's piece flies from its kernel to the next pile slot (brick-bond grid, pitch 22.65 px). The pitch is searched so the pile reaches the line exactly at bar 14.
+  - Bolt's pieces past the line heap into a mound that lifts the lid; once the mound is full, the rest (677) erupt out of the top as a shower.
+- **Music = the clock:** Scott Joplin, "Maple Leaf Rag" (1899; Joplin d. 1917, PD).
+  - Notes: Mutopia #23 (Mutopia-2011/11/13-23), piano, PD engraving. Saved to `<SOUNDFONTS_DIR>\scores\joplin_maple_leaf\` with SOURCE_mutopia_23.txt.
+  - Cut (v7): score bars 1-4 (the opening phrase) on chain slots 32-63 starting at frame 0, then score bars 9-16 on their own slots 64-124 (bars 5-8 dropped; bar 4's Eb7 leads into bar 9's Ab). 0.145 s per 16th (♩ ≈ 103), ritardando from slot 112 to the cadence.
+  - Every pop sits on a 16th of the rag (the first of each slot exactly on it, the rest crackle after it). The cadence (bar 16 beat 2, Ab) = MEDIUM HEAT WINS!. OVERFLOW = bar 14 downbeat.
+- **Key times** (v7, clip s, seed 6):
+  - Frame 0: Mochi 30, Bolt 7 (Mochi leading, pops firing). 1 s: 57-15. 2 s: 86-15. 4 s: 129-31. 6 s: 182-63. 8 s: 204-128.
+  - Badges: Mochi ×1.8 at 0.16, ×1.3 at 1.32, ×0.9 at 2.48 (she turns worried), … ×0.1 at 8.57. Bolt ×2 at 0.45, 2.33, 4.22, 6.10, 7.99, 9.87, 11.76.
+  - LEAD CHANGE at 8.62 s (207 vs 206).
+  - OVERFLOW at 10.45 s = bar 14 downbeat (Bolt 349 popped; his landed pile reaches the line). The lid blows off at 10.82 s.
+  - Shower: 677 pieces from 10.82 s. MEDIUM HEAT WINS! + "1,023 vs 211" on the Ab cadence at 13.58 s.
+  - The clip is 16.48 s (989 frames); dissolve from 15.88 s.
+- **Staging:**
+  - Mochi: smug (happy grin + hops) while ×2; worried + sweat once her multiplier drops under ×1 (2.5 s); wow at the LEAD CHANGE; annoyed after it; wow at the OVERFLOW; annoyed at the end with soot smudges (alpha follows her burnt count) and a popcorn on her head.
+  - Bolt: calm and determined, glancing at Mochi; grin + hop at the LEAD CHANGE; wow at the OVERFLOW; two cheer hops at the cadence with a butter sheen + sparkles and a popcorn on his head.
+  - Visual mechanism (the WHY): orange heat links run from every pop to its 2 children, the children glow and jiggle, then pop (starburst) or, for Mochi, flash red and turn black. A ×N badge pops per generation (gold ×2 for Bolt; Mochi's fades gold → orange → red).
+- **Sound** (bed through `kit.deliver`; the sidecar = melody notes, note_gain 0; `peak_db=None`):
+  - Bed: piano plays the rag from frame 0 (LH full, RH light), tuba from score bar 3, clarinet (−12) + pizz from bar 9, strings + contrabass from the LEAD CHANGE, horns from bar 13, trumpet + horn harmony from the OVERFLOW.
+  - The rising flourish: a harp run up Ab major + an Eb timpani roll over bar 13 into the OVERFLOW crash + timpani. Timpani on bars 15-16 + a roll into the cadence.
+  - Cadence: Ab major tutti (piano, brass, trumpet, tuba, strings, choir, timpani, boom, crash; `fin` ×0.95).
+  - SFX (scene synths, no noise): a crisp tonal POP per kernel (chirped body 0.9-1.5 kHz snapping down + a 170-260 Hz thud + a 1.3 ms tick; 12 variants), ≥ 13 ms apart, ducked by density into a crackling cascade. A soft dull "tink" per burn (≥ 35 ms apart). Glass clinks as the mound lifts the lid, a cork-like "thoonk" when it blows.
+  - A marimba plink per melody onset that a pop lands on , so the chain plays the tune as it grows.
+- **Commands:**
+  - `NF_SCALE=1.0 python scenes/popcorn_chain.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/popcorn_chain.py --label v7` (one process, x264 `-threads 2`)
+  - `--report`, `--seed N` (default 6)
+- **Checks** (v7, encoded Full HD `output/popcorn_chain_v7_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 989 frames = 16.48 s.
+  - Loudness: −14.01 LUFS, peak −5.96 dBFS, last 0.5 s at −70.3 dBFS. `peak_db=None`.
+  - RMS per 5 s: −18.8, −17.6, −15.0 (building). Body 0-6 s −18.0; eruption (11.7-13.4 s) −16.3; cadence second −13.9.
+  - flash_check: 0 flashes = PASS. Loop seam: encoded mean delta 0.48.
+  - Side safe zone: content at x 0.104-0.829w at 0 and 8.65 s (only the shower goes wider).
+  - Frames read from the encoded file at 0, 0.5, 1, 2, 8.65, 10.9 and 13.65 s.
+- **v1 → v6 (audio only, re-muxed from the v1 video), kept in v7:** pop gain 0.20 → 0.36 with a density floor of 0.28 (the eruption cascade was ~6 dB under the bed), `fin` ×0.75 → ×0.95 (cadence lift now +2.1 dB over the eruption).
+- Delivered `<VIDEOS_DIR>\batch45\popcorn_chain.mp4` (Full HD). Owner review: pending.
+
+
+Owner review (2026-10-21): "meh not interesting" -> reserve (4K ship file exists in output/). Overlaps mousetrap_chain anyway.

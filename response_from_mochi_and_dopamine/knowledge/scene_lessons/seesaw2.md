@@ -1,0 +1,14 @@
+# seesaw2
+- Rework of seesaw after the owner's review ("instead of the cannon deciding where to shoot, drop straight; dots/bars make it fall randomly"). seesaw.py untouched; seesaw2 imports its board/bucket/pad/fulcrum drawing + geometry.
+- Fixed dispenser top-centre drops balls straight down (x +-6, vx +-80, vy 420) into a plinko field: 4 peg rows (y 524-710, dx 84, r12) in a funnel (432->282 px), centre wedge at the bottom. Side decided by lib/physics2d only (GRAV 2600, e 0.45). Hand-off at y 800 -> flight to the bucket slot at the landing-frame angle.
+- Seesaw logic as seesaw.py: tilt = ball difference (spring), D=8 puts an end on the pad = that side loses. Same reactions, THUD, spill, winner launch + laugh + cheer, banner, confetti.
+- Look: "balls" (caption "Every ball adds WEIGHT|~First to hit the GROUND loses~"), lilac hopper, pegs glow on hit.
+- Pre-roll: 4 balls released at -1.05..-0.15 s so the field is busy at frame 0 (first landing 0.26 s). Loop: the last frames replay the recorded negative frames (field balls + peg glow) -> frame T == frame 0. Search requires the first landing within 0.04-0.6 s.
+- Field traversal ~1.0-1.3 s (first try: 2 s, 5 pegs rows at 50 px + g 1500 was sluggish).
+- Sound: blue_danube note + pok per landing; peg ping = note 91 @0.12 + pok 0.12, >=60 ms apart, nudged +12 ms off notes; the rest as seesaw. END_AT 5.3 (5.0 left the last 1.3 s at -55.6 dBFS).
+- `--search N` (multiprocessing) scores as seesaw.py.
+- s327: Bolt +7 at 7.6 s, comes back; Mochi at -7 five times from 23 s, tips at 26.05 s -> Bolt wins (48-40 shown incl. late balls). 84 balls. Landings/5 s: 12, 12, 18, 19, 23. 31.35 s.
+- Checks: h264 yuv420p 1080x1920 60 fps; -14.0 LUFS, peak -7.3 dBFS; last 1.3 s peak -70.9 dBFS; flash_check PASS (0); seam mean 0.493.
+- Args: --seed, --label, --cap, --melody, --search, --still --frame.
+- Owner review 2026-10-04 (batch 8): GOOD - approved.
+- Owner review 2026-10-05: Good; add LAVA under each character, the loser dunks and flies out smoking (less kid-targeted) -> seesaw_lava.

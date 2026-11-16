@@ -1,0 +1,28 @@
+# snake_duel2: snake_duel with the approaches made unmissable (2026-10-11, batch27)
+
+- Why: owner review of snake_duel: "good, but their approach is written in such a way that it's easy to miss; we don't need length and percentage in such big symbols". He wanted each approach near its character and the stats small at the top corner of each frame.
+- Same games, seed 447, clock, music, story, hook and loop as snake_duel (see snake_duel.md for the rules, the seed search and the Bumblebee source/licence).
+- Changes:
+  - Boards: 53 px cells instead of 58 (848x424, 0.79 of the width), at y 388 and 932. The bottom board ends at 1356 (0.706h).
+  - Header row above each board: the character (r 34) at x 80, beside its own board.
+  - Each character has a speech bubble with 50 px text:
+    - Mochi: "GREEDY: shortest path!" (coral keyword) with an icon of a straight arrow to a gem.
+    - Bolt: "SAFE: follow the loop" (mint keyword) with an icon of a zig-zag loop to a gem.
+    - The bubbles are static, baked into the background layer.
+  - The big bottom % / LENGTH / VS block is removed. A small pill "53% · L68" (27 px) sits on each frame's top-right corner. It pulses on each gem, turns red when Mochi is trapped and gold at Bolt's 100 %.
+  - "SPEED xN" is now a small line under Bolt's board.
+  - "GO!" pops on each board centre; it no longer covers a label.
+  - Every pop banner is full size and opaque from its first frame, with a +16 % overshoot bump over 0.18 s. "NO PATH!" pops are 40 px.
+  - Character hops are scaled 0.55 so the cheers stay in the header row. The laugh's "HA" text is dropped because it would sit on the bubble.
+  - Caption is at y_f 0.085, size 62.
+- Faint plan previews are kept: Mochi's straight BFS dash, and Bolt's zig-zag on the faint loop.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps, 1519 frames = 25.32 s.
+  - Audio: -14.01 LUFS, peak -4.44 dBFS, last 0.5 s at -84 dBFS.
+  - flash_check: 0 flashes, PASS.
+  - Seam: pre-encode exact (max 8/255 on 5 px); encoded mean 0.705.
+- Delivered <VIDEOS_DIR>\batch27\snake_duel2.mp4 (Full HD). Owner review: pending.
+- Doubts:
+  - Boards are 0.79 of the width, under the 0.85 target, to fit the header rows inside 0.71h.
+  - The space between 1400 px and the Shorts UI is empty (dark synthwave grid).
+- Owner review (2026-10-11): make the eating beep more pleasant; the genre and ending are good, but replace that specific song -> snake_duel3.

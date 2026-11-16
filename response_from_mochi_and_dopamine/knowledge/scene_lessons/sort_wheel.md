@@ -1,0 +1,19 @@
+# sort_wheel — Bubble Sort vs Quick Sort on two rainbow wheels, Moonlight Sonata 3rd mvt on piano
+
+- Brief: coordinator task 2026-10-09 (batch23), BRIEF_brain.md + research/hooks.md.
+- Rule: two wheels of 360 one-degree spokes (hue = value), SAME shuffle. Mochi = Bubble Sort (each pass stops at the last swap), Bolt = Quick Sort (median-of-3 pivot, two-scan partition, pivot lands in its final slot), run level by level (breadth-first). Counter per side = spokes the algorithm has LOCKED (final, never moved again).
+- Fairness (stated on screen): one shared work clock. Bolt = 1 comparison per tick, Mochi = 20 ("×20 speed" / "×1 speed" under the names). True op counts, nothing faked: seed 200 = bubble 64,516 comparisons, quick 3,164 comparisons (ratio 20.4 -> Mochi needs 1.020 x Bolt's ticks).
+- Story (seed 200, found by `--search`): Mochi's locked arc grows from the violet end and ACCELERATES (passes shrink); Bolt sits near 0 for two thirds of the race while the wheel organises coarse -> fine, then the small partitions lock in a flood.
+  - Counts M/B: 4 s 32/2, 8 s 77/10, 12 s 129/40 (Mochi laughs at 12.6 s), 16 s 194/134, LEAD CHANGE 17.88 s, Bolt 360 at 19.50 s (Mochi 307), Mochi 360 at 19.88 s.
+  - Locks per 5 s: 66, 140, 514 (climbing to the finish). 12 quick-sort levels; each level start is pulled onto the nearest beat (clock knots stay within ±25 % of the mean rate).
+- Hook: frame 0 = both perfect rainbow wheels with full owner rims (the end state). 0.05-0.55 s every spoke flies (radial bulge, shortest way round) into the shuffled order; counters fall 360 -> 0; race starts 0.75 s (bar 1 beat 3).
+- Look: dark violet stage, saturated wedges with a masked glow halo, darker toward the hub. Mochi's sweep = compared spokes rising out of the rim + a coral ray; Bolt = active-partition arc, white pivot ray, mint scan ray, every swap as a fading chord of light, white flare on each locked pivot, mint ring on each level start. Glow accents on the sforzando chords. Win: ring burst + rim sparks.
+- Layout (logical 1080x1920): Mochi wheel centre (330, 640), Bolt (750, 1075), R 280 (span 0.91 w, bottom 0.713 h). Cards: Mochi top-right, Bolt bottom-left (char r 44, name, n/360, speed). Banners at 0.776 h. Wheels spin one turn per clip in opposite directions.
+- Music: Beethoven, Piano Sonata No. 14 "Moonlight" Op. 27 No. 2, 3rd mvt Presto agitato (1801; Beethoven d. 1827 -> public domain). Notes copied from the Mutopia Project edition (BeethovenLv/O27/moonlight, moonlight3.mid; the engraving is CC BY-SA 2.5, the notes of a PD work are not), bars 1-14 in the real rhythm at quarter = 160, plus the C#m downbeat of bar 15 as the cadence (bass octave + rolled chord). Transposed DOWN a fourth (G# minor): top note G#5 in three sf chords, the bulk below D#5; bass down to D#1. audio.synth_piano, staccato chords, damped LH. No per-comparison sounds, no foley.
+  - Sync: race on beat 3 of bar 1; quick-sort levels on beats; Bolt's last lock on the sf downbeat of bar 14 (19.50 s); Mochi's on beat 2 of bar 14 when the low octave enters (19.88 s); cadence 21.30 s; silent from T-1.35.
+- Loop: ends on both perfect wheels = frame 0 (counts 360/360, Bolt's count gold in both). Pre-encode seam 0.097 = one ordinary spin step (0.096).
+- Args: --seed (200), --label, --cap, --still --frame, --report, --search A B.
+- Checks (encoded Full HD v1, seed 200): h264 yuv420p 1080x1920 60 fps, 1455 frames = 24.25 s; -14.00 LUFS, peak -6.3 dBFS; T-1.3..T-0.5 s peak -49 dB, last 0.5 s -81 dB; flash_check 0 = PASS (mean lum 0.075, the shatter keeps total colour constant); encoded seam 0.455 (good band); 350 notes, 38 distinct, top note G#5.
+- Encoded frames read at 0 / 0.25 / 0.5 / 1 / 2 / 12 / 18.2 / 19.55 / 20.6 s, and the 200 px sheet: every one is a full bright wheel pair.
+- Delivered <VIDEOS_DIR>\batch23\sort_wheel.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-10): GOOD -> 4K, scheduled.

@@ -1,0 +1,42 @@
+# escape_multiply — "Every escape = 2 more balls"
+
+- Brief: batch24 (2026-10-10). Owner asked for a hook in 2-3 s, satisfying motion, a reason to rewatch, and a famous melody.
+- Rule: 4 concentric jewel rings (the ring_escape2 look: citrine, orchid, sapphire, amethyst), each with one gap. One gold ball starts in the centre. A ball that leaves the OUTER gap pops into 2 balls back in the centre, so the count goes 1 -> 3,319. Children keep their parent's colour: CORAL (Mochi) vs MINT (Bolt).
+- Physics (real, curated by launch choice):
+  - Straight flight with mirror bounces off the rings. The rings are faceted: the bounce normal tilts up to 0.35 rad with the facet (14 per ring). Rotating rings add spin drag (MU 0.12, speed kept). Balls pass through each other.
+  - Each new ball gets one launch (offset <= 50 px, direction, speed) out of 4k-60k simulated candidates. The chosen launch's real path leaves the outer gap on a melody onset (+-3 substeps = 12.5 ms), or never before the cadence.
+  - Every note from the first downbeat on has >= 1 escape. A note nobody reaches is repaired by re-aiming a ball that is still waiting for a later note.
+- Structure:
+  - 0-5.25 s: the rings are LOCKED, so all gaps form one rotating corridor (fast escapes for the hook).
+  - 5.25 s (phrase end): ring 1 shatters and the rings unlock into counter-rotation (2.6 / -1.8 / 2.0 / -1.4 rad/s).
+  - 11.25 s: ring 2 shatters. 17.25 s: ring 3 shatters.
+  - 23.25 s (final cadence C): the outer ring shatters. The cadence volley's balls pop, their 2 children each burst from the centre, and the whole flood flies out with drag (6.5/s), then swirls slowly (0.16 rad/s) so it never freezes.
+- Escalation: escapes per 5 s are 36, 85, 215, 823, 2,159. Speeds are fast for the hook (1,500-2,500 px/s), then 900-1,300 px/s. Few balls draw bigger (x1.6) with more glow.
+- Stake: "Coral vs Mint: most balls WINS".
+  - Colour share is steered softly: within each spawn batch, the colour behind its target picks the shortest flights first. Late mint balls aim at the cadence. The cadence volley is then split so MINT wins by 7.
+  - s2 story: coral leads from the start. Mint takes over at 15.75 s, coral 18.38 s, mint 18.75 s, coral 19.88 s. Coral leads 1,480-1,420 going into the last note; the cadence volley (coral +176, mint +243) ends it at **MINT 1,663 vs CORAL 1,656**.
+  - Reactions: both "wow" on the first escape and on each ring shatter. On a lead change the new leader cheers and the other worries. At the end Bolt cheers twice and Mochi gives an annoyed stare. "MINT WINS BY 7!" shows 23.37-25.85 s and is gone before the seam.
+- Hook / loop:
+  - Frame 0 is the end state: the swirling flood of 3,319 balls filling the width, with the final counts.
+  - It implodes into ONE gold ball by 0.375 s (on the B4) while the rings grow back. The first escape lands at 0.75 s.
+  - The clip ends on the same flood, so the seam is payoff -> payoff.
+  - Seam: pre-encode 3.07 vs neighbours 2.39 / 5.71. Encoded 3.92 vs 2.89 / 6.48 (continuous motion; the dense dots make every step large).
+- Music: Bizet, Carmen (1875), No. 5 Habanera "L'amour est un oiseau rebelle". **PD: Bizet died 1875.**
+  - Score source: IMSLP #197157, `WIMA.6419-Bizet_Habanera.mid` (Maurizio Machella, Werner Icking Music Collection; voice/chorus/2 pianos, sequenced in C minor). Parsed with mido: the voice track gives the melody, the piano bass track gives the ostinato and harmony.
+  - Cross-checked against the LilyPond score excerpt in Wikipedia "Habanera (aria)" (D minor, syllable-aligned). The "bel-le que nul ne" cell is 8th + two 16ths per Wikipedia; the MIDI merges the two 16ths. The same rhythm is used in phrase B (same 17-syllable line).
+  - Only the notes of the PD work are copied (the MIDI file is CC BY-NC-SA; no recording is used).
+  - Form: verse A B A' B' (80 notes, pickup C5 at 0.0 s), quarter = 80, cadence C4 + rolled C-minor chord at 23.25 s.
+  - Played on audio.synth_piano: melody C4-C5, doubled an octave down in A'/B'. Habanera ostinato from the MIDI (C2+C3 pedal; G/Eb, Ab/F, G/F octaves), not tied to escapes. Soft glass accents on shatters only.
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920, 60 fps, 1,596 f = 26.60 s.
+  - -14.00 LUFS, peak -6.38 dBFS. Last 1.3 s <= -57.5 dBFS; last 0.5 s -90.3 dBFS.
+  - flash_check: 2 flashes, worst 1 s = 2 (22.2 s, big gap blooms) = PASS. Mean luminance 0.045.
+  - Melody stem is ~6 dB over the bass. 1:1 check: the first coral escape crosses the outer ring on frame 60 = the 1.000 s Bb.
+- Perf: the sim + trace take ~2-3 min (cached in `output/escape_multiply_sim_s<seed>_<hash>.pkl`). The Full HD render takes ~6 min.
+- Other seeds (all notes filled, MINT by 7 on the cadence):
+  - s1: changes 15.0 / 16.5 / 18.75 / 19.5 / 21.0 / 21.38.
+  - s3: 11 changes.
+  - s4: 9 changes.
+- Args: --seed (2), --label, --cap, --sound 0, --still --frame N.
+- Delivered: <VIDEOS_DIR>\batch24\escape_multiply.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-10): nothing new here, won't hook anyone. Dropped.

@@ -1,0 +1,60 @@
+# corked_bat — "Same pitch, two bats" / "Corked or Normal?"
+
+- Formula (docs/BRIEF_formula.md) on the famous baseball myth: a corked bat hits farther. World Series season; aimed at ~30-year-old US viewers. No MLB/team names, logos or players.
+  - A night ballpark (code-drawn), seen from high behind home plate. One pitching machine on the mound throws the SAME 92-mph pitch every time (readout on the machine).
+  - Mochi (coral, left box) uses a CORKED bat: light wood with an x-ray cork core. Her smug bubble: "CORKED = MORE POWER!" (0-2.35 s). She is a righty, so she pulls to left-centre.
+  - Bolt (mint, right box) uses a NORMAL wooden bat. He is a lefty and pulls to right-centre.
+  - Rounds: 1, 2, 3, then 5 pitches, plus the LAST PITCH. Bolt's good swings clear the wall; Mochi's die on the warning track. Finale: NORMAL BAT WINS! / Corking is a MYTH / HOME RUNS Mochi 0 · Bolt 8 / "lighter bat, slower ball · tested by physicists".
+- **Honest physics** (spirit of Nathan, Smith, Faber & Russell, Am. J. Phys. 2011, plus the corked-bat lab tests; our parameters are illustrative, not the paper's table):
+  - Collision: exit = q·v_plate + (1+q)·v_bat, with q = (e − r)/(1 + r) and e = 0.50 for both bats (cork adds no trampoline).
+    - Normal bat: r 0.250, bat 70.0 mph.
+    - Corked bat: r 0.272 (less effective mass), bat 71.0 mph (lighter, so +1.4% swing).
+  - Pitch: 92 mph release, 83.1 mph at the plate (drag integrated).
+  - Exit speed: Bolt 100.6 mph, Mochi 98.6 mph (−2.0 mph, −2%).
+  - Flight model: quadratic drag (Cd 0.385, ρ 1.19), 2200 rpm backspin lift (CL = 1.5S, or 0.09 + 0.6S), dt 1 ms. Calibration: 100 mph at 28° ≈ 397 ft.
+  - Every pair shares launch angle and mirrored spray (±18-23.5°). The bat is the only difference.
+  - Result per pair: Bolt ~409 ft vs Mochi ~399 ft at good angles (+9.6 ft, 2.4%). Low-angle pairs: Mochi 390-396, Bolt off the wall.
+  - Park: symmetric. A flat 400-ft arc for |spray| ≤ 26° (so the wall is identical for both), easing to 330 at the poles. Wall 8 ft. HR = above 8 ft at the wall plane.
+  - Distances: projected distance (Statcast style) for HRs; the wall (400) for wall balls; the landing point for field balls. Mochi's longest is 399.1-399.4 every round: never displayed as 400.
+- **Camera:** pinhole, high home (camera 400 ft behind the plate, 300 ft up, pitched 22°). The lateral axis is squeezed ×0.55 (stylised, so the 330 poles fit); depth and distances stay true. Mochi's arcs go left and Bolt's go right, so the trails never overlap. Flights play at 2.4× (no clock on screen).
+- **HUD** (meter = goal at frame 0):
+  - Two bars (CORKED / NORMAL) on a broken axis (0-300 compressed, 300-430 at 4.5 px/ft) with the gold WALL 400 line. The bars show this round's longest, live as balls fly; the part past the wall turns gold. Landed ticks stay on the bar.
+  - Counters: "399 ft" / "409 ft" (gold = landed leader) + "EXIT 98.6 mph".
+  - Round tally banner 0.4 s after each of rounds 1-3: "ROUND n · LONGEST / Mochi 399 ft · Bolt 409 ft". "HOME RUN!" on the first HR.
+- **Music = the clock:** Sousa, "The Liberty Bell" march (1893; Sousa d. 1932, PD).
+  - Source: Mutopia #625 piano MIDI, engraving Public Domain (John Church Co.), `<SOUNDFONTS_DIR>\scores\sousa_liberty_bell\` (SOURCE_mutopia_625.txt).
+  - Cut: first strain, bars 3.5-19 (ends on V), then bars 48-51 (the second strain's cadence into F).
+  - Tempo: dotted quarter 0.48 s, ritardando to 0.556 over vb 34-38. That is solved so Bolt's last ball reaches the stands exactly on the final F chord.
+  - Every crack is on a melody onset.
+  - Take Me Out to the Ball Game was rejected: PD in the US (1908), but Von Tilzer d. 1956 fails the brief's "died before 1955" rule (PD worldwide only from 2027).
+- **Key times** (clip s):
+  - Frame 0: the first pitch is a third of the way to the plate. Mochi's crack at 0.11, Bolt's at 1.07.
+  - Mochi lands 2.36 (399 ft). Bolt's first HR at 3.30 (409 ft).
+  - R2 3.95-7.6, R3 8.1-11.9, R4 12.1+.
+  - LAST PITCH! 14.51. Last cracks 15.95 / 16.27.
+  - Finale on the F chord at 18.50. Dissolve from 20.85. Clip 21.45 s (1287 frames).
+- **Sound** (all in the bed; sidecar = 25 silent markers):
+  - Ballpark organ (GM Drawbar Organ, registered at runtime only) carries the melody and chords. Tuba + contrabass play the march bass, brass doubles −12, horns play the chords, and a trumpet + glock join in R4. Bass drum/snare march pattern.
+  - Crowd: soft "oohs" swells on HRs. Timpani roll into the last pitch.
+  - Final F tutti: strings, choir, brass, organ, tuba, timpani, boom and crash (`fin` ×1.25).
+  - SFX (scene synths, no noise):
+    - Crack: wood-bar modes 1/2.76/5.40/8.93. Normal = f0 690 + bat ring; corked = f0 560, damped, duller.
+    - A plink of the melody note on each crack, and a machine "thoonk" pitched on the score bass.
+    - Fan's glove pop on HRs, plus a soft firework poff with F-pentatonic tinkles.
+    - Turf thud for track landings; padded wall thump for wall balls.
+  - `peak_db=None`.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1287 frames = 21.45 s.
+  - Loudness: −14.00 LUFS, peak −4.31 dBFS, last 0.5 s at −66.8 dBFS.
+  - Per-second RMS: body −14.4…−17.7 (start −19), finale seconds −13.3 / −13.5.
+  - flash_check: 0 flashes = PASS (mean luminance 0.035).
+  - Encoded seam 0.62. events/5 s: [5, 7, 11, 2]. The last 5 s is the last pitch + finale, a deliberate breath before the chord.
+  - Frames read at 0, 0.12, 1.08, 2.36, 3.30, 13.2, 18.5 and 19.6 s, plus 1:1 crops of the crack (0.12), the first HR (3.32) and the finale (18.53 / 19.6).
+- **Laptop:** 1 Python process (BLAS threads 1) + x264 `-threads 2` (`Writer2`). Full HD renders in ~6.5 min.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/corked_bat.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/corked_bat.py`
+  - `--report` prints every hit.
+- Delivered `<VIDEOS_DIR>\batch45\corked_bat.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-21): same as bowling_hook ("where is the engagement") -> reserve; the weakest at a glance (a ~10 ft difference), and bowling_hook already covers the pop-culture test.

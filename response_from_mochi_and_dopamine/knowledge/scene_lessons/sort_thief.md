@@ -1,0 +1,12 @@
+# sort_thief
+- Episode of bolt_sort2. Nameable change: MOCHI KEEPS STEALING CANDY. Mochi sneaks along a lane under the jars, leaps up and snatches the top candy of a jar ("nom"), so Bolt has to sort 112 to fill 100 slots. Steals speed up too (gaps 3.6 s down to 1.55 s), so it becomes a race. Bolt glares at every steal; "HEY!" on the first one only.
+- Look and tune: peach theme, Habanera (PD, Bizet 1875). Caption "Bolt sorts. Mochi STEALS.|~Can Bolt still fill all 4 jars?~".
+- Counter at 0.79h: "In jars: N" (drops on each steal, counts down during the pour) + "Eaten: M" in coral (pops when it changes, counts down during the spit). Both are 0 at the loop seam.
+- Mochi lane: feet at y 1466, R0 60, +3% radius per candy eaten (12 eaten -> r 82). Mochi is drawn in front of the jars.
+- Sim: bolt_sort's closed-form candies + a steal plan. A jar is never bumped into within 1.15 s before Mochi robs it (no hole under a landing; asserted). Each robbed colour is re-queued 1-4 candies later, and all 4 jars still go FULL in the last 0.45 s.
+- Ending (T = last FULL): Mochi looks worried, then sneaks toward one more jar. The dispenser drops a bonus mango candy and Bolt head-bumps it onto Mochi (BONK at T+1.55). Mochi goes dizzy and pops all 12 stolen candies back out (rising notes). Then the jars do the bolt_sort pour, Bolt laughs, Mochi stomps home and stares annoyed at the camera, then grins again at frame 0.
+- Sound: the mixer can drop the second of two sounds closer than 10 ms. Two fixes: non-note sounds are nudged +12 ms off melody notes, and where a plain pok still clashes with an accent (a FULL pop, a pluck or a gulp) the pok is dropped. Mixer drops: 0. There were 4 FULL pops sharing a time with a land pok before this fix.
+- Sample (seed 1, --spawn 31): 36.80 s, 12 steals, -14.0 LUFS, peak -5.0 dBFS, last 0.5 s -76 dBFS, last 1.3 s max -32.6 dB (ring-out of the final pours, last onset at -1.53 s). flash_check PASS (0). Seam: frame 0 == last frame (bit-identical still). Bumps+steals per 5 s: 9, 13, 18, 22, 31, 31.
+- Args: --seed, --spawn, --label, --cap, --melody.
+- Owner review 2026-10-04 (batch 7): GOOD - better than mochi_sort revenge (it replaces it in the schedule on Oct 6).
+- Owner review 2026-10-05: Pulled from Oct 6: reads as a duplicate.

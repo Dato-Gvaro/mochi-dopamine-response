@@ -1,0 +1,45 @@
+# galton_split — "One at a time or SPLIT IN 2 at every peg?" / "First to FILL the board wins"
+
+- The famous Galton board (bean machine), built to the 2026-10-21 owner notes: dense, chaotic and physical, a rainbow frame at frame 0, an early lead change, the goal by ~13 s, 16-20 s total.
+  - Two boards with the SAME 10 peg rows (55 pegs), 11 bins (35 px), a faint bell-curve outline and a dashed FULL line, all visible from frame 0. Boards at x 0.10-0.84w, floor at 0.69h, counters at 0.74-0.78h.
+  - Mochi (coral) pours ONE ball at a time: 300/s, +1 each, 10 seeded fair coin flips per ball. She started first, with 2,100 balls dropped by frame 0.
+  - Bolt (mint) drops ONE ball per bar. It SPLITS in 2 at every peg it hits (one child left, one right), so one drop = 2^10 = 1,024 balls (Pascal's-triangle shower). His bins get exactly C(10, j) per wave, a perfect bell layer.
+  - FULL = 9 waves = 9,216 balls (centre bin 2,268 = the FULL line). Both piles follow the same binomial(10, ½) shape; the finale overlays a gold dashed bell scaled to Mochi's count on her noisy pile.
+- **Motion:**
+  - Every hop is a ballistic arc from the top of one peg to the top of a peg in the next row, one eighth note nominal (0.19 s).
+  - Jitter per hop: duration ±12% σ (clipped ±30%), bounce-up speed 40-300 px/s, contact ±3.5 px. This turns Bolt's cousins that meet at the same peg into a spray instead of a dot.
+  - The last hop falls into the bin and stops on the pile top. Piles = bead-textured strata (alternate shade per Bolt wave / per Mochi bar), bead 2.53 px.
+  - Colour = final bin hue (violet to red). A Bolt node takes the hue of its subtree centre, so his cascade fans into a rainbow.
+- **Timeline** (seed 7; clip 16.32 s = 979 f):
+  - Frame 0: Bolt's wave 1 at row 10 is pouring 1,024 balls into his empty bins; wave 2 is at the funnel (first split at 0.19 s). Mochi's full stream is running, her pile at ~15%.
+  - Counts M/B (balls): 2,101/1,021 at 0 s; 2,701/2,052 at 2 s; 3,151/3,076 at 3.5 s.
+  - LEAD CHANGE at 4.78 s (row 9 of wave 4).
+  - Bolt: 6,060 at 8 s; FULL at 12.41 s. The cadence stretches the last bar (rit k +0.33) to land there.
+  - Mochi stops at 5,823 (63%). SPLIT WINS! + "both make the SAME bell curve" from 12.71 s. Dissolve from 15.72 s.
+- **Music:** Chopin, Fantaisie-Impromptu in C-sharp minor, Op. 66 (comp. 1834; Chopin d. 1849, PD).
+  - Notes: Mutopia #1693 (Scholtz edition; the Mutopia licence is Public Domain), saved to `<SOUNDFONTS_DIR>\scores\chopin_fantaisie_impromptu\` with SOURCE_mutopia_1693.txt.
+  - Cut: bars 5-12, both hands as written, quarter = 0.38 s. Then OUR cadence: C-sharp major (Chopin's own ending key) on FULL.
+  - Sync:
+    - Bolt's drops land on the bar downbeats (the last one half a bar early, so it lands on the cadence).
+    - His rows split on the eighth notes.
+    - A marimba plink of the melody note on each row split (58 plinks).
+  - Arrangement: piano RH + LH from the score, contrabass + tuba on the half-bar bass, strings pad from bar 7, choir from bar 9, timpani on the bars, crash at bar 11, timpani roll + strings tremolo into the cadence. Cadence: brass, tuba, strings, choir, piano, harp spread, timpani, boom, crash; fin gain ×0.90.
+- **SFX** (no noise):
+  - Porcelain peg tick: partials f0 + 2.32·f0 + a 620 Hz tap; f0 2150 → 1520 Hz down the rows. Sampled ≥ 12 ms apart over both boards (1,042 ticks), density gain 0.30/(dens/2)^0.22.
+  - Bead-on-pile "tk" (900-1080 Hz + 310 Hz): ≥ 30 ms apart, skipped within 10 ms of a tick.
+- **Checks** (encoded Full HD `output/galton_split_v2_9x16.mp4`; v2 = v1 video with the cadence raised from ×0.45 to ×0.90):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 16.32 s.
+  - Loudness: −14.01 LUFS, peak −6.4 dBFS, last 0.5 s at −60.5 dBFS. `peak_db=None`.
+  - Half-second RMS: body (2-11 s) −18.0, the bar before the cadence −16.3, cadence −14.4. That is +3.5 dB over the body.
+  - flash_check: 0 flashes = PASS.
+  - Seam mean delta: 3.08. This is above check_clip's band, but the scene's normal frame-to-frame delta is 2.5-2.8 (thousands of moving balls). The seam is a 0.6 s dissolve to the exact frame-0 state.
+  - Frames read from the encoded file at 0 (1:1 crop of both boards), 2, 4.80, 8, 12.42, 13.2 and 16.30 s.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/galton_split.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/galton_split.py --label v1` (one process, x264 `-threads 2`)
+  - `--report`
+  - `--reuse` (audio only onto an existing `<name>_silent.mp4`)
+  - `GS_M0=` (Mochi's head start)
+- Delivered `<VIDEOS_DIR>\batch46\galton_split.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-21): "if you think it has potential we can try" -> yes (x2 binomial, early lead change), Oct 28 slot 3.

@@ -1,0 +1,37 @@
+# helix_drop — Mochi vs Bolt, steel balls dropping down two spinning ring towers
+
+- NEW format (2026-10-06). Two columns (centres x 268/812), each carrying 16 ring plates in 3/4 view (outer r 204, pole r 30, squash 0.34, 18 px thick, 200 px apart). Each plate has ONE gap (half-angle 0.64 rad) and spins at 2.9 + 0.13k rad/s, with directions alternating. Gap phases are seeded per side; the speeds are the same on both sides (fair).
+- The ball (r 25, in the character's colour) hops on its plate (g 4200, hop height 62 - 1.7k px). It drops through when it lands with its centre inside the gap. Each ball starts on the outer front of its plate (phi = pi/2 -+ 0.55, mirrored), clear of the pole, and its angle stays within [0.32, pi - 0.32].
+- The material changes every 2 rings; each ring does its trick ONCE, on the first landing:
+  - glass: no gap; cracks on the 1st hop, SHATTERS on the 2nd. Both balls run this in sync for the first ~1.1 s.
+  - rubber: trampoline KICK to 2x hop height; the plate dips and a ripple spreads.
+  - ice: the ball SKIDS 0.55 s along the plate with a frost trail, and can skid into the gap.
+  - magnet: the ball is CLAMPED and carried round with the plate for 0.30-0.55 s, then snaps free.
+  - fan: a GUST throws the ball up to 0.95 rad sideways; the vent spins up and wind streaks show.
+  - bell: DONG; the plate shakes, ripples spread and the ball buzzes on 3 micro-hops.
+  - hatch: a latch, then 0.16 s later the flap under the ball swings down (an inner hinge) and the ball drops.
+  - gold: a gold spark burst on passing; then the FINISH pad.
+- A ball that drops straight through a gap skips that ring's trick (race luck). In s5639 Bolt skipped one magnet ring and Mochi skipped one bell ring.
+- Camera: one shared, spring-smoothed camera (wn 6.5) on the mean ball depth, clamped so both balls stay in view. The search requires a max separation of 2 rings. The towers line up ring for ring, so the lead is visible directly. Material names scroll in the gutter between the towers. The viewport fades out at y 330 and 1350.
+- HUD: caption "Every ring has a NEW trick|~First ball DOWN wins~". Characters sit at y 1398 and watch their balls. Counters ("ring k/16", then "FINISH!") are at y 1508. LEAD CHANGE! banners (>= 1.4 s apart) appear at y 410, then "BOLT WINS!" plus "by 0.15 s" and confetti.
+- s5639 (default):
+  - Glass is in sync (0.51/1.10). Bolt leads from 1.83 s.
+  - Mochi takes the lead at 12.18 s on the hatches.
+  - Both balls get stuck on the last gold ring (Mochi from 14.05 s, Bolt from 14.42 s). Bolt's gap comes first (16.20 s), so Bolt wins at 16.40 s. Mochi finishes 0.15 s later.
+  - There are 5 lead changes, the last at 16.20 s. Clip 19.15 s (1149 frames).
+  - Bounces+passes per 5 s: 34, 35, 47.
+- Loop: the hold lasts 1.30 s after the win, then a 1.45 s SILENT reset. The camera flies back up (smooth over 0.8 of the reset), the glass re-forms, the hatches close and plates ease onto their frame-0 phase. The balls shrink out, then pop back in at the frame-0 apex.
+- Sound:
+  - Bed (built in the scene): a steel click per bounce, pitched by ring (D pentatonic up from 62) and scaled by impact.
+  - Each trick has its own sound: glass crack / shatter (synth_glassbreak), rubber boing, ice scrape plus tinks, magnet clank and latch on release, fan whoosh, bell (G5/B5 inharmonic), hatch latch plus ratchet, gold chime, big chime on the finish. Foley is nudged +12 ms.
+  - Events: one mountain_king (PD Grieg) marimba note per ring passed, a 4-note chord for the win and a 2-note chord for the loser's finish.
+  - The bed cannot be regenerated from `_events.json` alone.
+- Bug fixed in the build: the whoosh envelope `sin(pi*u)**1.6` gave NaN at u=1, which blew up the master. It is now clipped.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps, 1149 frames; -14.02 LUFS, peak -6.1 dBFS; last 0.5 s -90 dBFS (wav: last 1.3 s -48 dB, a chord tail); flash_check 0 = PASS (mean lum 0.05).
+  - Seam: pre-encode (half-res still, last frame vs f0) 0.51, a normal frame step; encoded 0.80, the I-frame step seen on ring_escape2 too.
+  - The audio was remuxed with `-t 19.15` (the wav carries a 2 s tail).
+- Args: --seed (5639), --label, --cap, --melody, --voice, --search N, --still --frame.
+  - The search needs: t_w 14.5-18.5, margin 0.10-0.75 s, >= 2 lead changes with the last within 4.5 s of the win, max sep <= 2 rings, a non-falling rate. It prefers a Bolt win.
+- Other seeds: 1240 (Bolt by 0.14 s, 7 changes, t_w 14.94), 7855 (Bolt by 0.26 s, t_w 15.58).
+- Delivered <VIDEOS_DIR>\batch14\helix_drop.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-06: Idea is good, but not interesting. Dropped.

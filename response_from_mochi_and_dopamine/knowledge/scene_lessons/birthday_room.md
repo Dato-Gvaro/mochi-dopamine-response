@@ -1,0 +1,62 @@
+# birthday_room — "How many people until two share a birthday?" / "23 or 183?"
+
+- The formula (docs/BRIEF_formula.md) on the BIRTHDAY PARADOX. Mochi (coral) bets 183 people (half the year, the "obvious" answer). Bolt (mint) bets 23.
+- **One room, one ring, one meter:**
+  - People (simple head + body silhouettes, coloured by birth month) step through a door into a round room, one by one.
+  - Each person's dot flies to their day on a 365-day calendar ring: 12 month segments, one hue each, with day ticks and month labels.
+  - Meter (top): CHANCE OF A MATCH = 1 − Π(365−k)/365. The value is exact and eases 0.18 s after each landing. A bar runs to 100%, with a 50% tick.
+  - PEOPLE bar (0-200) under the ring: Bolt stands on the 23 tick, Mochi on the 183 tick. Both bets are readable at frame 0.
+- **Honest numbers:**
+  - The main room is a real `RandomState(1955).randint(0, 365, 23)` draw. The seed was searched with these rules:
+    - The first 22 people have distinct birthdays and #23 repeats one of them (partner #8-#16).
+    - Exactly two "SO CLOSE!" near misses (1 day apart), at least 4 people apart.
+    - The match day is at least 5 days clear of every other dot.
+  - The result: #23 is OCT 11, the same day as #12. Near misses: #14 (SEP 9 vs SEP 8) and #19 (JUN 26 vs JUN 25).
+  - The meter shows the true probability: 11.7% at 10 people, 41.1% at 20, 50.7% at 23.
+  - Replay: 100 more rooms of 23 are real draws (`RandomState(145)`). 51 of 100 rooms have a match, against the theory's 50.7%. Rooms 1-3 come out match, none, match. The 10×10 grid lights gold per matched room. The 23 dots of the current room show on the ring, with the shared day in gold.
+- **Music = the clock:** Dvořák, Humoresque Op. 101 No. 7 (1894; Dvořák died 1904, PD).
+  - Notes come from `<SOUNDFONTS_DIR>\scores\dvorak_humoresque\Humoresk_Dvorak.mid`, a Wikimedia Commons PD-self MIDI (User:Inocybe, 2007). See SOURCE.txt there.
+  - Channel 0 = melody, channel 1 = the countermelody that fills the phrase gaps, channels 4/5 = accompaniment.
+  - Tempo map (s/beat): 0.72 → 0.58 over beats 0-14.18; a 0.62 hold; a jump to 0.50 for the replay, accelerating to 0.37 at beat 28.37; then a ritardando to 0.62 into the cadence.
+  - Beats 0-14.18 (A1 + A2): the people. #5 lands on beat 0, and #23 lands on the phrase-2 tonic (MATCH!).
+  - Beats 16.21-30.40 (the repeat): the replay. BOLT WINS lands on the repeat's tonic, beat 30.40.
+  - Every landing and every entry sits on a melody or fill onset: landings are snapped to onsets on an accelerating curve, entries on the latest onset 0.42-0.34 s before their landing. Rooms 1-12 end on onsets; rooms 13-100 accelerate to 2 frames each.
+- **Key times** (clip seconds):
+  - Frame 0: 4 people are in and #5 is walking. The meter reads 1.6% and is moving; #5's dot lands at 0.10 s.
+  - Persons land at 0.10, 0.82, 1.53, 2.24, 2.85, 3.53 … 8.65, 9.02. Gaps shrink from 0.72 s to ~0.31 s, and each person's door entry falls in between.
+  - SO CLOSE! at 5.61 and 7.81 s.
+  - MATCH! at 9.32 s: gold rays from both people to OCT 11, a pulse, the others dim, and the 23 tick turns gold.
+  - The replay runs 10.54-16.03 s, with the banner "100 MORE ROOMS! / 23 people each". The tally reads "51 OF 100 ROOMS MATCHED" at 16.27 s.
+  - BOLT WINS! / just 23 people! at 16.83 s.
+  - Dissolve from 19.93 s. The clip is 20.53 s (1232 frames).
+- **Staging:** Mochi laughs at 0.15 s and again around #9, sweats from #16 (28%), wows at the MATCH, worries through the replay, wows at the tally and is annoyed at the win. Bolt laughs around #13, then cheers and laughs at the MATCH and at the win.
+- **Sound:** the bed carries everything; the sidecar holds silent melody markers.
+  - Orchestra:
+    - Melody on violin + celesta + a soft `synth_plink` per note (F#4-D#5 register). Channel-1 fills on harp, accompaniment on pizz, low notes on contrabass.
+    - Strings join for the replay, and brass doubles the melody from beat 24.3.
+    - MATCH: an F# major strings/choir swell and a timpani hit.
+    - A timpani roll from beat 28.37 into the full F#-major cadence: strings, choir, brass, harp roll, celesta, timpani, boom and crash (`fin` gain ×0.35).
+  - SFX (scene synths, no noise):
+    - A woody door tik per entry.
+    - A glassy ping per landing, pitched by month on F# major pentatonic (C#4 for Jan up to D#6 for Dec).
+    - Bell chimes F#5 + C#6 on the MATCH, F#5 + A#5 on the win.
+    - A tiny click per room: C#6 "tink" for a match, F#4 dull for none.
+    - All SFX are at least 12 ms apart, with gain ÷ √density.
+- **Mastering lesson:** `peak_db=-4` (gossip/penny) flattened the MATCH and cadence lift to 0 dB here, because the iterated drive limiter squashes every region equally. `peak_db=None` keeps the lift: body −18.1, MATCH −15.5, cadence −15.5 dB RMS, peak −5.7 dBFS.
+- **Laptop:** 1 Python process (BLAS threads 1) plus x264 at `-threads 2` (`Writer2`). Full HD renders in ~6 min.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/birthday_room.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/birthday_room.py`
+  - `--report`
+  - `--search` (prints room seeds and replay seeds with 51/100)
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1232 frames = 20.53 s.
+  - Loudness: −14.00 LUFS, peak −5.67 dBFS, last 0.5 s at −76 dBFS (bed silent from ~19.2 s).
+  - flash_check: 0 flashes, PASS (mean luminance 0.010).
+  - Loop seam: pre-encode mean delta 0.061 (a normal step is 0.040); encoded 0.325.
+  - Frames read at 0, 0.5, 5.75, 7.95, 9.45 (1:1 crop of the MATCH), 10.8, 12.3, 15, 17.4 s and the last frame.
+- **v1 → v2 (audio only, re-muxed with `-t`):** the MATCH chord, timpani and bells were cut ~35%, `fin` went from 0.55 to 0.35, and `peak_db` from −4 to None.
+- Delivered `<VIDEOS_DIR>\batch43\birthday_room.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-19): "if you think it might work, we can try" -> my call: ship -> 4K.
+- Owner review (2026-10-19): APPROVED. 4K render: output/birthday_room_ship_9x16.mp4 (2160x3840, h264 yuv420p 60 fps, 1232 frames = 20.533 s; -14.00 LUFS, peak -5.67 dBFS, last 0.5 s -76 dBFS; flash_check 0 flashes PASS; seam 0.223). Same seeds 1955/145, peak_db None.

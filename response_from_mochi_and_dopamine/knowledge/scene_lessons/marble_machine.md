@@ -1,0 +1,57 @@
+# marble_machine — the marble music machine plays Für Elise
+
+- Owner request 2026-10-10: "create videos by the researched rules, hook within 2-3 s, satisfying, urge to rewatch, famous good melody". New scene, built directly from the coordinator's brief.
+- **Machine:**
+  - A glass screw lift (left) carries glowing glass marbles up; Bolt turns its crank.
+  - They roll down a 3-row serpentine with loop-the-loop switchbacks onto a feeder tray.
+  - The tray tops up 22 glass channels (6 marbles each), one above each tuned glowing bar: low/long on the left, high/short on the right, rainbow-coloured.
+  - Spare marbles overflow down the right chute. Struck marbles roll down their bar into the trough and back into the lift. Perpetual.
+- **Rule:** every strike = the next note, in its real rhythm.
+  - A channel gate opens FALL = 0.290 s (free fall from gate to bar, g = 2600 px/s²) before the note, so the marble lands on the onset frame.
+  - Both hands are marbles. Bar = pitch (22 distinct pitches).
+- **Feed:**
+  - The feed rate escalates: 9/s (theme), 12/s (B), 15/s (run → tail). Rails, lift and bars glow brighter by section.
+  - Simulated as a queue (tray passes, channel refills, FIFO releases) over 10 periodic loops; loop 8 is rendered.
+  - Only loop 0 starves (warm-up with an empty track); loops 1-9 have 0 starved releases. Channel contents at the start of loop 8 and loop 9 are identical (exact loop).
+- **Music:** Beethoven, "Für Elise" WoO 59 (1810; Beethoven d. 1827, public domain), on `audio.synth_piano`. No recording is used.
+  - Score source: Mutopia Project `BeethovenLv/WoO59/fur_Elise_WoO59` (.mid + .ly), Breitkopf & Härtel 1888 edition, typeset by Stelios Samelis, Mutopia-2015/08/18-931, licence **Public Domain**. MIDI parsed with mido; the notes are embedded as `SRC` in the scene.
+  - Passage: source units 0-43 (pickup + bars 1-8, first-ending bar skipped), then 48-132 (second ending, C-major episode, the D#-E run, the theme's return to the A cadence).
+  - The whole piece is transposed DOWN an octave: melody C3-F4 with one E5 peak, bass E1-A2.
+  - 16th = 0.155 s steady (no accelerando); ritardando +22 ms/unit over the last phrase.
+  - Cadence = the score's A1 + A3, plus A2 C3 E3 (A-minor triad tones) as a 5-marble chord. That is 148 strikes.
+  - The piano is rendered as a `bed`:
+    - Bar-line pedal: each note is released at the next bar line, 0.14 s ramp.
+    - Low notes below MIDI 36 are allowed (NoteBank clamps them).
+    - No mixer density ducking.
+    - The `_events.json` notes carry `note_gain` 0, so `tools/regen_audio.py` can NOT rebuild the audio; re-render instead.
+  - Two soft accents only: a steel tick on the stray's hop and a pok on Mochi's header. No rolling or noise beds.
+- **Hook:** the machine is perpetual, so frame 0 = the loop's end state.
+  - Every track is full of marbles at the top feed rate, and all 22 bars are still glowing in a rainbow from the cadence chord (resonance ~0.58).
+  - The first E strike flashes, with the E-D#-E-D#-E-B-D-C-A theme at 0.0 s.
+  - The rainbow collapses within ~0.5 s (τ 0.26 s) and the glow eases to the theme level by 0.9 s.
+- **Engagement:**
+  - Stake caption: "This machine plays Für Elise" / "~Not ONE wrong note~". Counter "NOTES n/148".
+  - Near-miss (rewatch) at the peak of the run:
+    - A marble flies off the feeder tray at full rolling speed; the bar it would hit pulses RED as a wrong note.
+    - Mochi (the conductor) leaps and heads it, and it arcs onto the high E5 on its note (the only E5 in the passage).
+    - Bolt sweats, then gapes. Mochi smiles at the camera.
+  - Climax: the A-minor chord (5 marbles at once) + a bloom + sparks + a rainbow wave across all 22 bars; the chord fades to silence.
+- **Timeline:**
+  - Clip 22.90 s (1374 f). B section 6.82 s, the run 11.16 s, return 14.26 s, cadence 20.30 s.
+  - Save: hop 10.63, Mochi jumps 10.83, header 11.28, E5 strike 11.78 s.
+  - Strikes per 5 s: 41, 43, 40, 24 (the last bin is the cadence + silent tail). Per-bar strikes span 1-21 (E4).
+- **Checks (Full HD encode):**
+  - h264 yuv420p 1080x1920 at 60 fps. -14.00 LUFS, peak -7.03 dBFS.
+  - Tail: -46 dBFS at T-1.3 s (master reverb tail; -60 by T-1.0 s), last 0.5 s at -80.8 dBFS.
+    - Shortening the chord to 1.0 s moved T-1.3 s only to -47, so the 1.25 s chord was kept.
+  - flash_check 0 = PASS.
+  - Pre-encode: frame NF equals frame 0 except the next loop's first strike and counter tick (mean 0.14 at half res).
+  - Encoded seam 4.34 vs a median frame step of 3.33 (neighbours 3.7-3.9). The machine moves everywhere, so this is a normal step.
+  - Sync: each note's sample 0 is at the frame-quantised strike time. Encode lag 0.00 ms, `master()` lag 0.00 ms (cross-correlation).
+- **Doubts:**
+  - The strike rate is flat (Für Elise is a steady 16th stream; no accelerando by owner rule). Escalation is feed density + glow + the chord climax.
+  - 22 bars at 35 px pitch: detailed, but small at phone size.
+  - The cadence rainbow is a visual-only resonance; it is still lit when the audio is silent at the seam.
+- **Args:** `--label` (v1), `--cap "line1|~line2~"`, `--still --frame N`.
+- Delivered `<VIDEOS_DIR>\batch24\marble_machine.mp4` (Full HD). Owner review: pending.
+- Owner review (2026-10-10): very dry and simple, won't take us anywhere. Dropped.

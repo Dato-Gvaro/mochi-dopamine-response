@@ -1,0 +1,43 @@
+# double_bounce — Circle vs Square: every bounce DOUBLES the ball, which arena bursts first?
+
+- Brief: coordinator task 2026-10-13 (batch31), a FORMULA test (research/reference_satisfying2dsims.md): one rule, one ball at frame 0, exponential count, burst. BRIEF_batch25 rules apply except where the formula's minimal look and length override them.
+- Rule (caption, baked in): "Every ~BOUNCE~ off the wall / ~DOUBLES~ the ball" + "Circle or Square: which one ~BURSTS~ first?". `--cap 0` renders without it.
+- Arenas: Mochi = CIRCLE r 232, Bolt = SQUARE side 411.2. They have EQUAL AREA (169,093 px^2), so the same capacity of 2^20 = 1,048,576 balls. Logical centres are (262, 900) and (748, 900). The right edge sits at x 954 (0.88 w), the content bottom at 1132 (0.59 h), and the counters at 0.775 h.
+- Physics: seeded, dt = 1/60.
+  - A wall hit reflects the ball and spawns a copy at the hit point, aimed at a random angle within ±70° of the inward normal.
+  - Ball-ball collisions are elastic, equal mass, using cell-sorted neighbours with alternate pairs per frame.
+  - Count laws, identical for both shapes: radius 80 -> 0.2 px and speed 215 -> 18 px/s (geometric in log2 count).
+  - Why the speed law exists: with constant speed, collisions jam the walls and the doubling time drops from ~3 s to ~0.3 s. The clip would be 25 s long and dead slow at the start.
+  - Burst: the spawn that would make ball 1,048,577 bursts the wall instead. The circle shatters into 44 neon shards and the balls spill out under gravity.
+- Race (seed 23, `--search A B` over seeds 0-86 at the same physics): the SQUARE wins 69 of 87 races and the circle 18. In the square the balls jam into the corners and along the flat walls, while the circle's spread evenly. Seed 23 is one of the circle's comebacks:
+  - Counts, circle/square: 3 s 5/6, 10 s 40/73, 20 s 897/1,213, 30 s 14,660/18,800, 40 s 171,082/198,187.
+  - LEAD CHANGE at 44.4 s. The square had led since 2.6 s.
+  - The CIRCLE bursts at 48.77 s with the square on 854,121. The square is at ~0.98 M when the hold ends and never bursts.
+- Hook: frame 0 has the caption plus one big ball in each arena already flying at the wall, with a motion trail. The first doublings come at 0.51 s (circle) and ~1 s (square). Counts reach 2/2 at 1 s, 3/3 at 2 s and 5/6 at 3 s, 40/73 at 10 s. Each split shows a white newborn ball and a hit ring.
+- Look: pure black.
+  - Neon outlines with a 3-layer stroke glow.
+  - The wall heats from neon to white and trembles (up to 3 px) above ~2^13.
+  - Above 2,500 balls they are drawn as an instanced numpy splat (bilinear coverage, 1/8-res glow, cairo ADD).
+  - Tiny Mochi and Bolt under their arenas react: wow on the first split, cheer/worried on the lead change, cheer/annoyed on the burst.
+  - Banners: LEAD CHANGE! and CIRCLE BURSTS FIRST! at 532 px, 78-80 px, popping from 0.86x.
+- Loop: hold 1.0 s after the burst, then a 1.0 s collapse.
+  - Every ball flies home into the frame-0 ball (40k subsample).
+  - The counters roll down to 1 by 55 %, then the frame dissolves into the exact frame-0 render.
+- Sound:
+  - One marimba note per wall hit, walking J. Strauss II "The Blue Danube" (1866, public domain; `audio.MELODIES["blue_danube"]`, D major, notes 62-76).
+  - The sounded-note ceiling rises from 8/s to 14/s. Denser hits turn each note into a rolled chord (octave, diatonic third and sub-octave below, 12 ms apart to clear the 10 ms rule).
+  - Soft pok tick on each note. Gain ramps 0.5 -> 0.9.
+  - Burst: a rolled D major chord plus a 5-hit glass cascade (0-0.28 s), then a cosine fade from tb+0.30 to tb+0.66 s (`deliver_cadence`). The tail is digital silence from 49.45 s. The intro layer is on.
+  - `tools/regen_audio.py` does not apply that fade, so rebuild audio through the scene.
+- Checks (encoded Full HD v2):
+  - Format: h264 yuv420p 1080x1920 60 fps, 3047 frames = 50.78 s.
+  - Loudness: -14.00 LUFS, peak -7.9 dBFS. Last 1.3 s silent (-180 dB).
+  - Loop: encoded seam 0.244 (good band).
+  - flash_check: 0 flashes, PASS, mean luminance 0.019.
+  - Notes: 1334 events, 18 distinct notes, top note 14.5 %. Events per 5 s: 14, 49, 84, 98, 151, 151, 153, 236, 244.
+  - Audio onsets land on the first hits (0.51, 1.59, 2.36 s).
+- File is 193 MB (the million-dot texture is high-entropy for x264 at crf 18).
+- Render: ~10 min Full HD (the sim is re-run in lockstep; 1M-ball steps ~0.1 s).
+- Args: --seed (23), --label, --cap 0/1, --still --frame a,b,c, --report, --search A B, and physics knobs --speed/--speed1/--maxang/--r0 (changing any of these changes the race).
+- Delivered <VIDEOS_DIR>\batch31\double_bounce.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-13): good, but a Short not a documentary; the first-3-s hook is lost, make it faster -> double_bounce2.

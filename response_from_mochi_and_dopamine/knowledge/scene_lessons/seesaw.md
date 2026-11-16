@@ -1,0 +1,12 @@
+# seesaw
+- New format (2026-10-04), head-to-head. Rule: candies shot into Mochi's (left) / Bolt's (right) bucket; board tilt = candy DIFFERENCE (damped spring, K 170, C 7.4, +0.30 rad/s kick per landing). Difference D=8 puts an end on the red ground pad = that side LOSES. Pre-tip the board is soft-limited at 0.955 of the 23.0 deg ground angle, so only the tip touches.
+- Dispenser nozzle whips to each shot's aim; shot rate 1.8 + 4.4*(t/26)^1.35 /s, jitter +-18%; 4% bias toward the lighter side keeps it close. Candy 0 fired at -0.22 s (in the air at frame 0, lands 0.36 s). Flight 0.58 s, ballistic to the slot at the landing-frame angle.
+- Buckets: 5 hex rows + mound, capacity 52/side (search rejects more). Candy r16.
+- Reactions: near-tip (diff hits 7 from 6) -> high side laughs (max 3, 1.8 s gap), low side worried; worried+sweat while own side > 70% down (hysteresis 56%), the other grins. Tip: slam + 6 px shake + THUD!, loser wince -> dizzy stars (1.2 s) -> annoyed stare; top 58% of the loser's pile spills to the floor; winner catapulted 330 px with one flip (wow), lands 1.06 s, laughs, cheers 2.25 s + confetti, "<WINNER> WINS!" banner.
+- Loop: reset at tip+3.25: candies pop away left->right over 0.85 s, counters count down, board levels over 1.2 s; clip = tip+5.0; nozzle keys wrap so frame T == frame 0.
+- Sound: blue_danube note + pok per landing; late loser-side candies = bounce; slam + falling 79-76-72-67; spill poks (<=12); launch bounce + rising 72-84; cheer arpeggio + pop. Collisions nudged +12 ms. peak_db -4.
+- `--search N` scores big swings (+-3 crossings) x2, lead changes, near-tips on both sides, tip 21-29.5 s.
+- s553: Bolt loses (Mochi 41 - Bolt 48 at the end; Mochi was 7 down three times mid-clip, Bolt comes back from -7 and tips at 24.87 s). 89 candies, 8 lead changes. Landings/5 s: 10, 13, 17, 20, 26 (last 2.5 s 14 vs 12 before). 29.87 s.
+- Checks: h264 yuv420p 1080x1920 60 fps; -14.0 LUFS, peak -7.9 dBFS; last 1.3 s peak -62.9 dBFS, last 0.5 s silent; flash_check 0 flashes PASS; seam post-encode mean 0.327.
+- Args: --seed, --label, --cap, --melody, --search, --still --frame.
+- Owner review 2026-10-04 (batch 7): Good idea, but drop straight down through dots/bars (a random peg sorter like tube_race) instead of an aiming cannon -> seesaw2.

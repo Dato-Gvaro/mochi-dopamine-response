@@ -1,0 +1,36 @@
+# snake_duel3: snake_duel2 with a new piece and soft gem plucks (2026-10-11, batch28)
+
+- Why: owner review of snake_duel2: "change that eating bip sound, make it a more pleasant one. The music genre and ending are good, but I specifically don't like that song, replace it."
+- Same visuals, games (seed 447), story, hook and loop as snake_duel2. The clock follows the new piece's tempo map.
+- Music: Vittorio Monti, "Csárdás" (1904; Monti died 1922, so it is public domain).
+  - The melody comes from the cellofun.eu cello transcription "Czardas Monti CL" (MusicXML, original key).
+    - The file is **dedicated to the public domain**: IMSLP lists `PMLP13438-Czardas_Monti_XML.zip` as "Public Domain (dedicated)". Our download from cellofun.eu is byte-identical (sha1 fdcc2feb2784b07258e07550ed7d4ff1167ec763). No credit is required.
+    - Cached in `<SOUNDFONTS_DIR>\scores\monti_csardas\`. The melody is embedded in the scene (LEAD); `--extract` re-parses the file, confirms the match and prints the chords.
+  - Superseded: Grieg's "Mountain King" (an intermediate version of this scene) is on the owner's overused list (BRIEF.md "Melody rotation"), so it was dropped. The Bumblebee was the snake_duel/snake_duel2 piece.
+  - Excerpt (our beat <- source measure, 2/4):
+    - 0 <- m23-38: Allegro vivo, D minor, the theme at 0.0 s.
+    - 32 <- m107-114: the theme's loud return in D major. TRAPPED lands on its downbeat.
+    - 48 <- m131-136: Molto più vivo.
+    - 60 <- m137: the closing D, PERFECT GAME.
+    - Beat 62: our final tonic chord.
+  - The melody is at its source pitch, A3-D5.
+  - Harmony is OUR arrangement: one chord per bar, chord-fitted to the melody (`fit_chords`, CHORD_SET).
+    - D minor section: Dm/Gm/A7/Bb/C7/F. D major section: D/G/A7/Bm/Em.
+    - Each section opens on its tonic.
+    - Result: Dm Dm A7 Dm | Dm.. A7 A7 A7 A7 Dm A7 A7 A7 Dm | D D A7 D D D D A7 | A7 A7 A7 D A7 A7 | D D.
+  - Tempo: accelerando, quarter = 138 -> 200 over beats 0-60 (log tempo map `tb()`), matching the game clock (12 -> 117 -> 259 moves/s).
+  - Synthwave arrangement (the same genre):
+    - square_lead + saw_lead on the melody.
+    - warm_pad on the chords (16th-gated from beat 8, kick-ducked) plus synth_strings.
+    - synth_bass 8th-note octave pump on the chord root, plus a sine sub.
+    - synth_brass stabs at the section starts and the ending.
+    - Electronic kit: half-time at first; the full beat from beat 8; 16th hats from the trap; a snare roll into the closing hit.
+    - Booms at 0, the trap and the win (1.0), smaller on the final chord. Cymbal swells into the trap and the win.
+  - Sync: GO at 0.88 s; TRAPPED at 12.49 s; BOLT PASSES at 16.51 s; PERFECT GAME at 21.57 s on the closing D; final chord at 22.17 s; clip 25.07 s, with the last 1.5 s silent.
+- Gem sound: a soft pluck tuned to a tone of the current chord. Its pitch rises with the board filled, rate-capped at 1 per 70 ms per snake.
+  - Mochi: warm marimba (`audio.synth_plink`, ring 0.55), C4-E5, panned left.
+  - Bolt: soft glass harp (`audio.synth_glassharp`), E4-G5, panned right.
+- Checks (encoded Full HD): h264 yuv420p 1080x1920, 60 fps, 1504 frames = 25.07 s. -14.00 LUFS, peak -5.17 dBFS, last 0.5 s digital silence. Encoded seam mean 0.765 (same visuals as v2, whose pre-encode seam is exact). flash_check PASS (0 flashes). 1.4 % of the energy is above 2 kHz.
+- Hit levels under 150 Hz: trap +5.5 dB, PERFECT GAME +9.2 dB.
+- Delivered <VIDEOS_DIR>\batch28\snake_duel3.mp4 (Full HD). Owner review: pending.
+- Owner review (2026-10-12): remove the music entirely; make the eating sound more ASMR -> snake_duel4.

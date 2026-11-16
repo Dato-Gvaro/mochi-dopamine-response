@@ -1,0 +1,39 @@
+# laser_mirrors2 — crank-driven big mirrors, one crystal at a time
+
+- Built from the owner's review of laser_mirrors (2026-10-07): "too fast, too many objects moving together; keep the lasers and mirrors, make the execution more satisfying." laser_mirrors.py is untouched; v2 imports only its pure helpers (ray maths, gem/shard/beam drawing, chime/tick synths).
+- Machine: the same dark crystal chamber, split by a glowing crystal divider. Each half has:
+  - a fixed laser in the top outer corner, always aimed at mirror A;
+  - THREE big two-sided mirrors (half-length 85) on ratchet gears with a pawl;
+  - ONE big target crystal (r 34).
+- Each character (r 56) sits on the deck and turns a CRANK; its arm-rod rides the handle. A glowing dotted drive chain runs to the mirror being driven. Each crank tick = one ratchet click = the mirror turns exactly 3 deg (the beam moves 6 deg), with an ease-out-back seat. ONLY the driven mirror moves.
+- Rule: the beam is traced every frame (angle in = angle out; walls and divider are mirrored).
+  - A crystal charges ONLY after the LOCK: all ticks done and the beam on it. A beam sweeping across it just glints: a near miss, no charge.
+  - Charge ring + rising glass tone, then the shatter: +1. First to 9 wins.
+- Shot planner (seeded): picks a free spot plus a route through 1/2/3 mirrors (A, A-B or A-C, A-B-C or A-C-B), quantises the lock angles to clicks, and verifies them with the tracer. It must not be a free hit from the current angles, and each mirror turns 3-13 clicks (fallbacks: 3-20 clicks, then one bounce fewer).
+- How the last mirror finds the crystal (seeded, the "puzzle" feel):
+  - clean (30 %);
+  - short (35 %): stops one tick before the beam reaches it, pauses 0.26 s, then clicks on;
+  - over (35 %): sweeps across and out the far side, pauses 0.22 s (worried face), then clicks back.
+- Escalation per shot:
+  - bounces 1,1,2,1,2,2,3,2,3;
+  - tick interval 0.13 -> 0.045 s;
+  - charge 1.00 -> 0.40 s;
+  - lead 0.10 -> 0.05 s;
+  - gap 0.22 -> 0.12 s.
+  - Ticks per 5 s: 55, 76, 118.
+- s515 (default, MOCHI wins as asked):
+  - First locks at 0.53/0.65 s; shatters at 1.52 (B) and 1.63 (M), then 4.18/4.42 and 6.78/6.83 (near-sync).
+  - Bolt leads 5-4 at 10.37 and 6-5 at 13.05.
+  - At 17.40 it is 8-8: LAST CRYSTAL!, both on 3-bounce shots with near misses. Mochi locks at 18.62 and wins 9-8 at 19.02, with Bolt's last crystal at 62 % charge.
+  - Clip 21.92 s (1315 frames).
+- Sound (a bed built in the scene; the sidecar events carry only the glass crunch, note_gain 0, so check_clip shows "distinct 1"; regen_audio cannot rebuild it):
+  - a steel ratchet tick per click (pitched by mirror, Mochi a minor third under Bolt);
+  - a steel snap on the lock;
+  - a rising glass tone (melody note -12 -> note) over the charge;
+  - a crystal chime per shatter walking blue_danube +12 (the least-used rotation, per BRIEF), with an octave under; the winning shatter is a 5-note chord.
+- Loop: after the win the lasers power down (t_w+0.35, over 0.3 s). Over 1.4 s the mirrors (nearest pi), cranks (nearest 2 pi) and eyes ease to frame 0; the drive chain re-engages and the frame-0 crystals regrow. reset_u hits 1.0 ON the last frame (the mirrors rest there, as at frame 0). Pre-encode seam 0.021 (a normal step is 3.1, at frame 0 a click starts).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.02 LUFS; peak -4.75 dBFS; last 0.5 s -84 dBFS. RMS per second is -16 to -20 throughout. Encoded seam 0.45. flash_check: 0 flashes = PASS.
+- Args: --seed (515), --label, --cap ("a|~b~"), --melody, --search N (Mochi wins 9-8, Bolt led after 6 s, >= 2 lead changes, T 18-22.5 s, last quarter's shatter rate the highest), --still --frame.
+- Other Mochi seeds: 478 (photo finish: both lock their last crystal 0.02 s apart, Bolt at 96 %, but the first shatter is at 2.17 s) and 408 (5 lead changes, 20.5 s).
+- Delivered <VIDEOS_DIR>\batch17\laser_mirrors2.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-08: Good, but move the lasers SLOWER so viewers can follow; each should use their OWN method (algorithms, maths, physics) -> laser_mirrors3.

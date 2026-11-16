@@ -1,0 +1,17 @@
+# hourglass_race — Mochi vs Bolt, two hourglasses of marbles
+
+- NEW format (2026-10-04). Two glass hourglasses (centres x 282/798, neck y 900, bulb 378 px each way, max inner half-width 190, wooden caps 24 px). Mochi sits on the left top cap, Bolt on the right one. Each top bulb holds N=105 marbles (r 12, 13 full lattice rows). First top bulb EMPTY wins. Caption "Same marbles, two hourglasses|~First one empty WINS~". Counters (marbles left on top) at 1446/1528.
+- Marble model = a hex-lattice cellular flow, NOT physics2d (jitter-free). Rules: fall into an empty lower neighbour, else roll over an edge (~30 deg slopes). The neck slot releases one marble per interval. Top drain moves last exactly one interval (0.92/rate), so the column glides continuously. A light EMA (tau 0.025 s) rounds the zig-zag corners. Falling marbles: g 2600, v0 190; they land on the centre column of the bottom pile and roll down it with a small bounce.
+- Symmetric crater: the top gravity choice prefers the neighbour nearer the centre (p 0.72), and idle marbles are processed in a random order within each row. A (row, X) sort drained the left side first, which gave a one-sided slope.
+- Escalation: rate 2.4 + 4.6*(t/26)^1.3 per glass (~7/s at the end). Landings/5 s (both): 28, 30, 42, 45, 58.
+- Chance = JAMS. One shared plan per seed (`jam_plan`): one jam at a time, sides mostly alternate, 0.95-1.5 s long, gaps 1.4-3.6 s. While jammed, the neck marbles tremble and the flow stops. The jammed character goes worried, then stomps twice on the cap (glass shakes, bounce sound) and the jam breaks with a 3-marble burst (pop + 72-76-79). The other character laughs (HA; gap 2.2 s, max 8).
+- End: the winner cheers + confetti, then laughs; "<NAME> WINS!" at y 760. The loser winces, then stares annoyed at the camera while its last marbles trickle down.
+- Loop: at t_w + 2.7 s both characters hop (50 px, somersault) and both glasses FLIP 180 deg in 1.05 s, mirror-symmetric (left CCW, right CW). A scale dip (table `FLIP_SC`, min 0.55) keeps each glass within 250 px of its centre toward the other, so they never overlap. Inside, the pile slides from the cap to the neck side. Colours stay exact: marble colours are random per frame-0 slot, and the flip target is matched per colour class (Hungarian on the 180-deg position). The last 0.45 s replays the pre-roll. Glass highlights/caps are point-symmetric and marbles are drawn in screen space (the shine is fixed upper-left), so nothing pops at the seam.
+- Sound: turkish_march (PD Mozart) note per landing, >= 0.13 s apart. Other landings = glassy tick (note 96 @0.10 + pok), >= 35 ms apart. Foley is nudged +12 ms off notes. The flip is SILENT: a hop bounce at T-1.5 s left -7.9 dBFS inside the last 1.3 s, so it was removed.
+- Search `--search N`: keeps t_w 24-30 s, loser 1-4 left, >= 3 jams per side. Score = lead changes (hysteresis 2) and closeness.
+- s236: Mochi wins at 27.25 s. Bolt led late, then jammed at 25.95-27.01 and lost with 2 left; 6 lead changes. Clip 31.45 s (1887 frames).
+- Checks (encoded): h264 yuv420p 1080x1920 60 fps; -14.0 LUFS, peak -7.4 dBFS; last 1.3 s -115 dBFS; flash_check 0 = PASS; seam mean 0.58.
+- Known nit: the loser's last 2 marbles drain ~0.2 s after the win, so both counters read 0 a moment later. The banner and the winner's yellow counter carry the result.
+- Args: --seed (236), --label, --cap, --melody, --voice, --search, --still --frame.
+- Delivered <VIDEOS_DIR>\batch9\hourglass_race.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-04 (batch 9): GOOD - approved.

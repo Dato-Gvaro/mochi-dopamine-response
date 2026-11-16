@@ -1,0 +1,26 @@
+# ring_escape — Mochi vs Bolt, balls escaping spinning steel rings
+
+- NEW format (2026-10-05). There are two mirror-image stacks of 10 concentric steel tube rings, each on a dark plate on a post (centres x 268/812, y 880). Each ring has ONE gap. Mochi sits on the left plate and Bolt on the right; each watches its own ball, and the pupils track it. The ring that currently holds the ball is tinted in the character's colour. First ball out of all 10 rings wins. Caption: "Escape every SPINNING ring|~First one OUT wins~". Counters show rings left at y 1395/1480.
+- Rings: ring k has R = 108 + 13k (centre line), tube TH 9, gap half-angle 22.9 deg, and spin 0.80 + 0.17k rad/s with alternating directions. Phases are seeded; Bolt's stack is the x-mirror (phi -> pi - phi, spin flips).
+- Ball physics (in the scene, not physics2d): r 19, g 1500, 10 substeps. It collides against the rotating arc's closest point: the radial face, or the moving gap end caps (the reflection is done relative to the cap's velocity). Bounces are elastic. After every bounce, the speed is rescaled to the energy target (KE = E + g*y), so energy is kept exactly. Each bounce gets a seeded +-3 deg direction wobble ("rough tube").
+  - Without the wobble, the ball locks into resonant star orbits and never meets the gap (12 of 120 runs stuck for 40 s).
+  - Wall friction MU > 0 made it worse: the ring drags the star pattern into co-rotation (a lock at ring 5 in 13 of 120 runs). MU = 0.
+- Escape: the ball centre goes past the tube's inner face (R - TH/2) inside the gap. The ring SHATTERS: 9+k tube shards, a shockwave ring and a spark at the gap. The ball gains x1.16 speed (energy) per escape, from 600 to ~2650 px/s at the end. A 6-frame trail keeps it readable.
+- Escalation: bounces/5 s (both sides) are 44, 52, 89. The time per ring falls with ring index: median 2.1 s for ring 0 down to 0.6 s for ring 9, over 120 sim runs.
+- s5133 (default):
+  - Bolt breaks its first ring at 0.41 s and makes a TRIPLE chain at 4.89/4.91/4.93. It leads 8-5 at 14 s.
+  - Mochi runs 4 rings in 0.8 s (14.16-14.95) and leads 9-8 at 16.65 s.
+  - Bolt breaks twice (17.84, 18.19) and WINS at 18.19 s. Mochi is left with 1 ring. There are 4 lead changes, and the last one is at the finish. The clip is 20.97 s (1258 frames).
+- End and loop:
+  - At the win, the winner cheers and then laughs ("HA"); the loser winces, then stares, annoyed. A banner and confetti play. The loser's ball keeps bouncing (with clicks) for 1.4 s.
+  - Then a 1.38 s SILENT reset: the loser's ball glides to the centre, the winner's ball pops in, and the broken rings re-form inside-out at angle th0 + w(t - T), which is exactly continuous into frame 0. Intact rings are eased onto their frame-0 phase.
+  - Pre-encode seam 0.259, the same as a normal frame step (0.26-0.34): the loop is perfect.
+- Sound:
+  - Bed (built in the scene, not regenerable from _events.json): one crisp steel click per bounce. The click is pitched by ring (C5 pentatonic up, ring 0 = 72 ... ring 9 = 93), scaled by impact speed and panned by x.
+  - Events: per break, a marimba chord (top = eine_kleine melody note, plus -5 and -12, strummed at 12 ms) with a glass clink layer. The win gets a 5-note chord.
+  - Levels: the bed sits about 7 dB under the chords (-24 vs -17 LUFS pre-master).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -14.01 LUFS, peak -4.2 dBFS; last 0.5 s -62.4 dBFS (wav: last 1.3 s -112); flash_check PASS (1 flash total); encoded seam mean 0.78 (an I-frame vs P-frame quality step on the fine ring lines, not motion).
+- Args: --seed (5133), --label, --cap, --melody, --voice, --search N (needs t_w 17-25 s, loser 1 ring left, first break <= 1.4 s, >= 2 lead changes, the last within 4 s of the win, max gap between breaks <= 3.3 s, bounce rate rising; prefers Bolt), --still --frame.
+- Other good seeds: 795 (Bolt, t_w 20.25), 3803 (Bolt comes back from 0-5 and wins by 0.04 s), 7129 (Bolt, 24.2 s, 5 changes).
+- Delivered <VIDEOS_DIR>\batch12\ring_escape.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05: Good idea; add colour effects (the white rings are dull) -> ring_escape2.

@@ -1,0 +1,35 @@
+# double_bounce2: scroll-stop cut of double_bounce (Circle vs Square, every bounce DOUBLES the ball)
+
+- Owner review of double_bounce (2026-10-13): "good, but we are making Shorts, not a documentary. The 3-second hook is lost." Rebuilt to research/scroll_stop.md and the BRIEF_batch25 SCROLL-STOP rules.
+- Rule and physics: the same engine as double_bounce.
+  - Equal-area circle and square, capacity 2^20 = 1,048,576.
+  - A wall hit reflects the ball and spawns a copy within ±70°.
+  - Ball-ball collisions are elastic.
+  - Radius and speed are laws of the arena's count, identical for both shapes.
+- What changed:
+  - Speed: 520 px/s, constant until 2^6 balls (knee 0.30), then down to 9 px/s at capacity. Counts reach 4/4 at 1 s, 13/17 at 2 s, 36/60 at 3 s, 321/434 at 5 s.
+  - Frame 0: the first ball is 0.15-0.4 s from the wall. The first hit, with a note and a pok, sounds at 0.1-0.35 s, and there is digital silence before it.
+  - Palette: Mochi = coral wall + gold balls (circle), Bolt = teal wall + mint balls (square). Bright on black.
+  - Faces are r 52 (was 34) and react from frame 0 (wow), on lead changes, on 1,000 and 100,000, and on the burst.
+  - Counters pop gold at 10, 100, 1,000 and so on, a pattern break every few seconds.
+  - Burst: the balls are thrown outward (160-560 px/s radial, pressure release), then fall.
+  - Loop: a 0.7 s dissolve into the exact frame-0 render (no fly-home rewind). Old counters fade out 3x faster than the overlay fades in.
+- Race (seed 23 of double_bounce does not carry over; searched 21 seeds at the new law): seed 12.
+  - Counts, circle/square: 10 s 7,172/7,125, 20 s 142,191/135,668, 25 s 349,179/408,151.
+  - The square leads early. The CIRCLE takes the lead at 10.2 s, and the SQUARE retakes it at 21.6 s.
+  - The SQUARE bursts at 31.08 s with the circle on 805,877. The circle ends the clip at 1,004,635 and never bursts.
+  - At this law most seeds go to the square (20 of 21 searched; seed 9 is the only circle win).
+- Music: Mozart, Rondo alla Turca (Piano Sonata K.331, 1783, public domain; `audio.MELODIES["turkish_march"]`), one octave down (56-69).
+  - One marimba note per wall hit.
+  - The sounded rate is capped from 8/s rising to 14/s. Denser hits turn notes into rolled A-harmonic-minor chords.
+  - Pok tick on each note.
+  - Burst: a rolled A minor chord plus a glass cascade, then a fade at tb+0.30..0.58 s (`deliver_cadence`; do not use tools/regen_audio.py).
+- Checks (encoded Full HD v1):
+  - Format: h264 yuv420p 1080x1920 60 fps, 1979 frames = 32.98 s.
+  - Loudness: -14.00 LUFS, peak -6.8 dBFS. Last 1.3 s silent.
+  - Loop: seam 0.323 (good band).
+  - flash_check: 0 flashes, PASS, mean luminance 0.040.
+  - Notes: 25 distinct, top note 14.3 %. Events per 5 s: 74, 141, 154, 220, 252, then the burst.
+- Encoded frames read at 0, 1, 2, 3, 10, 21.7, 31.1 and 31.6 s. Stills checked at the burst, spray and dissolve.
+- Delivered <VIDEOS_DIR>\batch31b\double_bounce2.mp4. Owner review: pending.
+- Owner review (2026-10-15): after ~15 s the wait until the burst is too long, progress isn't visible and it gets boring, so make it quick; remove the ball comet tails at the start -> double_bounce3.

@@ -1,0 +1,57 @@
+# bridge_test2: the canyon at dusk, stone ARCH vs steel TRUSS (batch25 rework of bridge_test)
+
+- **Why:** owner, 2026-10-10, on bridge_test: "interesting, but the execution is poor, maybe it's too dry". v1 looked like an engineering diagram (two framed panels, labels, identical steel plates).
+- **Physics:** v1's, unchanged. The scene imports `scenes/bridge_test.py` via importlib: the same arch/truss solvers, the same SCHEDULE/slots/masses and the same Q = 0.57 clock.
+  - The sim runs 0.4 s longer (TAU_F + 1.70) so the ring falls into the lava. It is cached in `output/bridge_test2_sim_<key>.npz` (37 s to build).
+- **Stage:**
+  - One canyon at dusk, both bridges in depth.
+  - FAR: Bolt's truss at scale 0.92 (deck at y 532), backlit by the setting sun, with mesas, stars and fog bands.
+  - NEAR: Mochi's arch at scale 1.04 (springing at y 1112).
+  - A meandering lava river (crust floes over a hot channel) runs from the fog down to the foreground. The arch plane meets it at y 1336, and blocks below that line are hidden by the near layer (the near cliffs and the near lava).
+  - Ambience is periodic over the clip, so the loop is seamless: drifting fog, steam, lava bubbles.
+- **Loads (same tonnage as v1, now things):**
+  - car 1 t; van 2 t; boulder 5 t; dump truck 10 t; steel elephant 15 t; anvil 20 t; locomotive 25 t; "THE BIG ONE" 75 t weight.
+  - Each falls from the sky for 0.55 s and lands with a squash, dust, sparks (truss) or stone chips (arch), a camera kick and a HUD pop ("STEEL ELEPHANT +15 t").
+  - In bar 15: a pulsing red dashed 75 t target, a growing shadow, and "75 t INCOMING!".
+  - Gotcha: a weight hanging on a chain sat in front of the far truss and read as the truss's load, so it was dropped.
+- **Stress:**
+  - Truss members glow blue -> white -> red (v1 colour map).
+  - Arch joints glow, and glowing CRACKS spread into the voussoirs from hot joints (crack reveal = (joint stress - 0.50) / 0.38).
+- **Story beats:**
+  - 1.43 s: the car lands.
+  - 16.25 s: the truss midspan vertical buckles: "SNAP! IT'S GOING!", Bolt sweats, Mochi laughs, then "...IT HOLDS!" with Bolt cheering.
+  - 23.3 s: the 75 t target appears.
+  - 24.79 s: the cadence: the 75 t lands. The arch hinges at 25.35 / 25.51 / 25.66 s and the ring plunges into the lava in slow motion. Splashes start at 27.31 s.
+  - The truss loses 2 more verticals (24.84, 25.03 s), glows orange, and HOLDS. Mochi gives the annoyed stare.
+- **Time warp after the final load (video s after T_FINAL -> sim rate):** 1.0 until 0.18; down to 0.5 by 0.42; 0.5 until 0.90; down to 0.22 by 1.30. `--peak 1.08` = the sim time shown at the last frame (and frame 0), giving TAIL 2.82 s and a clip of 27.62 s.
+- **Camera:**
+  - A kick per landing (1 + 0.9 * sqrt(t) px), plus snaps and joint openings.
+  - A rumble through the plunge that continues across the seam and dies by the end of the rewind.
+  - A push-in to 1.035 about (330, 1010). The focus is off-centre so Mochi stays in frame.
+- **Hook / loop:**
+  - Frame 0 = the plunge: the broken ring, loads tumbling, embers, "COLLAPSE!" + "TRUSS HOLDS!".
+  - A 0.86 s rewind (◀◀, motion ghosts), then the car lands at 1.43 s.
+  - Encoded seam step 5.3 sits inside the neighbours (3.2-5.6; it is high because the whole frame rumbles), so the turnaround is continuous.
+- **Music:** Tchaikovsky, Piano Concerto No. 1 in B-flat minor, Op. 23, 1st mvt, bars 1-16. Composed 1875; Tchaikovsky died 1893 = PD.
+  - The score is v1's parsed notes: midiworld.com `tchai1-1.mid`, cross-checked against the PD Breitkopf & Härtel 2-piano edition, IMSLP #916318.
+  - Arranged with `lib/orchestra.py` (MuseScore_General.sf2, MIT):
+    - horn call on horns, plus trombone an octave down;
+    - tutti chords on strings + trombones;
+    - piano chords (3 per bar) under the string theme (strings + cello at Db3-Bb4; horns join from bar 10);
+    - strings_slow pad;
+    - contrabass + sub-octave bass;
+    - choir aahs from bar 10 with a CC11 swell;
+    - a timpani roll in bar 15 and a cymbal swell into bar 16;
+    - the bar 16 Db-major cadence on brass + tuba + strings + piano + choir + a boom.
+  - Every load lands on a hit: timpani (pitched to the bass), taiko from 10 t, boom from 20 t. The final boom = the collapse.
+  - v1's low foley is in the bed: buckle twangs, creaks, stone rumble.
+  - Bed per-second RMS: opening call -23, piano entry -27, building to -19 at the cadence. The bed is silent from T - 1.5 s.
+- **Checks (Full HD, encoded):**
+  - h264 yuv420p 1080x1920, 60 fps, 1657 frames = 27.62 s.
+  - -14.01 LUFS; peak -5.43 dBFS; last 1.3 s ≤ -38.6 dB; last 0.5 s -76 dBFS.
+  - flash_check: 0 flashes = PASS (mean lum 0.075).
+- **Args:**
+  - `--label`, `--cap "l1|~l2~"`, `--still --frame a,b,c`, `--report`.
+  - `--sound 0` (silent render only); `--reuse` (mux onto an existing silent render); `--audition` (bed preview wav only); `--peak` (frame-0 sim time).
+- **Delivered:** <VIDEOS_DIR>\batch25\bridge_test2.mp4 (Full HD). **Owner review:** pending.
+- Owner review (2026-10-11): lava = medieval atmosphere, so the cars don't fit; change the dropped objects; add a dragon or dragon silhouette flying in the sky background -> bridge_test3.

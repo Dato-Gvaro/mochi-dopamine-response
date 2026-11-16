@@ -1,0 +1,38 @@
+# bridge_test — Arch vs Truss: load until one breaks (batch23)
+
+- **Rule:** the same steel plates land on both bridges at the same instant, one per big chord: 1 t → 75 t, LOAD 220 t on each. Mochi's STONE ARCH (13 dry voussoirs, compression only) vs Bolt's STEEL TRUSS (8 X-braced panels, tension + compression). Last bridge standing wins.
+- **Physics (simulated once, fixed dt, cached in `output/bridge_test_sim_<key>.npz`):**
+  - Arch: each block = 4 corner masses + 6 stiff springs; joints = compression-only corner contacts with stick friction (μ 0.85). They can hinge but never pull. dt 1/6000, k 8e6.
+  - Truss: 18 pins, 41 axial spring-dampers (stiffness ×0.25 for a visible sag of 30 px at the end). Bearings sit under both ends of the bottom chord. Interior verticals buckle at 105k (compression) or 160k (tension) force units. dt 1/4800.
+  - Glow:
+    - Arch = joint EDGE stress, thrust × (1+e)/2, over 1.12 × its smoothed pre-final peak. It heats fully once the collapse starts.
+    - Truss = |F| over 1.07 × the member's 0.25 s-smoothed peak (verticals over their buckling caps).
+    - Colour map: blue → cyan → white → amber → red.
+- **What happens (all from the sim):**
+  - Both bridges warm plate by plate.
+  - 12.8 s: "LOPSIDED!" (left 32 t vs right 7 t). 14.5 s: balanced again.
+  - 16.25 s: the truss's midspan vertical BUCKLES (SNAP!), and the X-bracing carries on.
+  - 24.79 s: the final 75 t lands at 0.30 span, the masonry arch's real weak spot. Hinges form (joints open at 26.0 / 26.3 / 26.6 s) and the arch collapses in slow motion (0.28×).
+  - The truss loses 2 more verticals (24.84 s, 25.3 s), glows orange-red, and HOLDS. Bolt wins; Mochi gives the annoyed stare.
+- **Tuning evidence (closeness):**
+  - The arch survives every plate before the final.
+  - d=44 / rho .0035 survives the 75 t, and the 100 t final cascades the truss. Final params: d 40, rho .0045, slot 0.30, final 75.
+  - The vertical snap is the impact of the 20 t landing directly over node t4.
+- **Hook / loop:**
+  - Frame 0 = the collapse at its peak (red W-shaped ring, tumbling plate stacks, coral shards; truss orange, "TRUSS HOLDS!").
+  - A 0.86 s rewind (◀◀ badge, motion ghosts) reverses the sim: the ring reassembles by 0.36 s, the plates fly back up by 0.86 s, and loading starts. The clip ends on the same collapse.
+  - Encoded seam step 1.84 sits between the neighbours (1.42 before, 2.02 after): a continuous turnaround.
+- **Music:** Tchaikovsky, Piano Concerto No. 1 in B-flat minor, Op. 23, 1st mvt, bars 1-16 (1875; Tchaikovsky d. 1893, PD).
+  - Horn call F-Db-C-Bb with the orchestra chords, then the descending chord run (bass Gb-F-E-Eb-Ab), then the piano's Db-major chords (3 per bar, rising) under the string theme, ending on the bar 16 Db cadence.
+  - Source: midiworld.com `tchai1-1.mid` (sequenced), cross-checked against the PD Breitkopf & Härtel 2-piano edition, p. 2 (IMSLP #916318).
+  - Played on `audio.synth_piano` with q = 0.57 s. The melody is at the CELLO octave (Db3-Bb4), with octave bass and the top note Bb4. The cadence chord goes from Db1 up.
+  - Sync: plates land on chords c1, c2, c3, c5, c7, c8 (piano entry) and on each theme downbeat of bars 7-14. Bar 15 shows the dashed "75 t" target. The bar 16 cadence = the final plate = the collapse.
+  - Foley is in the bed: low thuds, creaks, a low buckling twang and a stone rumble, all +12 ms or more off the notes.
+- **Checks (Full HD, encoded):**
+  - h264 yuv420p 1080x1920, 60 fps, 1653 frames = 27.55 s.
+  - -14.00 LUFS; peak -5.67 dBFS; last 1.3 s ≤ -39 dB; last 0.5 s -78 dBFS.
+  - flash_check: 0 flashes = PASS (mean lum 0.016). Events/5 s: 48, 43, 49, 47, 32.
+- **Gotcha hit:** `sin(linspace(0, π))**0.7` in float32 goes NaN at the end point (sin < 0). Clip before a fractional power.
+- **Args:** `--label`, `--cap "l1|~l2~"`, `--tail` (2.75), `--sound 0`, `--still --frame N`, `--report`. Tuning: `--arch_d --arch_rho --slot_l --final --rise --kb --tk --vcap_c --vcap_t`. Sweeps: `--arch_only`, `--truss_only --caps a,b,c --capc a,b,c`, `--physics`.
+- **Delivered:** <VIDEOS_DIR>\batch23\bridge_test.mp4 (Full HD). **Owner review:** pending.
+- Owner review (2026-10-10): interesting but the execution is poor, too dry -> bridge_test2 (more spectacular).

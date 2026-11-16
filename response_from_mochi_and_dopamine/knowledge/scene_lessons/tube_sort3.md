@@ -1,0 +1,39 @@
+# tube_sort3
+- **Why:** owner review of tube_sort2 (2026-10-11): "wooden shelf of a medieval / witch's house; two variants: current pour sounds and a better, more ASMR pouring sound".
+- **Unchanged from tube_sort2 (imported):** puzzle (seed 1, A* 22 pours), chemicals, timing, hook, loop and header/characters.
+- **One render, two mixes:**
+  - 3a = tube_sort2's `build_bed`.
+  - 3b = `build_bed_b` (new ASMR).
+  - `--variants ab`; `--reuse` skips the video render.
+- **Set (static, `make_bg`):**
+  - Painted once, then PIL-Gaussian-blurred (3.2 px × scale) and darkened 18 %, with a vignette.
+  - Contents: stone wall, timber beam with hanging herb bundles, round iron window with moon + moonlight shaft, back shelf of books/jars/candles, cauldron in the corner, iron wall sconce.
+  - Drawn sharp on top of the blur: two oak planks (grain, knots, worn edge) on iron L-brackets.
+- **Live light (every frame, periodic in T_END so the loop stays exact):**
+  - Candle flicker (3 summed sines), with ADD-blended warm pools.
+  - Cauldron pulse + bubbles.
+  - Each tube's chemical light on the wall and on the plank top (LIGHT weights: neon/lava 1.0, acid 0.75 … smoke 0).
+  - Contact shadows; 38 dust motes.
+- **Gotcha:** cairo `restore()` also restores the SOURCE. Fill a gradient set inside save/restore BEFORE restoring, or it fills with the previous colour (first stills showed green shadows from the cauldron's bubble colour).
+- **Audio B (close-mic):** per pour:
+  - Stream noise lowpassed by viscosity, with a gurgle modulation (smoothed random, 22 Hz / viscosity) × the flow envelope.
+  - A 2-pole resonator whose centre follows the target tube's air column, f = 330 Hz × 4.45 / air units (×0.55 for lava/honey): the filling-bottle pitch rise.
+  - Glugs of air re-entering the source, slower and deeper when viscous. Mercury gets a bright ping trickle instead.
+  - A soft sizzle (lava) / fizz (acid).
+  - Set-down = wooden shelf knock + glass clink 16 ms later.
+  - Cork pop + a light knock.
+  - Room tone: lowpassed brown noise + candle crackle.
+  - Completion chime and reactions are quieter than in A.
+  - Bus: reverb 0.10, small room (0.45), everything lowpassed at 7 kHz.
+- **v1 (2026-10-11):** 25.0 s, Full HD, both variants:
+  - Audio: -14.00 LUFS, silent tail.
+    - 3a: peak -3.6 dBFS.
+    - 3b: peak -4.4 dBFS, 0.07 % of the energy above 6 kHz.
+  - Picture: flash_check PASS.
+  - Loop: encoded seam 0.76, slightly over the 0.72 band. Cause: one frame of periodic candle flicker + dust motion on the textured wall (pre-encode f0 vs f1499 is 0.6 % of pixels; the state is identical).
+- Owner review (2026-10-12): good (variant A sounds) -> APPROVED, 4K (Oct 14 slot 3). Variant B dropped.
+- **Owner verdict (2026-10-12):** variant A approved, B dropped.
+  - 4K ship render (label ship): 2160x3840, h264 yuv420p, 60 fps.
+  - Audio: -14.00 LUFS, peak -3.6 dBFS, silent tail.
+  - Picture: flash PASS; encoded seam 0.51.
+  - Copied to Schedule/2026-10-14/3_tube_sort3a.mp4.

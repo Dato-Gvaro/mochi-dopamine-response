@@ -1,0 +1,23 @@
+# cannon_duel2: the cannon_duel opening recut (2026-10-14)
+
+- **Why:** the owner (2026-10-13) said rewind openings "do not look nice". The new channel rule: frame 0 is MID-ACTION and the loop is a seamless dissolve (research/scroll_stop.md).
+- **Build:** `scenes/cannon_duel2.py` imports `scenes/cannon_duel.py` (importlib; the original is never edited). It overrides:
+  - `tau_of`, the time mapping;
+  - `draw_target`, so the wreck settles;
+  - the rewind marker, which is switched off;
+  - `TMAX` and `T_MUSIC_END`.
+- **Unchanged from cannon_duel:** `simulate(22)` (the same race), the look, the HUD, and the Handel "Alla Hornpipe" arrangement.
+- **Opening:** frame 0 = sim time 0.85 s.
+  - Mochi's first volley is already in flight toward the target, with the last gun's flash still visible, and Bolt's first shell is rising.
+  - Volley 1's splashes land at 0.0-0.35 s; the first hull hits land at 0.64 s.
+  - The 0.0 s D major fff stroke + boom + mortar foley sits on that first blast.
+- **Ending:** no slow motion. The final shell lands at 18.99 s.
+  - The keel snaps and the wreck sinks at real speed, then settles as a half-sunk V (it eases to rest from 1.1 s after the hit), so the payoff stays on screen.
+  - It holds ~0.9 s, then a 0.5 s cross-dissolve runs into the sim run-up to frame 0 (the B layer plays sim 0.35 -> 0.85 s). The dissolve is fully B on the last frame.
+- **Music:** cannon_duel's bed, time-shifted by -0.85 s; pre-roll notes and hits are dropped, and the hook stroke is added at 0.0. The final chord is shortened so the last 1.5 s are silent.
+- **Checks:**
+  - Full HD v1: h264 yuv420p, 1337 frames = 22.28 s; -14.01 LUFS; peak -5.18 dBFS; last 0.5 s -81 dBFS; 0 flashes.
+  - Seam step in v1: 0.9 against neighbours of ~0.5. The dissolve-end fix went into the 4K ship render.
+  - 4K ship: h264 yuv420p, 2160x3840, 1337 frames = 22.28 s; -14.01 LUFS; peak -5.18 dBFS; last 0.5 s -81 dBFS; 0 flashes. Seam step 0.62 against neighbours of 0.38-0.55 (check_clip 0.836, in band).
+  - Frames read at 0, 0.5 and 20 s.
+- **Delivered:** the 4K ship render replaces `<VIDEOS_DIR>\Schedule\2026-10-15\1_cannon_duel.mp4`.

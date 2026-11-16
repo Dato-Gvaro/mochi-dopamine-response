@@ -1,0 +1,91 @@
+# rope_earth — "Add 1 metre of rope…" / "Earth or Football?"
+
+- Formula video (docs/BRIEF_formula.md). The famous puzzle: a rope lies tight around the Earth's equator (40,075 km) and another around a football (70 cm). Each rope gets +1 m. How high does each one float?
+  - Mochi (coral) bets the Earth's gap is "MICROSCOPIC!" and wears a smug face (half-lidded eyes + grin).
+  - Bolt (mint) bets "A CAT FITS UNDER BOTH!".
+  - Bolt wins: the gap is 1 m ÷ 2π = 15.9 cm for ANY size.
+- **Honest numbers:**
+  - Gap = ΔL / 2π = 15.915 cm, exact for every body.
+  - The rope is 1 cm thick (radius RR = 0.5 cm). The gap is measured from the surface to the rope's underside.
+  - Sizes, as circumferences:
+    - Coin 7.3 cm.
+    - Football 70 cm.
+    - Car tyre r 33 cm (2.1 m).
+    - Moon 10,921 km.
+    - Earth 40,075 km (equatorial).
+    - Jupiter r 71,492 km (449,000 km).
+    - Sun r 695,700 km (4,371,000 km).
+  - Labels clamp at 15.9 cm. The +10% visual overshoot of each step never shows as a number (v1 showed 16.2 cm, fixed).
+  - Cat: crawls flat, back ≤ 13 cm, ears 14.4 cm, so it passes under the 15.9 cm rope with ~1.5 cm to spare.
+- **Scale:**
+  - The football panel and the whole grid share ONE scale, `K_G` = 690 px/m (6.9 px/cm). Every gap is the same 110 px, so the grid of matching gaps is literal.
+  - The Earth zoom is a true-scale camera anchored at the top of the globe (the equator seen edge-on).
+    - log k is a PCHIP curve from 150 px/R⊕ to 1150 px/m (×48,899,030).
+    - The circle is drawn as an arc below 20,000 px radius, then as a stable sagitta polyline (dx² / (r + √(r² − dx²))).
+  - True-scale landmarks on the way down:
+    - The atmosphere (60 km glow, 8 km scale-height sky).
+    - Mountains up to 5.9 km.
+    - Clouds 1.5-3.2 km.
+    - Hills 90-260 m.
+    - Palm trees 15 m.
+    - A person 1.75 m.
+    - Grass 2-5 cm, the cat, and the rope.
+- **Music = the clock:** Vivaldi, The Four Seasons, Summer (L'estate) III Presto, beats 0-54.
+  - Source: Mutopia #336 MIDI, `summer-score-2.mid` (notes PD, Vivaldi d. 1741; engraving CC BY-SA). See `<SOUNDFONTS_DIR>\scores\vivaldi_summer\SOURCE_mutopia_336.txt`.
+  - Tempo map: 0.32 s/beat. The score's rest (beats 11.5-15) is shortened to 1.5 beats. Broadens to 0.40 s/beat from beat 51.
+  - Beat map:
+    - Beats 0-9: the G-F-E♭-D tremolo accents. The rope steps run on the 8ths: 20 × 5 cm, the last on beat 9.
+    - Beats 15-24: the D-C-B♭-A accents carry the zoom.
+    - Beat 27.25: the first storm scale opens the gap. It lands on G (beat 30) = the reveal.
+    - The next four scales (from 33.25, 39.25, 45.25, 51.25) carry, in order: the cell pops, the lifts, the cascade, and the landing on G at beat 54 = BOLT WINS (our G-minor cadence).
+- **Key times** (clip s):
+  - Frame 0: ROPE ADDED +0.06 m, the football rope mid-lift. First accent and note at 0.10 s.
+  - Football reaches 15.9 cm at 2.98 s (Bolt cheers).
+  - Zoom from 3.78 s. ×10 at 4.13, ×1,000 at 5.31 (mountain), ×10⁵ at 7.60 (palms), ×10⁶ at 8.49 (person, the cat walks in), ×10⁷ at 8.89.
+  - REVEAL at 9.06 s:
+    - The EARTH GAP counter shows 15.9 cm.
+    - Marks pop on the cards: ✗ for Mochi, ✓ for Bolt.
+  - The cat settles under the rope and stares at the viewer.
+  - SAME 16 cm! at 10.02 s. The Earth view shrinks into its cell (10.0-10.4). The other 7 cells pop in on 7 scale notes (10.4-10.9).
+  - Lifts, faster and faster: coin done at 12.10, tyre 12.98, Moon 13.70, Jupiter 14.26, Sun 14.66. The SAME GAP meter shows 7/7.
+  - Formula "gap = 1 m ÷ 2π" at ~15.0 s. Cascade pulse of all 7 gaps from 15.6 s. "≈ 16 cm" at ~16.3 s.
+  - BOLT WINS! at 16.86 s: G-minor tutti + chime, every rope twangs, all frames gold, confetti from Bolt.
+  - Dissolve from 19.47 s. The clip is 20.07 s (1204 frames).
+- **HUD:**
+  - Caption: 2 lines.
+  - Readout slot, by phase: ROPE ADDED → ZOOM ×N (the exploding counter) → EVERY ROPE +1 m. SAME 16 cm! takes this slot too.
+  - Bet cards (y 1318).
+  - Two gap meters with bars:
+    - Phase A/B: EARTH GAP (?) | FOOTBALL GAP.
+    - Phase C: SAME 15.9 cm GAP n/7 | <current> GAP.
+  - All key content sits inside x 108-907.
+- **Sound** (all in the bed; the sidecar = 67 silent melody markers):
+  - Strings_trem holds the tremolo notes, with cello/contrabass under them.
+  - Brass, strings and horns play the accents. Strings + harp play the scales. The timpani plays the phrase pillars. Choir pads come in from the reveal (Gm | Cm | E♭ | Gm | D7).
+  - The reveal: a G-minor brass chord + tubular-bell chime + timpani.
+  - The finale: timpani roll, reverse-cymbal swell (no noise) + crash, boom, and a G-minor tutti with chimes.
+  - SFX (scene-local, no noise beds):
+    - A rope-tension tik per lift step, its pitch rising G5→G6 with the gap.
+    - A Karplus-Strong rope pluck on the opening accents and at each lift's end.
+    - A plink of the score note on each accent and scale note (folded ≤ C6).
+    - A soft ping at each 15.9 cm.
+    - A tonal pok per cell pop.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1204 frames = 20.07 s.
+  - Loudness: −14.01 LUFS, peak −5.32 dBFS, last 0.5 s at −71 dBFS.
+  - flash_check: 0 flashes = PASS (mean luminance 0.019).
+  - Loop seam: mean delta 0.50 (good band).
+  - Onsets measured on the muxed audio at 0.10, 1.06, 2.98, 9.06 and 16.86 s land in the expected 10 ms bin.
+  - Frames read from the encoded file at 0, 0.5, 1, 3, 9.1, 10.0, 14.55, 14.7 and 16.9 s, plus a 1:1 crop of the grid.
+- **Doubts:**
+  - The football cell shows only the top ~45 px of the ball, because all cells share one scale.
+  - The 5-10 s zoom sits ~5 dB under the rest of the mix (per-second RMS −20 against −15). It is thinner by design, but check that it doesn't sag.
+  - The brief's "basketball" became a car tyre (a basketball is nearly the football's size, so it would be a duplicate cell). Jupiter was added.
+- **Laptop:** 1 Python process (BLAS threads 1) plus x264 `-threads 2` (`Writer2`). Full HD renders in ~5 min.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/rope_earth.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/rope_earth.py --label ship`
+  - `--report`
+- Delivered `<VIDEOS_DIR>\batch43\rope_earth.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-19): "totally confused what's going on" -> fails the 2-second readability test -> reserve.

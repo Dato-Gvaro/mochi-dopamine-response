@@ -1,0 +1,33 @@
+# clones_battle — Mochi clones vs Bolt clones FIGHT on one board
+
+- From clones_race after the owner's review ("I thought them to FIGHT in the SAME area"). clones_race.py is untouched.
+- Rule:
+  - One full-width plinko board. Mochi clones drop on the left 45% of the board, Bolt clones on the right 45%, and they meet in the middle.
+  - LAND in a bin [x2 x3 x2 x5 x2 x3 x2]: the clone becomes m clones (army +m-1).
+  - BONK: a Mochi clone and a Bolt clone collide at ≥160 px/s; the one hit from above is STOLEN (it flips colour, army ±1). Both clones are then immune for 0.5 s.
+  - Army = clones on the board + clones waiting in that side's pipe. First to 600 wins.
+- Steal, not pop: popping the bonked clone costs both sides the same absolute number of clones, which is a Lanchester snowball (measured 600:7 and 600:12). A steal is zero-sum, with an expected net of 0 for both sides, so the race stays close.
+- Feed: the board takes clones at R(t) = 20 + 3t per second. Each slot goes to a side with odds equal to its share of the waiting clones, so the board's colour balance follows the counters (Pólya-like).
+- Live cap = min(210, 40 + 5.5t). The cap is still rising at the finish, so landings climb to the end, and max live stays at about 190.
+- Spawns only go into a free spot. Without that, the top jammed at about 210 live and clones stacked up out of the board.
+- Physics: g=800, MR=20, edge pegs 64 px off the wall (gap > clone diameter). 10 starts per side sit mid-fall between peg rows, so the first landing comes at 0.23 s.
+- Seed search: every seed is a full sim (about 15 s; `--search 80` takes about 3 min with 10 processes). The filter is a race of 24-36 s and a loser at 560-596, ranked by how late the last lead change is.
+- Reactions:
+  - Lead change: the new leader laughs, the other looks worried.
+  - Behind by more than 25% with no reaction for 4 s: worried.
+  - 6+ of a side's clones stolen in 0.5 s: wince (4 s spacing).
+  - Finish: the winner cheers twice, the loser is annoyed.
+- Sound:
+  - Landings: one ode_to_joy note (+12) each, gap 0.014 s (0.02 left the sounded rate flat at about 19/s for the last 15 s). An x5 always sounds, with a pop; an x3 gets a small pop.
+  - Bonks: a rubber bounce plus a quiet penta note by x, gap 0.06 s.
+  - Pegs: quiet pings, gap 0.12 s.
+  - Finish: an arpeggiated chord.
+- Pick s8: Mochi comes back and wins 600:576 at 32.5 s; the clip is 35.9 s.
+  - Lead changes at 2.8, 5.9, 28.8, 30.4 and 31.2. Bolt leads 6-28 s by up to 60%, then Mochi catches up.
+  - Landings per 5 s: [37, 87, 114, 152, 168, 185]. Bonks per 5 s: [10, 20, 57, 69, 87, 96]. Stolen m/b: 164/175.
+  - Sounded landings per second: 6 → about 27.
+  - Alternatives: s23 (Bolt 600:586, 14 changes), s31, s22.
+- Measured (s8): -14.0 LUFS, peak -6.1 dB, last 0.5 s at -67 dBFS. flash_check: 14 flashes, worst second 2 = PASS. h264 yuv420p 60 fps 1080x1920. Pre-encode seam: max delta 0. Encoded seam mean delta 0.445.
+- Audio was regenerated once onto the rendered video. It uses the same events and master settings as a fresh `python scenes/clones_battle.py`.
+- Owner review: pending.
+- Owner review 2026-10-03 (batch 4/5): Too crowded -> clones_battle2 with far fewer, bigger clones, same arena.

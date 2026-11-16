@@ -1,0 +1,13 @@
+# bolt_bubbles2
+- Episode of bolt_bubbles. Nameable change: MOCHI watches from the floor and ends up as the last bubble Bolt pops.
+- Rule unchanged (bolt_bubbles' Bubble model, planner and drawing are imported): machines blow faster and faster, big bubbles split in 3. Rate 3.0 + 8.6*u^1.2 /s (was 2.4 + 8.0), big share 0.22 -> 0.62.
+- Opening fix: frame 0 = Bolt on the bed (squash starts frame 1), launches at 0.12 s, first pop 0.13 s; a big bubble pre-placed over Bolt splits in the first jump. Machines blow from frame ~2. Caption at full opacity from frame 0 (the original faded it in over 0.4 s).
+- Mochi (r 64, x 160, y 1430): left of the counter, above the bottom 20%, below the bed, so it never covers the mechanic. Idle = eyes follow Bolt + blink. Reactions: wow at the busiest 1 s window in 45-80% of the main part, cheer when the machines stop.
+- Gag (reset, tau = s after the machines stop at 30 s): 0.85 the left machine burps ONE giant bubble (r 112), parks over Mochi; Mochi drools, 2.05 hops for it (mouth open) and is swallowed (gulp jiggle), floats up to (300, 880) happy; Bolt stops hopping at x 420 and watches; Bolt turns determined, Mochi worried (sweat) 0.55 s before; 3.75 Bolt jumps straight up -> POP! (counts as +1); Mochi falls soaked (drips), splat on the floor + puddle, glances at Bolt, stares annoyed at the camera; Bolt laughs (HA HA) on the bed.
+- Loop: last 0.5 s leftovers fade, frame 0's bubbles ghost in on their pre-roll path, counter rolls to 0, both characters ease to the frame-0 look. Seam pre-encode = one frame of bubble motion only (mean 0.63/255).
+- Sound: spring_vivaldi per pop (+12 small), bounce on landings; giant bubble 3-note swell 67-71-74, hop bounce, gulp = note 79 + pok, Mochi pop = big pop + note+12, splat = squash 0.45, Bolt giggle 84-88-84-88. No events in the last 0.9 s. peak_db -4.
+- s9: 37.05 s. Pops per 5 s (main 30 s) [25, 28, 45, 65, 75, 98]; 359 popped. Mochi popped at 33.92 s, lands 34.70 s.
+- Args: --seed, --dur (main part, 30), --label, --cap, --sim, --still --frame.
+- Measured (encoded): h264 yuv420p 1080x1920 60 fps, -14.0 LUFS, peak -4.3 dBFS, last 0.5 s -68 dBFS, flash_check 0 flashes PASS, post-encode seam mean 0.72 (top of the good band: it is one frame of bubble drift). Sound events/5 s [25, 27, 39, 41, 38, 47] (pop sounds are gated at 0.05 s, so audio flattens before the visual rate).
+- Delivered to <VIDEOS_DIR>\batch4\bolt_bubbles2.mp4. Awaiting owner review.
+- Owner review 2026-10-03 (batch 4/5): OK; make it more satisfying: more pops, fewer misses -> bolt_bubbles3.

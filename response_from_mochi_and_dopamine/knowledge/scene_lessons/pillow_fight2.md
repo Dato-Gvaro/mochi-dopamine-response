@@ -1,0 +1,14 @@
+# pillow_fight2
+- Episode of pillow_fight (copied; pillow_fight.py untouched). ONE change: **GIANT pillow (Mochi) vs TINY pillow (Bolt)**. Same rule (only pillow-on-body hits), same escalation (EVERY HIT makes both x1.045 faster, cruise 430 -> 1132).
+- Giant: collider PR 96 at PD 210 (drawn 196x226, thicker arm), speed x0.84, turn 3.4 rad/s, re-swing 0.95 s, dmg 10-17 (10 + closing/140), knock-back 2.3x cruise, 32 bigger feathers, "POMF!" 90-104 px, swing slowed x1.5. Tiny: PR 25 at PD 117 (drawn 62x50), speed x1.12, turn 10, steer 3.5 rad/s (vs 1.5), re-swing 0.30 s, dmg 4-7, knock 1.25x, 6 feathers, small "pff!", swing x0.8. Global 0.22 s no-trade gap after any hit.
+- Balance (400 seeds): Mochi 216 / Bolt 184. Bolt steer was the lever: at 1.5 the tiny pillow landed ~12 hits and Mochi won 99%.
+- POMF/pff label placed clear of both bodies AND the giant pillow over the label's whole 0.75 s life (hit-frame-only placement covered faces). KO banner goes top/bottom/middle of the bed, whichever is clear of the fighters. Hold phase eases bodies so the giant pillow stays on the bed.
+- `--search N` adds: first hit <=1.3 s, 25-40 s, late-decision bonus, giant hits >=6.
+- seed 291: Bolt wins on 6 HP (comeback from 6 vs 15 at 20.7 s); 23 hits (Mochi 7, Bolt 16), 11 lead changes, first hit 0.85 s (giant), hits/5s 4, 5, 6, 8; 6 pomfs, 11 bumps. Longest early gap 2.0 -> 5.2 s (bumps/pomfs only).
+- Sound: giant hit = melody note an OCTAVE DOWN + squash 0.95 (deep pomf); tiny hit = melody note + squash 0.12; rest as pillow_fight.
+- Loop: frame 0 vs last frame pixel-identical (mean 0.0).
+- Args: --seed, --search, --label, --cap ("GIANT pillow vs TINY pillow|~Who wins?~"), --melody.
+- Shipped sample (batch4): 28.33 s, -14.0 LUFS, peak -6.3 dBFS, tail silent, flash_check PASS (0 flashes), encoded seam mean 0.31. Known nit: when the victim is pinned in a corner the giant "POMF!" can touch its edge (no clear spot), e.g. 12.6 s and 20.7 s.
+- Owner review 2026-10-03 (batch 4/5): GOOD - approved.
+- Made-for-kids audit 2026-10-04: children's tune replaced (now beethoven_5); renders before this used a kid-coded melody.
+- Owner review 2026-10-04 (batch 7): Pulled from Oct 7 (pillow_shrink preferred; two pillow fights in week 1 is too many). Kept as a reserve episode.

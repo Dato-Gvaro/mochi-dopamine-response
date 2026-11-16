@@ -1,0 +1,49 @@
+# spiral_timer — Mochi's marble spiral vs Bolt's stomp button, 15 s countdown (NEW format)
+
+- Source: owner review of spiral_machine (2026-10-05): "make ONE character's spiral, and the other character jumps on a button time after time, which creates OBSTACLES for the balls; there is a TIMER". spiral_machine.py is untouched.
+- Rule: a marble that rings Mochi's chime = Mochi +1. A marble knocked off the spiral = Bolt +1. Most marbles when the countdown hits 0 wins.
+  - Caption: "Bolt's stomps knock marbles off|~Most marbles in 15 s WINS~".
+  - HUD: BOLT count (x 230) | TIME 15.0 -> 0.0 (centre, red under 5 s, pulses each second) | MOCHI count (x 850), at y 1446/1528.
+  - Each counter jumps on its own sound: the chime or the knock.
+- Timer is 15 s, not the brief's "e.g. 20 s". The feeder holds 60 marbles and the pipeline (door -> chime) is ~3.1 s. At 20 s, the event rate flattened and the race went quiet before the buzzer. 15 s keeps the climb.
+- Layout: one big helix, CX 565 (shifted right to balance Bolt's button). RX 150, RY 50, pitch 165, TW 34, 2.75 turns, Y0 560. Feeder: 4.5 zig-zag rows (x ±175, y 358-550), 60 steel marbles.
+  - Mochi's side (right): a door at the helix top, a ramp to the 6-pocket water wheel (u 210), a steel chime bar, then Mochi's bin (6x6, near wall u 160). Mochi stands at x 643, between the core and its bin.
+  - Bolt's side (left): a red floor button at x 128 with a cable to the glass reject chute (u -239). Bolt's bin is 6x6 (near wall u -160). Three devices sit on the outer-left extreme of turns 1-3, each with a slide into the chute and a lamp.
+  - Core: Archimedes screw in a glass tube (the loop lift).
+- Mochi's trains: same rigid-train door and detent wheel as spiral_machine (VT raised to 1300, tau 0.38, for a shorter pipeline).
+  - Gate interval 1.35 - 0.035 t (min 0.85). Train size lo = 2 + t/4.5, hi = lo + 1 + t/6. Wheel 8 -> 12 pockets/s.
+  - A train is released only if its last chime can ring before 0:00.
+  - A last-call train (hi + 1 marbles) is timed to chime right up to the buzzer.
+- Bolt's stomps: interval 1.8 - 0.06 t (min 0.85), x0.8-1.2 jitter, from ~1 s to T-1.3.
+  - Bolt hops 62 px for 0.26 s and lands on the button (it depresses, then a squash).
+  - The landing ARMS one device (never the same twice in a row). Its lamp and body turn red. Charge c = 1+t/6 .. min(4, 2+t/4).
+  - Armed, the device knocks the next c marbles that pass its station: FLIPPER (turn 1) bats them up, SIDE DOOR (turn 2) swings open, TILT (turn 3) tips them out.
+  - Knocked marbles arc onto the slide, fall down the chute and fan into Bolt's bin.
+  - Unused after ARM_T 1.4 s (or at 0:00) = a MISS: Mochi laughs, Bolt is annoyed. A knock of >= 2 makes Bolt laugh (HA) and Mochi annoyed. Bolt's idle face is a grin.
+- End: a bright "time up" chime chord. Winner cheer + confetti + laugh, loser wince + annoyed stare. Banner at y 790. The winner's count turns gold.
+- Loop: t_r = 17.3 s.
+  - Both bin hatches (core-side walls) open.
+  - Each pile drains with the granular avalanche rule into a floor trough to the core base. Entries alternate Bolt/Mochi.
+  - The screw (22 turns/s) lifts one marble per turn up the middle of the spiral into the feeder, behind the unreleased marbles.
+  - The counters count down, and the timer resets to 15.0 at t_r + 0.5.
+  - The last PRE = 3.12 s replay the pre-roll.
+  - The pre-encode seam (last -> 0) is 1.38, between the neighbouring steps (1.28, 1.44). The whole feeder rolls at frame 0, so this is motion. The encoded seam mean is 1.74 for the same reason.
+- Sound: a bed rendered in the scene, not rebuildable by regen_audio — re-render instead.
+  - Steel chime per catch (eine_kleine +12, Mozart, PD).
+  - Steel ticks for the wheel pawl, train joints, Bolt's-bin landings, and the last 5 whole seconds.
+  - Mixer foley: latch on door open and on each stomp (+ bounce), pok on each knock-off, queue stop and train arrival.
+  - Reset: rising chime every 2nd lifted marble. Bed hard-cut at T-1.3.
+- s1472: Bolt wins 24-23. Lead changes (hysteresis 2): 3.
+  - Mochi +3 at 5 s. Bolt ahead from ~8 s and +8 at 13.5 s.
+  - Mochi's 9-marble last-call train loses 4 to the side door and 3 to the tilt. The comeback stalls at 23-24.
+  - 10 stomps, 1 miss (tilt at 5.6 s). 47 of 60 marbles used. First chime 0.32 s, first knock-off 1.39 s.
+  - Events per 3 s: 6, 7, 7, 12, 15. Last event at 14.50 s, so the final 0.5 s holds only the timer ticks.
+  - Clip 24.87 s (1492 f).
+- Checks (encoded Full HD): h264 yuv420p 1080x1920 60 fps; -13.96 LUFS, peak -6.6 dBFS; last 1.3 s -85 dBFS, last 0.5 s silent; flash_check 0 = PASS. Onsets match the sim (0.324 -> 0.32, 1.39 -> 1.38).
+- Search `--search N [--from S] [--bolt]`:
+  - Filter: margin <= 2, all scoring done before 0:00, both bins <= 36, >= 1 miss, >= 2 big knocks, last score after T-0.6.
+  - Without --bolt, the best seeds are Mochi wins: the last-call train gives Mochi the final word. s1948 (22-20, 6 lead changes, last change at 14.8) and s1492 (25-24, 5).
+  - Bolt alternatives: s2905 (22-21, 3 lead changes, last at 13.7), s165.
+- Args: --seed (1472), --label, --cap, --melody, --search [--from] [--bolt], --dry, --still --frame.
+- Delivered <VIDEOS_DIR>\batch13\spiral_timer.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-05 night: Good idea, but too complicated for the eyes: a shorter but BIGGER spiral, fewer swap doors, more context visuals.

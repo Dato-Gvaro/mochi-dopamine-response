@@ -1,0 +1,47 @@
+# grand_prix4 — MARBLE EXIT FACTORY (Team Mochi BIG vs Team Bolt SMALL)
+
+- Built from the owner's review of grand_prix3 (2026-10-15): "instead of squashing, make some small openings based on some logic... sometimes balls get out, sometimes go around another circle; first whose all balls leave wins".
+- Kept the v3 circuit and look: lift, conveyor belt, pendulum hammer, drop shaft + J-curve, loop-the-loop, C-bends, steel/brass on violet. The crushers are replaced by two EXITS on the belt.
+- Team difference (honest, physical): SIZE. Mochi marbles are BIG (r 22, mass x1.8); Bolt marbles are SMALL (r 13, mass x0.38). Ball-ball impulses are mass-weighted. Each exit's rule favours one size, so the viewer sees WHY a marble leaves:
+  - SIEVE (left, "SMALL ONLY, green = open"): a slot only small marbles fit. Its shutter opens while the GEAR lamp is green: 2 of every 6 gear clicks, 0.25 s per click.
+  - DOOR (right, "BIG ONLY, 2 lights = BIG drops"): a 2-light counter.
+    - Every marble that rolls over the door lights one light, small ones included, so Bolt's marbles arm Mochi's door.
+    - When both lights are on, the next BIG marble drops through and the counter resets.
+  - An earlier version ("every 2nd BIG marble") left Mochi's last marble stranded, because it needed a partner.
+- Exit = a scripted drop through the opening into the team's tray under the belt (Bolt tray left, Mochi tray right). A marble that misses rides another lap (lap ~5.5 s). The race uses no other scripted motion.
+- Tuning traps:
+  - The drop wall moved to x 235, because a 42 px gap wedged the big marbles.
+  - The J centre is at x 309 so both radii fall on its line.
+  - Bend, J and loop constraints use the tube radius minus the marble radius.
+- Exits switch on at t=0 (ACT); the gear sits still in the pre-roll. Frame 0 is mid-action: the stream is already on the belt, and the first exit is a small Bolt marble through the sieve at 0.41 s.
+- Win: first team with all 5 out. The HUD shows "LEFT IN THE MACHINE" per team, with BIG/SMALL pips that turn into gold ticks.
+- Banners: TIED n-n!, LEAD CHANGE!, X: LAST ONE!, 1 LEFT EACH!, then "<TEAM> WINS! all 5 out first".
+- Search: 3000 seeds, 365 pass. The story needs:
+  - the end in 13-17.5 s;
+  - the loser with 3+ out;
+  - the first exit in 0.12-0.9 s;
+  - Score: a 4-out loser, lead changes, ties, and no long gaps between exits.
+- s446 (default):
+  - exits B 0.41, M 0.81, M 1.68, B 4.94, M 6.71, B 9.00, B 10.50, M 13.46, M 15.46;
+  - count 5-4, 4-4, 3-4, 3-3, 2-3, 2-2, 2-1, 1-1, then MOCHI WINS 0-1.
+  - Clip 17.27 s (1036 f).
+  - Longest gap between exits is 3.3 s. The lamp and counter keep changing in between.
+  - Alternatives: 1847 (Mochi, 14.0 s, max gap 3.1), 2517 (Bolt, 15.4 s), 1093 (Bolt, 16.5 s).
+- Sound: contact sounds only.
+  - Glass clicks, steel tocks, the hammer's wood bonk, elevator ticks.
+  - Gear clicks (quiet metal ticks, brighter on the green tooth).
+  - Shutter tocks, a counter tick per light, a door/shutter tock on each exit, a tray click on landing.
+  - Marimba DING per exit (Mochi C4 pentatonic, Bolt C5) and a win arpeggio.
+- --vote (default OFF): from 0.6 s after the win until the dissolve, shows "Team Mochi or Team Bolt?" with a bobbing gold down-arrow at y 1150-1205. Emoji are not drawn: cairo has no colour emoji.
+- Loop: seamless 0.5 s dissolve into the sim pre-roll. Pre-encode seam 0.77 against neighbours 0.63/0.69: the gear lamp switches on at the seam, which reads as a normal event. Encoded seam 1.12 against a normal step of 0.72 (the I-frame step).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 60 fps.
+  - -13.95 LUFS, peak -4.39 dBFS.
+  - flash_check 0 = PASS.
+  - Sounded events/5 s: 91/72/51.
+- Safe zone: the machine is x 90-930. The HUD faces sit at x 100/840.
+- Args: --seed (446), --label, --cap ("Empty the machine FIRST|~SMALL vs BIG marbles~"), --vote, --voice, --search N [--start], --stats N, --still --frame.
+- Delivered <VIDEOS_DIR>\batch36\grand_prix4.mp4 (Full HD). Owner review: pending.
+
+Owner review (2026-10-16): good -> 4K.
+- Owner review 2026-10-15: APPROVED. Shipped 4K (NF_SCALE=2.0, label ship, s446, vote OFF = A/B control): 2160x3840 h264 yuv420p 60 fps, 17.27 s, -13.95 LUFS, peak -4.39 dBFS, flash_check PASS -> <VIDEOS_DIR>\Schedule\2026-10-19\2_grand_prix4.mp4.

@@ -1,0 +1,68 @@
+# hot_dog_contest — "Hot dog contest: 10 minutes" / "Plain or the PRO trick?"
+
+- The formula (docs/BRIEF_formula.md) on the famous summer HOT-DOG EATING CONTEST, aimed at ~30-year-old US pop culture. Generic only: no brand, no real eaters, no logos.
+  - Mochi (coral) eats PLAIN: one whole dog in a bun at a time, 3 bites.
+  - Bolt (mint) uses the PRO trick, SPLIT & DUNK: he snaps the dog in half, eats the 2 sausage halves, dunks the bun halves in a cup of water and gulps the soggy bun.
+- **Frame 0 / meter:**
+  - Contest table: the skirt reads PLAIN | SPLIT & DUNK. A big clock panel reads 9:48. Bunting overhead.
+  - Two HOT DOGS bars (0-80) with a dashed RECORD 70 line, plus big counters at 0.75h (gold = leader).
+  - Mochi has a FULL... gauge on her left.
+  - Frame 0 is mid-action: Mochi 3, Bolt 1. Mochi's bite lands at 0.08 s; Bolt's SNAP! at 0.21 s.
+- **Honest-ish numbers:**
+  - Phase 1 runs at contest-clock ×4.9, 9:48 → 9:00. Plain is faster for the first few dogs: 6-3 at 2.5 s.
+  - Mochi's dog interval grows 6 → 6 → 9 → 12 → 15 → 18 eighths, while Bolt holds 8-9 eighths.
+  - 9-9 at 9:06 (8.62 s). LEAD CHANGE at 9:00 (9.77 s, Bolt 10 vs 9).
+  - Fast-forward: the clock ramps to ×90, then slows into 0:00.
+    - Bolt: 10 + 62·u(1.08 − 0.08u) → 72, a steady ~7/min.
+    - Mochi: 9 + 17·(1 − e^(−2.2u))/(1 − e^(−2.2)) → 26, fatiguing. u = the share of the last 9 minutes.
+  - Bolt passes RECORD 70 at 0:19 (16.75 s, "NEW RECORD!").
+  - Mochi's gauge = (count/26)^0.8 and reads FULL! at the end. Her body widens with it (sx up to 1.22).
+- **Music = the clock:** J. P. Sousa, "The Washington Post" march (1889; Sousa d. 1932, PD).
+  - Notes: Mutopia #1321 (Mutopia-2009/03/19-1321), piano, LilyPond MIDI. Saved to `<SOUNDFONTS_DIR>\scores\sousa_washington_post\` with SOURCE_mutopia_1321.txt.
+  - The engraving is CC BY-SA 3.0. We only read pitch/rhythm of the PD composition into our own arrangement.
+  - Not an anthem. "The Stars and Stripes Forever" was avoided because it is the official US National March (patriotic).
+  - Cut (virtual beats, quarter = vb):
+    - vb 0-47 = bars 8-23 (strain 1, pickup on frame 0).
+    - vb 47-50 = bar 40 (the 2nd-ending lead-in).
+    - vb 50-71 = bars 49-56 (the closing phrase of strain 2). The bar 56 downbeat (G) = 0:00.
+  - Tempo: 0.255 s/quarter (4.≈157) to bar 21, accelerating to 0.222 by vb 47 and 0.212 by vb 68, then a ritardando 0.29 → 0.34 into the cadence.
+  - Sync:
+    - Every phase-1 dog finishes ON a melody onset (searched: the two eaters never within 2 eighths; Mochi ahead or level until e = 76).
+    - Every bite, snap, chomp, plop and gulp is on the 8th grid.
+    - LEAD CHANGE = bar 21, the ff climb.
+- **Key times** (clip s):
+  - Mochi's dogs finish at 0.59, 1.35, 2.50, 4.03, 5.94, 8.24.
+  - Bolt's dogs finish at 0.97, 2.12, 3.14, 4.29, 5.43, 6.45, 7.47, 8.62 (tie), 9.77 (LEAD CHANGE).
+  - FAST-FORWARD from 10.02. RECORD at 16.75. 0:00 + bell + PRO TRICK WINS! / 72 vs 26 + confetti at 17.29.
+  - Dissolve from 19.69. The clip is 20.28 s (1217 frames).
+- **Staging:**
+  - Mochi: normal, then smug (happy eyes) from 0.9 s, worried and sweating from ~3 s, wow at the tie and the LEAD CHANGE, worried and wobbling through the fast-forward. At the end she is stuffed and annoyed, glaring at Bolt.
+  - Bolt: determined while eating, glances at the tie, hop + grin at the LEAD CHANGE. A mustard stain grows from the fast-forward. At the end: a mustard-stained grin and two cheer hops.
+  - Fast-forward visuals: pieces stream plate → mouth (Mochi) and plate → cup → soggy → mouth (Bolt), one per counted dog. Hands pump with ghosting and a ▶▶ FAST-FORWARD chip sits under the clock.
+- **Sound** (bed + scene-synth SFX, no noise):
+  - Band:
+    - Strain 1: clarinet + trumpet melody (−12, ≤ D5), tuba oom, trombone/pizz off-beat chords.
+    - From the LEAD CHANGE: horns + strings double the tune, contrabass, timpani on the strain-2 downbeats, cymbal crashes at bar 21 and bar 49, a timpani roll into the cadence.
+    - Cadence: a G-major tutti (brass, trumpet, tuba, strings, choir, timpani, boom, crash; `fin` ×0.75).
+  - SFX:
+    - A tonal chomp per bite. A twig snap. A water "bloop" plop. A soft glunk gulp.
+    - A tick-tock on every dotted-quarter until 0:00.
+    - A marimba plink of the melody note per finished dog (phase 1) and per melody onset (fast-forward).
+    - Crowd "HEY!" = a short Voice-Oohs stab plus tonal clap blips (no hiss) at the LEAD CHANGE and at 0:00.
+    - A bell instead of a buzzer at 0:00 (G5 + B5), and a small D6 chime at the RECORD.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/hot_dog_contest.py --still --frame N[,N]`
+  - `NF_SCALE=1.0 python scenes/hot_dog_contest.py --label v2` (one process, x264 `-threads 2`)
+  - `--report`
+- **Checks** (encoded Full HD `output/hot_dog_contest_v2_9x16.mp4`):
+  - Video: h264 yuv420p 1080x1920 at 60 fps, 1217 frames = 20.28 s.
+  - Loudness: −14.00 LUFS, peak −5.11 dBFS, last 0.5 s at −71 dBFS. `peak_db=None`.
+  - Per-second RMS: opening −21…−19, phase-1 build to −15, fast-forward −16.5, cadence second −14.4.
+  - flash_check: 0 flashes = PASS (mean luminance 0.03).
+  - Loop seam: encoded mean delta 0.93. Both eaters are mid-motion, and the clock ticks 9:49 → 9:48 across the seam.
+  - Side safe zone: content at x 0.101-0.834w at 0, 0.22, 9.8, 16.8, 17.45 and 19.0 s.
+  - Frames read from the encoded file at 0, 0.22 (1:1 crop of the SNAP), 0.62, 8.64, 9.80, 13.0, 16.8, 17.45, 19.0 and the last frame.
+- **v1 → v2 (audio only, re-muxed with `-t`):** `fin` gain ×0.45 → ×0.75 (cadence lift only +1.4 dB over the fast-forward), fast-forward chomps 0.10 → 0.08.
+- Delivered `<VIDEOS_DIR>\batch45\hot_dog_contest.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-21): "make decision by yourself" -> ship as the 2nd US pop-culture test (rivals + an exploding counter + a lead change + a RECORD line), Oct 27 slot 2.

@@ -1,0 +1,75 @@
+# paper_fold — "Fold a paper 42 times…" / "Paper or Rocket?"
+
+- Formula transfer (research/breakout_formula.md, owner signal 2026-10-18). The famous fact: fold a sheet 42 times and it reaches the Moon.
+  - Mochi (coral) FOLDS, one fold a minute.
+  - Bolt (mint) flies a rocket at a steady, generous 40,000 km/h from minute 0.
+  - The rocket leads 37 folds. Fold 38 passes it (LEAD CHANGE!). Fold 42 smashes into the Moon (PAPER WINS!).
+- **Honest numbers:** paper = 0.1 mm × 2^n, exact. Rocket = 666.7 km × minutes (minutes = folds, linear between landings).
+  - Fold 7: 1.28 cm vs 4,667 km.
+  - Fold 37: 13,744 vs 24,667 km.
+  - Fold 38: 27,488 vs 25,333 km (LEAD CHANGE).
+  - Fold 42: 439,805 km vs 28,000 km (the rocket is 7% of the way).
+- **Camera:** one linear world with an exponential zoom-out. View span = 2.5 × thickness, so the stack sits at 40% of the view between folds.
+  - Each fold, a copy of the stack peels off and flips 180° over its top centre (swinging LEFT, away from the rocket), doubling the height. The zoom (additive log eases) brings the stack back to 40%.
+  - Folds 41-42 use a fixed final span of 560,000 km: Moon bottom at 0.69, fold 42 at 0.79, i.e. into the Moon.
+- **Landmarks:**
+  - At true scale on the ground: AA battery, soda can, cat, person, giraffe, house, clock tower, tallest tower 828 m (fold 23 = 839 m), true-scale clouds, Everest.
+  - Fixed-size icons at their true altitude: plane, weather balloon, SPACE 100 km line, ISS, GPS, TV satellites.
+  - "EARTH 12,742 km WIDE" at fold 37. The Earth curves into a globe (true radius, min 150 px), fading to black behind the counters.
+  - Each landmark's label turns gold and pings when passed. Wide objects show only once they fit (≤ 440 px wide).
+- **Frame 0 / end state:** the Moon and the rocket stay pinned at the top of the view while above it (▲ marker on the rocket), so the MOON (384,400 km) is visible from frame 0. A log meter on the left (Moon icon on top, coral paper marker, mint rocket chevron) shows the whole race.
+- **Staging:**
+  - Mochi rides the stack top, hopping each fold. On fold 42 she leaps onto the Moon and cheers.
+  - Bolt sits in the rocket porthole: laughs early, worried from fold 36, "wow" at the LEAD CHANGE, annoyed at the end.
+  - A ×2 pops on every fold; the counter turns gold for the leader.
+  - From fold 37 a dashed mint line marks the rocket's altitude across to the stack.
+  - Moon impact: the Moon is drawn over the stack, knocked up 24 px and shaken, with a crater, 7 cracks, 46 rocks and 38 rainbow paper scraps, plus a dust ring (no flash).
+- **Music = the timing:** Dvořák, Symphony No. 9 "From the New World", IV, main theme, beats 36-96 (bars 10-25, both phrases).
+  - Source: Mutopia #1793 MIDI (Simrock 1894), `Mvt4_conFuoco.mid`; see `<SOUNDFONTS_DIR>\scores\dvorak_newworld\SOURCE_mutopia_1793.txt`.
+  - PD: composed 1893, Dvořák d. 1904. The engraving is CC BY-SA, the notes are PD.
+  - Tempo map: 0.31 s/beat to beat 64, then 0.32, then a ritardando 0.34 → 0.62 from beat 84.
+  - Phrase 1: folds 7-31, one per theme note. Phrase 2: folds 32-42 on the strong notes (68, 70, 72, 74, 76, 80, 84, 88, 90, 92, 96).
+  - Fold 42's slow swing runs from beat 94; it lands on the V7 → i cadence at beat 96 (E minor).
+- **Key times** (clip s):
+  - Fold 7 lands at 0.10 s (frame 0 is mid-swing of fold 7). Fold 15 at 3.51, fold 23 at 6.76, fold 27 (Everest + plane) at 7.95, fold 32 (ISS) at 10.06.
+  - Rocket enters the view during fold 37 (13.90).
+  - LEAD CHANGE at 15.18 s (fold 38). Folds 39-41 at 16.73, 17.64 and 18.65 s.
+  - MOON / PAPER WINS! at 20.94 s. Dissolve from 23.63 s. Clip 24.23 s (1454 frames).
+- **Sound** (all in the bed; the sidecar = 36 silent note markers):
+  - Theme on brass + strings at E4-B4. Horns join an octave down from beat 68; trumpet from 84.
+  - Harmony: the score's viola and violin I stabs. The violin run fills beats 64-68 (strings + harp).
+  - Bass: contrabass + pizz from the score's bass and cello. The score's own timpani track.
+  - Choir pads from beat 76. Timpani hit at the LEAD CHANGE, a roll from beat 94, a reverse-cymbal swell (no noise riser) and crash on the cadence.
+  - Cadence: E minor on choir, strings, brass and contrabass, with timpani + boom.
+  - Per fold: a plink of the theme note +24 (E5-B5, nothing above C6), plus a synthesised paper crease. The crease is a snap, crackles and a tonal "thup"; it is under 0.18 s with no hiss and gets heavier from fold 30.
+  - Landmark passes: a soft tonal ping (B4/E5).
+  - Rocket: a low tonal engine pulse (E1 + harmonics, no noise) on every quarter beat.
+  - Moon: concrete crunch + a heavy crease + four small rock crunches.
+- **Checks** (encoded Full HD):
+  - Video: h264 yuv420p 1080x1920 60 fps, 24.23 s.
+  - Loudness: −14.01 LUFS, peak −7.22 dBFS, last 0.5 s at −63 dBFS (silent from ~22.9 s).
+  - flash_check: 0 flashes, PASS (mean luminance 0.028).
+  - Loop seam: the encoded mean delta is 3.87 (check_clip) / 4.03 (decoded), against 3.81-3.89 for a normal frame step here. The flap swing + zoom make every step large, so the seam is one ordinary step: the last frame is the pre-roll at t = −1/60 s.
+  - Frames read at 0, 0.5, 1, 3, 12, 15.25, 20.97, 21.3 and 24.2 s, plus a 1:1 crop of the impact at 21.05 s.
+- **Laptop:** 1 Python process (BLAS threads 1) + ffmpeg x264 `-threads 2` (`Writer2`). Full HD renders in ~5 min.
+- **Commands:**
+  - `NF_SCALE=1.0 NF_FAST=1 python scenes/paper_fold.py --still --frame N`
+  - `NF_SCALE=1.0 python scenes/paper_fold.py`
+  - `--report`
+- Delivered `<VIDEOS_DIR>\batch42\paper_fold.mp4` (Full HD). Owner review: pending.
+
+Owner review (2026-10-18): "interesting, we can try" -> approved; re-layout to the side safe zone, then 4K.
+
+## v2 = ship: side safe zone (owner 2026-10-18)
+- Rule: tall phones crop ~9% off EACH side of a 9:16 Short, and the Shorts buttons sit on the right. Every key element stays inside x 108-907 (0.10w-0.84w).
+- Layout changes:
+  - Stack at x 520 (was 400); Moon at x 505.
+  - Log meter at x 138; its paper marker's left edge is at x 112.
+  - Counters centred at x 300 / 705, max width 360.
+  - Caption, FOLD counter and banners centred on the safe-zone centre x 508, with max width 779.
+  - Landmark labels are clamped inside the zone; the long names are shortened to "TV SATS 35,786 km" and "BALLOON 35 km".
+  - Air icons and their labels are drawn over the pinned Moon.
+- Flap: the arc reaches up to 634 px during the fast triplet folds (8.0-8.1 s), so it is squashed horizontally only when stack height + PW/2 > CX − 112. Typical folds (≤ ~400 px) are unchanged.
+- Ground objects on the right moved to x 690-720. Landmarks and stars may still extend past the zone (decorative).
+- Numbers, timing and sound are identical to v1.
+- Full HD stills at 0 s and 15.3 s (plus the worst flap at 8.12 s and the Moon hit at 21.03 s) were read with guides at 108/907: every key element is inside.

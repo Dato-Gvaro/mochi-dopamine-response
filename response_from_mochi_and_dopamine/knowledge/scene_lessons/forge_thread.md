@@ -1,0 +1,29 @@
+# forge_thread — FORGE & THREAD (co-op against the clock)
+
+- Idea 13 from research/reference_dripandflick.md (from Drip & Flick #5, the co-op pancake flip arc). New scene file. It does not depend on any other scene.
+- Rule: a white-hot ring slides out of the furnace onto the anvil. Bolt hammers it, and his last strike flicks it in a flipping arc to the spindle. The spindle top is a spinning steel iris that Mochi snaps open by stomping her pedal. An open iris means the ring threads (shink) and slides onto the stack. A ring that hits a closed iris or the housing rim clangs off into the quench tank (hiss). Goal: 30/30 before the buzzer.
+- Escalation: the hammer beat speeds up from 0.30 to 0.20 s, and Bolt goes from 2 strikes per ring to 1 ("RAPID FIRE!", 8.05 s). The iris spin goes from 0.9 to 5.2 rad/s, the furnace roars, the timer bar turns red in the last 3 s, and Mochi sweats. Every arrival snaps to the beat grid, so each shink lands together with an anvil clang.
+- Unique misses, each with a reaction:
+  - short throw at 3.34 s: clips the left rim; Mochi glares at Bolt and Bolt sweats.
+  - late stomp at 6.69 s: the ring lands on a closed iris; Bolt laughs ("HA").
+  - SAVED at 9.12 s: the ring rattles on the closing blades, and a second stomp drops it through; both react with "wow".
+  - long throw at 10.34 s: hits the right rim, BONKs Mochi (dizzy, then an annoyed stare at Bolt).
+- Finish: seed % 4 == 3 means the 30th ring is locked out at the buzzer (29/30, "TIME!"). Any other seed makes it with a seeded margin, shown as "BUZZER BEATER!". Then a glow wave runs up the full spindle, gold sparks fly from the tip and both characters cheer twice.
+- Loop: the collar drops and the whole stack slides into the tank (3 hisses + steam). The counter counts down to 0, the missed rings fade, the timer refills, the iris spin settles to the frame-0 angle (mod 60 deg), and a new ring slides onto the anvil. That ring is the same object as ring 0 (t - T), and the hammer is raised. The furnace and water use whole cycles per clip, and there are no blinks in the first or last 0.5 s.
+- Look: dark brick forge with a vignette, an arched furnace with flame tongues, and a dark steel anvil. Rings are drawn as perspective ellipses (K 0.32) with layered glow strokes, and their heat colour runs from white through yellow, orange and red down to dark steel (cooling tau 3 s, plus +0.10 per strike). The flight is a full 3D flip (ry = |sin(beta + phi)|). The iris has 6 tangent-line blades and 12 rivets, and the open hole glows orange. The stack keeps a bottom-to-top heat gradient.
+- Sound: korobeiniki (PD) on marimba, one note per thread, plus an A-major arpeggio on the win. Everything else is a scene-local bed:
+  - anvil "ting": near-harmonic partials pitched an octave below the tune's current note.
+  - shink: gliding high partials plus a scrape.
+  - clang: inharmonic steel.
+  - metal tick on landing, bounce on the bonk, steam on tank entries.
+  - no noise bed.
+- s8 (default): make, 30th ring threads 0.14 s before the buzzer (t_limit 12.28 s, last thread 12.14 s). 33 throws, 4 special events. Strikes+arrivals per 3 s: 14, 17, 21, 28. Clip 16.09 s (966 frames).
+- Checks (encoded Full HD):
+  - h264 yuv420p 1080x1920 at 60 fps.
+  - -14.01 LUFS, peak -6.11 dBFS.
+  - last 0.5 s at -80.8 dBFS; silent from about 14.7 s.
+  - flash_check 0 = PASS (mean lum 0.028).
+  - seam: pre-encode 0.031 against a 0.077 frame step; post-encode 0.354.
+- Args: --seed (8), --label, --cap, --melody, --voice, --still --frame. Other seeds: 2 (margin 0.25), 4 (0.14); 3/7/11 = locked-out 29/30.
+- Delivered <VIDEOS_DIR>\batch14\forge_thread.mp4 (Full HD). Owner review: pending.
+- Owner review 2026-10-06: LOVED IT - approved.

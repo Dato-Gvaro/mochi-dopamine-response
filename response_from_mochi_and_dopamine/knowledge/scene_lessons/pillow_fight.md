@@ -1,0 +1,14 @@
+# pillow_fight
+- Fix for mochi_vs_bolt's review ("can't tell who is attacking"). Rule: ONLY a pillow touching the OTHER one's BODY is a hit. Body-body = bump, pillow-pillow = soft "pomf" + 5 feathers, no damage.
+- Each fighter holds its own-coloured pillow on an arm (FR 88, pillow collider PR 50 at PD 142); the pillow leads along the motion (turn cap 7 rad/s); gentle steer (1.5 rad/s) toward the opponent's flank keeps them meeting.
+- Attacker read: angry face + open mouth from 0.45 s BEFORE the hit, wind-up + swing arc (with trail) INTO the victim, drawn on top. Victim: wince (eyes shut, squash) 0.32 s then dizzy stars, knocked back at 1.75x cruise. 14 feathers + "POMF!" (attacker colour, placed clear of both faces) + small shake; HP bar drops with a yellow lag chunk, "-N" beside the bar.
+- Damage 5-12 (5 + closing speed/180). Escalation: EVERY HIT makes both x1.055 faster (cruise 430 -> 1189 px/s, cap 1500).
+- `--search N` scores lead changes, low winner HP, climbing hit rate, first hit <3 s, 25-42 s total.
+- seed 122: Bolt wins on 4 HP; 20 hits, 9 lead changes, first hit 0.98 s; hits per 5.3 s bin 4, 3, 6, 7; 6 pomfs, 5 bumps.
+- KO: winner cheer-hops (watcher_pose cheer x4) pillow raised + confetti + "BOLT WINS!"; loser dizzy 1.1 s then hugs its pillow and naps (Zzz). 2.6 s hold.
+- Loop: 1.4 s Hermite glide home ending on the frame-0 velocity, HP refills, rot/facing blend to frame 0. check_loop SEAM EXACT; post-encode mean delta 0.36.
+- Sound: frere_jacques note + squash per hit (pop on KO); pomf = soft squash; bump/wall = quiet bounce; victory arpeggio. peak_db -4.
+- Shipped sample: 25.13 s, -14.0 LUFS, peak -5.5 dBFS, tail silent, flash_check PASS (0 flashes). Theme sky, quilt bed.
+- Args: --seed, --search, --label, --cap, --melody.
+- Owner review 2026-10-03 (batch 2): GOOD - approved to ship (Schedule 2026-10-04).
+- Made-for-kids audit 2026-10-04: frere_jacques is a children's round; a william_tell version (--melody william_tell, label adult) was rendered to replace the Oct 4 upload if not yet live. Default kept for reproducibility of the published clip.
